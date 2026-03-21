@@ -3,14 +3,20 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
+import AgentPortal from './components/auth/AgentPortal';
+import GladeDashboard from './components/glade/GladeDashboard';
+import SearchResults from './components/SearchResults';
 
 export default function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/search" element={<SearchResults />} />
+        <Route path="/login" element={<AgentPortal />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/glade" element={<GladeDashboard />} />
       </Routes>
     </Router>
   );

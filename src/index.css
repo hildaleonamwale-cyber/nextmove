@@ -8,6 +8,11 @@
     --input-bg: #F9FAFB;
 }
 
+body {
+    background-color: #ffffff !important;
+    margin: 0;
+}
+
 /* --- HEADER CSS --- */
 .we-header-wrapper { position: sticky; top: 0; z-index: 10001; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
 .we-header { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 15px 120px; border-bottom: 1px solid rgba(31, 230, 212, 0.15); transition: all 0.3s ease; }

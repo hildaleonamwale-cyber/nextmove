@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SingleProperty from '../SingleProperty';
 
 const safetyTipsList = [
@@ -16,11 +16,13 @@ const subtypesMap: Record<string, string[]> = {
 };
 
 export default function LandingPage() {
+    const navigate = useNavigate();
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isListingPageOpen, setIsListingPageOpen] = useState(false);
     const [isPropertyPageOpen, setIsPropertyPageOpen] = useState(false);
+    const [selectedPropertyType, setSelectedPropertyType] = useState('residential');
     const [isSafetyPopoverOpen, setIsSafetyPopoverOpen] = useState(false);
     const [currentTipIndex, setCurrentTipIndex] = useState(0);
 
@@ -37,39 +39,15 @@ export default function LandingPage() {
     const [searchBeds, setSearchBeds] = useState('all');
 
     const handleSearch = () => {
-        const cards = document.querySelectorAll('.we-card');
-        cards.forEach((card: any) => {
-            const text = card.innerText.toLowerCase();
-            let isMatch = true;
-
-            if (searchQuery && !text.includes(searchQuery.toLowerCase())) {
-                isMatch = false;
-            }
-
-            if (searchStatus !== 'all') {
-                if (searchStatus === 'sale' && !text.includes('for sale')) isMatch = false;
-                if (searchStatus === 'rent' && !text.includes('for rent') && !text.includes('for lease')) isMatch = false;
-            }
-
-            if (searchBeds !== 'all') {
-                if (!text.includes(`${searchBeds} bed`)) isMatch = false;
-            }
-
-            if (searchMinPrice || searchMaxPrice) {
-                const priceMatch = text.match(/\$([\d,]+)/);
-                if (priceMatch) {
-                    const price = parseInt(priceMatch[1].replace(/,/g, ''), 10);
-                    if (searchMinPrice && price < parseInt(searchMinPrice, 10)) isMatch = false;
-                    if (searchMaxPrice && price > parseInt(searchMaxPrice, 10)) isMatch = false;
-                }
-            }
-
-            if (isMatch) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
+        const params = new URLSearchParams();
+        if (searchQuery) params.append('q', searchQuery);
+        if (searchCategory !== 'all') params.append('category', searchCategory);
+        if (searchStatus !== 'all') params.append('status', searchStatus);
+        if (searchMinPrice) params.append('minPrice', searchMinPrice);
+        if (searchMaxPrice) params.append('maxPrice', searchMaxPrice);
+        if (searchBeds !== 'all') params.append('beds', searchBeds);
+        
+        navigate(`/search?${params.toString()}`);
     };
 
     useEffect(() => {
@@ -144,7 +122,7 @@ export default function LandingPage() {
                             <a href="#home">Home</a>
                             <a href="#buy">Buy</a>
                             <a href="#rent">Rent</a>
-                            <Link to="/dashboard" className="we-cta-btn">AGENT PORTAL</Link>
+                            <Link to="/login" className="we-cta-btn">AGENT PORTAL</Link>
                         </nav>
 
                         <div className="we-info-trigger" onClick={toggleSafetyPopover}>
@@ -187,7 +165,7 @@ export default function LandingPage() {
             </div>
 
             {isPropertyPageOpen ? (
-                <SingleProperty onBack={() => setIsPropertyPageOpen(false)} />
+                <SingleProperty onBack={() => setIsPropertyPageOpen(false)} propertyType={selectedPropertyType} />
             ) : (
                 <>
                     <section className="we-hero-clean">
@@ -385,7 +363,7 @@ export default function LandingPage() {
                     <div className="we-full-bleed-container">
                         <div className="we-listings">
                             
-                            <div className="we-card featured" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card featured" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
                                     <span className="we-tag">FOR SALE</span>
                                     <span className="we-featured-tag"><i className="fa-solid fa-bolt"></i> Featured</span>
@@ -403,7 +381,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="we-card" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/439391/pexels-photo-439391.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
                                     <span className="we-tag">FOR RENT</span>
                                     <div className="we-lister-badge"><i className="fa-solid fa-building-circle-check"></i> Rawson</div>
@@ -420,7 +398,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="we-card" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card" onClick={() => { setSelectedPropertyType('commercial'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
                                     <span className="we-tag">FOR LEASE</span>
                                     <div className="we-lister-badge"><i className="fa-solid fa-building-circle-check"></i> Pam Golding</div>
@@ -437,7 +415,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="we-card" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card" onClick={() => { setSelectedPropertyType('room'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
                                     <span className="we-tag">FOR RENT</span>
                                 </div>
@@ -453,7 +431,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="we-card" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card" onClick={() => { setSelectedPropertyType('commercial'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/298842/pexels-photo-298842.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
                                     <span className="we-tag">FOR RENT</span>
                                 </div>
@@ -469,7 +447,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="we-card" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=800')"}}><span className="we-tag">FOR SALE</span></div>
                                 <div className="we-body">
                                     <div className="we-price">$450,000</div>
@@ -495,7 +473,7 @@ export default function LandingPage() {
                     <div className="we-full-bleed-container">
                         <div className="we-listings" id="standGrid">
                             
-                            <div className="we-card featured" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card featured" onClick={() => { setSelectedPropertyType('stand'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/736x/53/0f/1a/530f1ade4b644c91dfed9d53a072b905.jpg')"}}>
                                     <span className="we-tag">TITLE DEEDS</span>
                                     <span className="we-featured-tag"><i className="fa-solid fa-bolt"></i> Featured</span>
@@ -513,7 +491,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="we-card" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card" onClick={() => { setSelectedPropertyType('stand'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/736x/98/04/69/980469f630d50176a5ac8c663437e632.jpg')"}}><span className="we-tag">50% DEPOSIT</span></div>
                                 <div className="we-body">
                                     <div className="we-price">$28,000</div>
@@ -527,7 +505,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="we-card" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card" onClick={() => { setSelectedPropertyType('stand'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/736x/ac/24/2b/ac242b20bb7872b1b839290d319adc79.jpg')"}}><span className="we-tag">NEW RELEASE</span></div>
                                 <div className="we-body">
                                     <div className="we-price">$120,000</div>
@@ -541,7 +519,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="we-card" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card" onClick={() => { setSelectedPropertyType('stand'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/736x/84/38/17/8438172e4fa57040c32c5a62f290dd8a.jpg')"}}><span className="we-tag">SOLD FAST</span></div>
                                 <div className="we-body">
                                     <div className="we-price">$18,000</div>
@@ -568,7 +546,7 @@ export default function LandingPage() {
                     <div className="we-full-bleed-container">
                         <div className="we-listings">
                             
-                            <div className="we-card sold" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card sold" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/1200x/58/75/a4/5875a4552941b69103b105da039155fe.jpg')"}}>
                                     <div className="we-sold-overlay"><span className="we-sold-banner">SOLD</span></div>
                                 </div>
@@ -582,7 +560,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="we-card sold" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card sold" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/1200x/e7/89/16/e78916a958980deeec5ca032bdff3247.jpg')"}}>
                                     <div className="we-sold-overlay"><span className="we-sold-banner">SOLD</span></div>
                                 </div>
@@ -596,7 +574,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="we-card sold" onClick={() => setIsPropertyPageOpen(true)} style={{cursor: 'pointer'}}>
+                            <div className="we-card sold" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/1200x/fb/32/27/fb3227a1d3765b94578c1514f9e26fb2.jpg')"}}>
                                     <div className="we-sold-overlay"><span className="we-sold-banner">SOLD</span></div>
                                 </div>
@@ -626,7 +604,7 @@ export default function LandingPage() {
                 <a href="#buy"><i className="fa-solid fa-house-chimney we-menu-icon"></i> Buy a Home</a>
                 <a href="#rent"><i className="fa-solid fa-key we-menu-icon"></i> Rent a Home</a>
                 <a href="#sell"><i className="fa-solid fa-file-invoice-dollar we-menu-icon"></i> Sell Property</a>
-                <Link to="/dashboard" className="we-menu-contact-btn">AGENT PORTAL</Link>
+                <Link to="/login" className="we-menu-contact-btn">AGENT PORTAL</Link>
             </div>
 
             <div className={`we-modal-overlay ${isAuthModalOpen ? 'active' : ''}`} id="authModal" onClick={() => setIsAuthModalOpen(false)}>
@@ -637,8 +615,8 @@ export default function LandingPage() {
                     </div>
                     <h3 className="we-auth-title">List Your Property</h3>
                     <p className="we-auth-desc">Join nextmove to connect with thousands of verified buyers and renters in Harare.</p>
-                    <button className="we-auth-btn we-auth-primary">Create Account</button>
-                    <button className="we-auth-btn we-auth-secondary">Sign In</button>
+                    <Link to="/login" className="we-auth-btn we-auth-primary block text-center" style={{textDecoration: 'none'}}>Create Account</Link>
+                    <Link to="/login" className="we-auth-btn we-auth-secondary block text-center mt-3" style={{textDecoration: 'none'}}>Sign In</Link>
                 </div>
             </div>
 

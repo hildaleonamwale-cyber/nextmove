@@ -98,47 +98,141 @@ export default function SearchResults() {
         }
     }, [isMobileMenuOpen, isAuthModalOpen, isListingPageOpen]);
 
-    useEffect(() => {
-        const cards = document.querySelectorAll('.we-card');
-        cards.forEach((card: any) => {
-            const text = card.innerText.toLowerCase();
-            let isMatch = true;
+    const [savedProperties, setSavedProperties] = useState<Record<number, boolean>>({ 1: true }); // ID 1 is saved by default
 
-            if (searchQuery && !text.includes(searchQuery.toLowerCase())) {
-                isMatch = false;
-            }
+    const properties = [
+        {
+            id: 0,
+            type: 'residential',
+            tag: 'FOR SALE',
+            featured: true,
+            image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=800",
+            price: "$850,000",
+            priceNum: 850000,
+            title: "The Glass Pavilion",
+            location: "Borrowdale Brooke",
+            icons: [
+                { icon: "fa-bed", text: "3 Bed" },
+                { icon: "fa-bath", text: "2 Bath" },
+                { icon: "fa-vector-square", text: "220 m²" }
+            ]
+        },
+        {
+            id: 1,
+            type: 'residential',
+            tag: 'FOR RENT',
+            featured: false,
+            image: "https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg?auto=compress&cs=tinysrgb&w=800",
+            price: "$2,500/mo",
+            priceNum: 2500,
+            title: "The Nexus Tower",
+            location: "CBD, Harare",
+            icons: [
+                { icon: "fa-layer-group", text: "Open Plan" },
+                { icon: "fa-snowflake", text: "Air Con" },
+                { icon: "fa-vector-square", text: "850 m²" }
+            ]
+        },
+        {
+            id: 2,
+            type: 'stand',
+            tag: 'NEW RELEASE',
+            tagStyle: { background: '#1A1C1E', color: '#1FE6D4' },
+            featured: false,
+            image: "https://i.pinimg.com/736x/98/04/69/980469f630d50176a5ac8c663437e632.jpg",
+            price: "$28,000",
+            priceNum: 28000,
+            title: "Glen Lorne Extension",
+            location: "Harare North",
+            icons: [
+                { icon: "fa-ruler-combined", text: "1200 m²" },
+                { icon: "fa-file-signature", text: "Cession" },
+                { label: "Service:", text: "60%" }
+            ]
+        },
+        {
+            id: 3,
+            type: 'residential',
+            tag: 'FOR SALE',
+            featured: false,
+            image: "https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=800",
+            price: "$450,000",
+            priceNum: 450000,
+            title: "Willow Terrace",
+            location: "Greendale",
+            icons: [
+                { icon: "fa-bed", text: "4 Bed" },
+                { icon: "fa-bath", text: "3 Bath" },
+                { icon: "fa-vector-square", text: "320 m²" }
+            ]
+        },
+        {
+            id: 4,
+            type: 'room',
+            tag: 'FOR RENT',
+            featured: false,
+            image: "https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg?auto=compress&cs=tinysrgb&w=800",
+            price: "$150/mo",
+            priceNum: 150,
+            title: "Spacious Room Avondale",
+            location: "Avondale",
+            icons: [
+                { icon: "fa-bed", text: "Private Room" },
+                { icon: "fa-bath", text: "Shared Bath" },
+                { icon: "fa-door-open", text: "Own Entrance" }
+            ]
+        },
+        {
+            id: 5,
+            type: 'stand',
+            tag: 'FOR SALE',
+            featured: false,
+            image: "https://i.pinimg.com/736x/53/0f/1a/530f1ade4b644c91dfed9d53a072b905.jpg",
+            price: "$45,000",
+            priceNum: 45000,
+            title: "Borrowdale East Phase 2",
+            location: "Harare North",
+            icons: [
+                { icon: "fa-ruler-combined", text: "2000 m²" },
+                { icon: "fa-file-contract", text: "Title Deed" },
+                { label: "Service:", text: "80%" }
+            ]
+        }
+    ];
 
-            if (searchCategory !== 'all') {
-                if (searchCategory === 'residential' && !text.includes('bed')) isMatch = false;
-                if (searchCategory === 'commercial' && !text.includes('office') && !text.includes('retail')) isMatch = false;
-                if (searchCategory === 'stand' && !text.includes('stand')) isMatch = false;
-            }
+    const filteredProperties = properties.filter(prop => {
+        const text = `${prop.title} ${prop.location} ${prop.tag} ${prop.icons.map(i => i.text).join(' ')}`.toLowerCase();
+        let isMatch = true;
 
-            if (searchStatus !== 'all') {
-                if (searchStatus === 'sale' && !text.includes('for sale')) isMatch = false;
-                if (searchStatus === 'rent' && !text.includes('for rent') && !text.includes('for lease')) isMatch = false;
-            }
+        if (searchQuery && !text.includes(searchQuery.toLowerCase())) {
+            isMatch = false;
+        }
 
-            if (searchBeds !== 'all') {
-                if (!text.includes(`${searchBeds} bed`)) isMatch = false;
-            }
+        if (searchCategory !== 'all') {
+            if (searchCategory === 'residential' && !text.includes('bed')) isMatch = false;
+            if (searchCategory === 'commercial' && !text.includes('office') && !text.includes('retail')) isMatch = false;
+            if (searchCategory === 'stand' && !text.includes('stand') && prop.type !== 'stand') isMatch = false;
+        }
 
-            if (searchMinPrice || searchMaxPrice) {
-                const priceMatch = text.match(/\$([\d,]+)/);
-                if (priceMatch) {
-                    const price = parseInt(priceMatch[1].replace(/,/g, ''), 10);
-                    if (searchMinPrice && price < parseInt(searchMinPrice, 10)) isMatch = false;
-                    if (searchMaxPrice && price > parseInt(searchMaxPrice, 10)) isMatch = false;
-                }
-            }
+        if (searchStatus !== 'all') {
+            if (searchStatus === 'sale' && !text.includes('for sale')) isMatch = false;
+            if (searchStatus === 'rent' && !text.includes('for rent') && !text.includes('for lease')) isMatch = false;
+        }
 
-            if (isMatch) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }, [searchQuery, searchCategory, searchStatus, searchMinPrice, searchMaxPrice, searchBeds]);
+        if (searchBeds !== 'all') {
+            if (!text.includes(`${searchBeds} bed`)) isMatch = false;
+        }
+
+        if (searchMinPrice && prop.priceNum < parseInt(searchMinPrice, 10)) isMatch = false;
+        if (searchMaxPrice && prop.priceNum > parseInt(searchMaxPrice, 10)) isMatch = false;
+
+        return isMatch;
+    });
+
+    const toggleSave = (e: React.MouseEvent, id: number) => {
+        e.stopPropagation();
+        setSavedProperties(prev => ({ ...prev, [id]: !prev[id] }));
+    };
 
     if (isPropertyPageOpen) {
         return <SingleProperty onBack={() => setIsPropertyPageOpen(false)} propertyType={selectedPropertyType} />;
@@ -226,109 +320,31 @@ export default function SearchResults() {
                     </div>
 
                     <div className="sr-grid">
-                        <div className="we-card featured" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                            <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
-                                <span className="we-tag">FOR SALE</span>
-                                <span className="we-featured-tag"><i className="fa-solid fa-bolt"></i> Featured</span>
-                                <button className="we-heart-btn" onClick={(e) => { e.stopPropagation(); e.currentTarget.classList.toggle('saved'); const i = e.currentTarget.querySelector('i'); if(i) { i.classList.toggle('fa-regular'); i.classList.toggle('fa-solid'); } }}><i className="fa-regular fa-heart"></i></button>
-                            </div>
-                            <div className="we-body">
-                                <div className="we-price">$850,000</div>
-                                <div className="we-title">The Glass Pavilion</div>
-                                <div className="we-location"><i className="fa-solid fa-location-dot"></i> Borrowdale Brooke</div>
-                                <div className="we-icons-row">
-                                    <div className="we-icon-item"><i className="fa-solid fa-bed"></i> 3 Bed</div>
-                                    <div className="we-icon-item"><i className="fa-solid fa-bath"></i> 2 Bath</div>
-                                    <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 220 m²</div>
+                        {filteredProperties.map(prop => (
+                            <div key={prop.id} className={`we-card ${prop.featured ? 'featured' : ''}`} onClick={() => { setSelectedPropertyType(prop.type); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
+                                <div className="we-img" style={{backgroundImage: `url('${prop.image}')`}}>
+                                    <span className="we-tag" style={prop.tagStyle}>{prop.tag}</span>
+                                    {prop.featured && <span className="we-featured-tag"><i className="fa-solid fa-bolt"></i> Featured</span>}
+                                    <button className={`we-heart-btn ${savedProperties[prop.id] ? 'saved' : ''}`} onClick={(e) => toggleSave(e, prop.id)}>
+                                        <i className={`${savedProperties[prop.id] ? 'fa-solid' : 'fa-regular'} fa-heart`}></i>
+                                    </button>
+                                </div>
+                                <div className="we-body">
+                                    <div className="we-price">{prop.price}</div>
+                                    <div className="we-title">{prop.title}</div>
+                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> {prop.location}</div>
+                                    <div className="we-icons-row">
+                                        {prop.icons.map((icon, index) => (
+                                            <div key={index} className="we-icon-item">
+                                                {icon.icon && <i className={`fa-solid ${icon.icon}`}></i>}
+                                                {icon.label && <span className="we-service-label">{icon.label}</span>}
+                                                {' '}{icon.text}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div className="we-card" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                            <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
-                                <span className="we-tag">FOR RENT</span>
-                                <button className="we-heart-btn saved" onClick={(e) => { e.stopPropagation(); e.currentTarget.classList.toggle('saved'); const i = e.currentTarget.querySelector('i'); if(i) { i.classList.toggle('fa-regular'); i.classList.toggle('fa-solid'); } }}><i className="fa-solid fa-heart"></i></button>
-                            </div>
-                            <div className="we-body">
-                                <div className="we-price">$2,500/mo</div>
-                                <div className="we-title">The Nexus Tower</div>
-                                <div className="we-location"><i className="fa-solid fa-location-dot"></i> CBD, Harare</div>
-                                <div className="we-icons-row">
-                                    <div className="we-icon-item"><i className="fa-solid fa-layer-group"></i> Open Plan</div>
-                                    <div className="we-icon-item"><i className="fa-solid fa-snowflake"></i> Air Con</div>
-                                    <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 850 m²</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="we-card" onClick={() => { setSelectedPropertyType('stand'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                            <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/736x/98/04/69/980469f630d50176a5ac8c663437e632.jpg')"}}>
-                                <span className="we-tag" style={{background: '#1A1C1E', color: '#1FE6D4'}}>NEW RELEASE</span>
-                                <button className="we-heart-btn" onClick={(e) => { e.stopPropagation(); e.currentTarget.classList.toggle('saved'); const i = e.currentTarget.querySelector('i'); if(i) { i.classList.toggle('fa-regular'); i.classList.toggle('fa-solid'); } }}><i className="fa-regular fa-heart"></i></button>
-                            </div>
-                            <div className="we-body">
-                                <div className="we-price">$28,000</div>
-                                <div className="we-title">Glen Lorne Extension</div>
-                                <div className="we-location"><i className="fa-solid fa-location-dot"></i> Harare North</div>
-                                <div className="we-icons-row">
-                                    <div className="we-icon-item"><i className="fa-solid fa-ruler-combined"></i> 1200 m²</div>
-                                    <div className="we-icon-item"><i className="fa-solid fa-file-signature"></i> Cession</div>
-                                    <div className="we-icon-item"><span className="we-service-label">Service:</span> 60%</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="we-card" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                            <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
-                                <span className="we-tag">FOR SALE</span>
-                                <button className="we-heart-btn" onClick={(e) => { e.stopPropagation(); e.currentTarget.classList.toggle('saved'); const i = e.currentTarget.querySelector('i'); if(i) { i.classList.toggle('fa-regular'); i.classList.toggle('fa-solid'); } }}><i className="fa-regular fa-heart"></i></button>
-                            </div>
-                            <div className="we-body">
-                                <div className="we-price">$450,000</div>
-                                <div className="we-title">Willow Terrace</div>
-                                <div className="we-location"><i className="fa-solid fa-location-dot"></i> Greendale</div>
-                                <div className="we-icons-row">
-                                    <div className="we-icon-item"><i className="fa-solid fa-bed"></i> 4 Bed</div>
-                                    <div className="we-icon-item"><i className="fa-solid fa-bath"></i> 3 Bath</div>
-                                    <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 320 m²</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="we-card" onClick={() => { setSelectedPropertyType('room'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                            <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
-                                <span className="we-tag">FOR RENT</span>
-                                <button className="we-heart-btn" onClick={(e) => { e.stopPropagation(); e.currentTarget.classList.toggle('saved'); const i = e.currentTarget.querySelector('i'); if(i) { i.classList.toggle('fa-regular'); i.classList.toggle('fa-solid'); } }}><i className="fa-regular fa-heart"></i></button>
-                            </div>
-                            <div className="we-body">
-                                <div className="we-price">$150/mo</div>
-                                <div className="we-title">Spacious Room Avondale</div>
-                                <div className="we-location"><i className="fa-solid fa-location-dot"></i> Avondale</div>
-                                <div className="we-icons-row">
-                                    <div className="we-icon-item"><i className="fa-solid fa-bed"></i> Private Room</div>
-                                    <div className="we-icon-item"><i className="fa-solid fa-bath"></i> Shared Bath</div>
-                                    <div className="we-icon-item"><i className="fa-solid fa-door-open"></i> Own Entrance</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="we-card" onClick={() => { setSelectedPropertyType('stand'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                            <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/736x/53/0f/1a/530f1ade4b644c91dfed9d53a072b905.jpg')"}}>
-                                <span className="we-tag">FOR SALE</span>
-                                <button className="we-heart-btn" onClick={(e) => { e.stopPropagation(); e.currentTarget.classList.toggle('saved'); const i = e.currentTarget.querySelector('i'); if(i) { i.classList.toggle('fa-regular'); i.classList.toggle('fa-solid'); } }}><i className="fa-regular fa-heart"></i></button>
-                            </div>
-                            <div className="we-body">
-                                <div className="we-price">$45,000</div>
-                                <div className="we-title">Borrowdale East Phase 2</div>
-                                <div className="we-location"><i className="fa-solid fa-location-dot"></i> Harare North</div>
-                                <div className="we-icons-row">
-                                    <div className="we-icon-item"><i className="fa-solid fa-ruler-combined"></i> 2000 m²</div>
-                                    <div className="we-icon-item"><i className="fa-solid fa-file-contract"></i> Title Deed</div>
-                                    <div className="we-icon-item"><span className="we-service-label">Service:</span> 80%</div>
-                                </div>
-                            </div>
-                        </div>
-
+                        ))}
                     </div>
                 </div>
             </div>

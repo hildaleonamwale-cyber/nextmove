@@ -179,7 +179,7 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
             <div className="sp-wrapper">
                 <div className="sp-content">
                     <div className="sp-gallery" id="dynGallery">
-                        <div className="sp-main-img" style={{ backgroundImage: `url('${lbImages[0]}')` }} onClick={() => openLightbox(0)}>
+                        <div className="sp-main-img" style={{ backgroundImage: `url('${lbImages[currentLbIndex]}')` }} onClick={() => openLightbox(currentLbIndex)}>
                             <div className="sp-badges" id="dynTags">
                                 <div className="sp-badge featured"><i className="fa-solid fa-bolt"></i> Featured Listing</div>
                                 <div className="sp-badge type"><i className={`fa-solid ${data.typeTag === 'For Sale' ? 'fa-house-chimney' : 'fa-key'}`}></i> {data.typeTag}</div>
@@ -188,16 +188,25 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
                             <button className="sp-img-arrow right" onClick={(e) => { e.stopPropagation(); lbNext(e); }}><i className="fa-solid fa-chevron-right"></i></button>
                         </div>
                         <div className="sp-thumbnails">
-                            <div className="sp-thumb active" style={{ backgroundImage: `url('${lbImages[0]}')` }} onClick={() => openLightbox(0)}></div>
-                            <div className="sp-thumb" style={{ backgroundImage: `url('${lbImages[1]}')` }} onClick={() => openLightbox(1)}></div>
-                            <div className="sp-thumb" style={{ backgroundImage: `url('${lbImages[2]}')` }} onClick={() => openLightbox(2)}></div>
+                            <div className={`sp-thumb ${currentLbIndex === 0 ? 'active' : ''}`} style={{ backgroundImage: `url('${lbImages[0]}')` }} onClick={() => setCurrentLbIndex(0)}></div>
+                            <div className={`sp-thumb ${currentLbIndex === 1 ? 'active' : ''}`} style={{ backgroundImage: `url('${lbImages[1]}')` }} onClick={() => setCurrentLbIndex(1)}></div>
+                            <div className={`sp-thumb ${currentLbIndex === 2 ? 'active' : ''}`} style={{ backgroundImage: `url('${lbImages[2]}')` }} onClick={() => setCurrentLbIndex(2)}></div>
                             <div className="sp-thumb" style={{ background: 'var(--input-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand)', fontWeight: 700, fontSize: '12px', border: '1px solid var(--border-color)' }} onClick={() => openLightbox(0)}>
                                 +{Math.max(0, lbImages.length - 3)} Photos
                             </div>
                         </div>
                     </div>
 
-                    <div className="sp-price" id="dynPrice" dangerouslySetInnerHTML={{ __html: data.price }}></div>
+                    <div className="sp-price" id="dynPrice">
+                        {data.price.includes('<span>') ? (
+                            <>
+                                {data.price.split('<span>')[0]}
+                                <span>{data.price.split('<span>')[1].replace('</span>', '')}</span>
+                            </>
+                        ) : (
+                            data.price
+                        )}
+                    </div>
                     <h1 className="sp-title" id="dynTitle">{data.title}</h1>
                     <div className="sp-location"><i className="fa-solid fa-location-dot"></i> <span id="dynLocation">{data.location}</span></div>
 

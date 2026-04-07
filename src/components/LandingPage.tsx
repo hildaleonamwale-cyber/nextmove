@@ -110,7 +110,7 @@ export default function LandingPage() {
                 <header className="we-header">
                     <Link to="/" className="we-logo-group">
                         <div className="we-left-logo">
-                            <img src="https://willowandelm.co.zw/wp-content/uploads/2026/03/nextmove.-5.png.png" alt="nextmove Logo" />
+                            <img src="https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png" alt="nextmove Logo" />
                         </div>
                         <div className="we-site-title">
                             <span className="title-black">next</span><span className="title-brand">move</span>
@@ -158,7 +158,7 @@ export default function LandingPage() {
                         </button>
 
                         <button className="we-hamburger" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                            <img src="https://willowandelm.co.zw/wp-content/uploads/2026/01/nextmove.zip-17.png" alt="Menu" />
+                            <img src="https://image2url.com/r2/default/images/1775520819070-397d094c-92e4-4f64-af30-e2881143cc7e.png" alt="Menu" />
                         </button>
                     </div>
                 </header>
@@ -187,9 +187,9 @@ export default function LandingPage() {
                         <i className="fa-solid fa-house"></i> List my property
                     </a>
                     
-                    <a href="#calculator" className="we-btn-hero btn-valuation">
+                    <Link to="/calculator" className="we-btn-hero btn-valuation">
                         <i className="fa-solid fa-calculator"></i> Installment calculator
-                    </a>
+                    </Link>
                 </div>
             </section>
 

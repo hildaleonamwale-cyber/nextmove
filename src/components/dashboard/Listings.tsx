@@ -2,20 +2,26 @@ import React from 'react';
 
 interface ListingsProps {
   currentRole: string;
+  onAddProperty?: () => void;
 }
 
-export default function Listings({ currentRole }: ListingsProps) {
+export default function Listings({ currentRole, onAddProperty }: ListingsProps) {
   const pageTitle = currentRole === 'admin' ? 'Company Portfolio' : 
                     currentRole === 'pro' ? 'My Portfolio' : 
                     currentRole === 'worker' ? 'My Portfolio' : 'My Properties';
 
   return (
     <div className="nm-view" style={{ display: 'block' }}>
-      <div className="nm-page-header">
+      <div className="nm-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1>{pageTitle}</h1>
           <p>Manage and track the performance of your properties.</p>
         </div>
+        {onAddProperty && (
+          <button className="we-cta-btn" onClick={onAddProperty} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <i className="fa-solid fa-plus"></i> Add Property
+          </button>
+        )}
       </div>
       
       <div className="nm-filter-slider-container">

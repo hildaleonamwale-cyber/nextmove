@@ -11,7 +11,6 @@ import ManageStaff from './dashboard/ManageStaff';
 import Billing from './dashboard/Billing';
 import ContactCard from './dashboard/ContactCard';
 import AddListingModal from './dashboard/AddListingModal';
-import EcoCashModal from './dashboard/EcoCashModal';
 
 const roles = ['admin', 'pro', 'worker', 'basic'];
 const roleLabels = ['God Mode', 'Pro User', 'Staff Agent', 'Basic User'];
@@ -22,22 +21,9 @@ export default function Dashboard() {
   const [currentTab, setCurrentTab] = useState('overview');
   
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-  const [isSafetyOpen, setIsSafetyOpen] = useState(false);
-  const [currentSafetyTip, setCurrentSafetyTip] = useState(0);
-
-  const safetyTips = [
-    "Always verify the identity of the client before a viewing.",
-    "Never share your personal home address or sensitive passwords.",
-    "Meet new clients in public places or at the office first."
-  ];
   
   const [isAddListingOpen, setIsAddListingOpen] = useState(false);
-  const [ecoCashModalData, setEcoCashModalData] = useState<{isOpen: boolean, reason: string, amount: string}>({
-    isOpen: false,
-    reason: '',
-    amount: ''
-  });
-
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const currentRole = roles[currentRoleIndex];
 
   // Smart routing when role changes
@@ -58,19 +44,10 @@ export default function Dashboard() {
     setIsSidebarOpen(false);
   };
 
-  const openEcoCashModal = (reason: string, amount: string) => {
-    setEcoCashModalData({ isOpen: true, reason, amount });
-  };
-
-  const closeEcoCashModal = () => {
-    setEcoCashModalData(prev => ({ ...prev, isOpen: false }));
-  };
-
   // Close popovers on outside click
   useEffect(() => {
     const handleClickOutside = () => {
       setIsNotifOpen(false);
-      setIsSafetyOpen(false);
     };
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
@@ -83,7 +60,7 @@ export default function Dashboard() {
           name: "Sarah Jenkins", role: "Agency Admin",
           sideName: "Willow & Elm", sideRole: "Agency Pro",
           avatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')",
-          sideAvatar: "url('https://willowandelm.co.zw/wp-content/uploads/2026/03/nextmove.-5.png.png')"
+          sideAvatar: "url('https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png')"
         };
       case 'pro':
         return {
@@ -112,12 +89,22 @@ export default function Dashboard() {
 
   const profileData = getProfileData();
 
+  const handleUpgradeClick = () => {
+    setIsUpgradeModalOpen(true);
+  };
+
+  const requestProAccess = () => {
+    const message = encodeURIComponent("Hi Nextmove, I would like to request Pro Access for my agency to unlock unlimited listings and premium features.");
+    window.open(`https://wa.me/263771234567?text=${message}`, '_blank');
+    setIsUpgradeModalOpen(false);
+  };
+
   return (
     <div className={`nm-dash-wrapper role-${currentRole}`}>
       <aside className={`nm-sidebar ${isSidebarOpen ? 'active' : ''}`} id="dashSidebar">
         <div className="nm-sidebar-header">
           <Link to="/" className="nm-logo-wrap">
-            <img src="https://willowandelm.co.zw/wp-content/uploads/2026/03/nextmove.-5.png.png" alt="Logo" />
+            <img src="https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png" alt="Logo" />
             <div className="nm-site-title">
               <span className="title-black">next</span><span className="title-brand">move</span>
             </div>
@@ -168,7 +155,7 @@ export default function Dashboard() {
 
         <div className="nm-sidebar-footer">
           {currentRole === 'basic' && (
-            <button className="nm-upsell-btn">⭐ Upgrade to Pro</button>
+            <button className="nm-upsell-btn" onClick={handleUpgradeClick}>⭐ Upgrade to Pro</button>
           )}
           
           <div className="nm-sidebar-profile-card">
@@ -186,16 +173,17 @@ export default function Dashboard() {
       <div className={`nm-sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} id="dashOverlay" onClick={() => setIsSidebarOpen(false)}></div>
 
       <main className="nm-main">
-        <header className="we-header">
-          <div className="nm-header-left">
-            <button className="nm-mobile-hamburger" onClick={() => setIsSidebarOpen(true)}>
-              <i className="fa-solid fa-bars-staggered"></i>
-            </button>
-            <div className="nm-search-box">
-              <i className="fa-solid fa-magnifying-glass"></i>
-              <input type="text" placeholder="Search properties, clients..." />
+        <div className="we-header-wrapper">
+          <header className="we-header">
+            <div className="nm-header-left">
+              <button className="nm-mobile-hamburger" onClick={() => setIsSidebarOpen(true)}>
+                <i className="fa-solid fa-bars-staggered"></i>
+              </button>
+              <div className="nm-search-box">
+                <i className="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search properties, settings..." />
+              </div>
             </div>
-          </div>
 
           <div className="we-action-group">
             <div className="nm-notif-wrap">
@@ -227,36 +215,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div style={{ position: 'relative' }}>
-              <div className="we-info-trigger" onClick={(e) => { e.stopPropagation(); setIsSafetyOpen(!isSafetyOpen); }}>
-                <i className="fa-solid fa-circle-info"></i>
-              </div>
-              <div className={`we-safety-popover ${isSafetyOpen ? 'active' : ''}`} onClick={(e) => e.stopPropagation()}>
-                <div className="we-safety-header">
-                  <div className="we-safety-title-wrap">
-                    <i className="fa-solid fa-shield-halved"></i> Safety Tips
-                  </div>
-                  <a href="#safety-guide" className="we-safety-learn">Learn More</a>
-                </div>
-                <div className="we-story-indicators">
-                   {safetyTips.map((_, idx) => (
-                     <div key={idx} className={`we-story-indicator ${idx === currentSafetyTip ? 'active' : ''}`}></div>
-                   ))}
-                </div>
-                <div className="we-safety-content">{safetyTips[currentSafetyTip]}</div>
-                <div className="we-safety-nav">
-                  <button onClick={() => setCurrentSafetyTip(prev => prev > 0 ? prev - 1 : prev)} disabled={currentSafetyTip === 0}>
-                    <i className="fa-solid fa-chevron-left"></i> Prev
-                  </button>
-                  <button onClick={() => setCurrentSafetyTip(prev => prev < safetyTips.length - 1 ? prev + 1 : prev)} disabled={currentSafetyTip === safetyTips.length - 1}>
-                    Next <i className="fa-solid fa-chevron-right"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <button className="we-plus-circle" onClick={() => setIsAddListingOpen(true)}><i className="fa-solid fa-plus"></i></button>
-
             <div className="nm-user-profile">
               <div className="nm-user-text">
                 <span className="nm-user-name">{profileData.name}</span>
@@ -266,21 +224,59 @@ export default function Dashboard() {
             </div>
           </div>
         </header>
+        </div>
 
         <div className="nm-content-scroll">
           {currentTab === 'overview' && <Overview currentRole={currentRole} />}
-          {currentTab === 'listings' && <Listings currentRole={currentRole} />}
-          {currentTab === 'requests' && (currentRole === 'basic' ? <Paywall /> : <Requests />)}
+          {currentTab === 'listings' && <Listings currentRole={currentRole} onAddProperty={() => {
+            if (currentRole === 'basic') {
+              setIsUpgradeModalOpen(true);
+            } else {
+              setIsAddListingOpen(true);
+            }
+          }} />}
+          {currentTab === 'requests' && (currentRole === 'basic' ? <Paywall onUpgradeClick={handleUpgradeClick} /> : <Requests />)}
           {currentTab === 'company' && <CompanyProfile currentRole={currentRole} />}
           {currentTab === 'staff' && <ManageStaff />}
-          {currentTab === 'billing' && <Billing currentRole={currentRole} onOpenEcoCashModal={openEcoCashModal} />}
+          {currentTab === 'billing' && <Billing currentRole={currentRole} onUpgradeClick={handleUpgradeClick} />}
           {currentTab === 'contact' && <ContactCard />}
         </div>
       </main>
 
       <AddListingModal isOpen={isAddListingOpen} onClose={() => setIsAddListingOpen(false)} />
-      <EcoCashModal isOpen={ecoCashModalData.isOpen} onClose={closeEcoCashModal} reason={ecoCashModalData.reason} amount={ecoCashModalData.amount} />
-      
+
+      {/* Upgrade Modal */}
+      {isUpgradeModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 overflow-hidden">
+            <div className="text-center mb-6">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-50 mb-4">
+                <i className="fa-solid fa-star text-yellow-500 text-2xl"></i>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Want unlimited listings and premium features?</h3>
+              <p className="text-gray-500">
+                Upgrade to Pro to unlock unlimited listings, team management, and priority support.
+              </p>
+            </div>
+            
+            <div className="space-y-3">
+              <button 
+                onClick={requestProAccess}
+                className="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-[#1A1C1E] bg-[#1FE6D4] hover:bg-[#15b8a9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1FE6D4] transition-colors"
+              >
+                <i className="fa-brands fa-whatsapp mr-2 text-lg"></i> Request Pro Access
+              </button>
+              <button 
+                onClick={() => setIsUpgradeModalOpen(false)}
+                className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1FE6D4] transition-colors"
+              >
+                Maybe Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <button id="testModeBtn" className="test-toggle" onClick={cycleRole}>Test Mode: {roleLabels[currentRoleIndex]}</button>
     </div>
   );

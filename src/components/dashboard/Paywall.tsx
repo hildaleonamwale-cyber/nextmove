@@ -1,6 +1,10 @@
 import React from 'react';
 
-export default function Paywall() {
+interface PaywallProps {
+  onUpgradeClick?: () => void;
+}
+
+export default function Paywall({ onUpgradeClick }: PaywallProps) {
   return (
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
@@ -15,7 +19,7 @@ export default function Paywall() {
             <div className="nm-paywall-icon"><i className="fa-solid fa-lock"></i></div>
             <h2 className="nm-paywall-title">Unlock Direct Requests</h2>
             <p className="nm-paywall-desc">Upgrade to a Pro account to instantly see and manage tour requests from verified buyers.</p>
-            <button className="nm-paywall-btn">⭐ Upgrade to Pro</button>
+            <button className="nm-paywall-btn" onClick={onUpgradeClick}>⭐ Upgrade to Pro</button>
           </div>
         </div>
       </div>

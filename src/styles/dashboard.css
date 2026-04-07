@@ -55,7 +55,7 @@
 
     /* Matching the user's requested we-header structure */
     .we-header-wrapper { position: sticky; top: 0; z-index: 90; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.03); flex-shrink: 0; }
-    .we-header { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 15px 40px; border-bottom: 1px solid rgba(31, 230, 212, 0.15); transition: all 0.3s ease; }
+    .we-header { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 15px 40px !important; border-bottom: 1px solid rgba(31, 230, 212, 0.15); transition: all 0.3s ease; }
     
     .nm-header-left { display: flex; align-items: center; gap: 20px; }
     .nm-mobile-hamburger { display: none; background: none; border: none; font-size: 24px; color: var(--dark); cursor: pointer; padding: 0; transition: 0.2s; }
@@ -91,29 +91,6 @@
     .nm-notif-text span { font-size: 11px; color: var(--gray-text); }
     .nm-notif-item.unread .nm-notif-text p { font-weight: 600; }
     .nm-notif-item.unread::after { content: ''; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); }
-
-    /* Safety Tips Popover */
-    .we-info-trigger { color: var(--gray-text); font-size: 22px; cursor: pointer; transition: color 0.2s; display: flex; align-items: center; justify-content: center; padding: 5px; }
-    .we-info-trigger:hover { color: var(--brand); }
-    .we-safety-popover { position: absolute; top: calc(100% + 15px); right: -10px; width: 280px; background: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: 1px solid #D1D5DB; padding: 20px; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10000; cursor: default; }
-    .we-safety-popover.active { opacity: 1; visibility: visible; transform: translateY(0); }
-    .we-safety-popover::before { content: ''; position: absolute; top: -6px; right: 20px; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); border-left: 1px solid #D1D5DB; border-top: 1px solid #D1D5DB; }
-    .we-safety-header { display: flex; align-items: center; justify-content: space-between; font-family: 'Poppins', sans-serif; margin-bottom: 12px; }
-    .we-safety-title-wrap { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: var(--dark); }
-    .we-safety-title-wrap i { color: var(--brand); }
-    .we-safety-learn { font-size: 11px; font-weight: 600; color: var(--brand); text-decoration: none; transition: 0.2s; }
-    .we-safety-learn:hover { opacity: 0.8; }
-    .we-story-indicators { display: flex; gap: 4px; margin-bottom: 15px; }
-    .we-story-bar { flex: 1; height: 3px; background: var(--input-bg); border-radius: 4px; overflow: hidden; }
-    .we-story-progress { height: 100%; width: 0%; background: var(--brand); transition: width 0.3s ease; }
-    .we-safety-content { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--gray-text); line-height: 1.5; min-height: 55px; }
-    .we-safety-nav { display: flex; justify-content: space-between; margin-top: 15px; align-items: center; }
-    .we-safety-nav button { background: none; border: none; color: var(--dark); font-size: 12px; font-weight: 600; cursor: pointer; padding: 6px 10px; border-radius: 6px; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
-    .we-safety-nav button:hover { background: var(--input-bg); }
-    .we-safety-nav button:disabled { opacity: 0.3; cursor: not-allowed; background: none; }
-
-    .we-plus-circle { width: 40px; height: 40px; background: var(--brand); color: #1A1C1E; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px; box-shadow: 0 4px 12px rgba(31, 230, 212, 0.35); transition: 0.3s; cursor: pointer; border: none; flex-shrink: 0;}
-    .we-plus-circle:hover { transform: rotate(90deg) scale(1.05); }
 
     .nm-user-profile { display: flex; align-items: center; gap: 12px; padding-left: 15px; border-left: 1px solid var(--border-color); }
     .nm-user-text { display: flex; flex-direction: column; text-align: right; }
@@ -233,7 +210,7 @@
     .nm-editor-grid { display: grid; grid-template-columns: 1fr 2.5fr; gap: 25px; margin-bottom: 25px; }
     .nm-editor-bottom-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 25px; }
     
-    .nm-avatar-upload { width: 120px; height: 120px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--input-bg); cursor: pointer; transition: 0.2s; margin: 0 auto; color: var(--brand); box-sizing: border-box; background-image: url('https://willowandelm.co.zw/wp-content/uploads/2026/03/nextmove.-5.png.png'); background-size: cover; background-position: center; border: 3px solid var(--brand); padding: 5px; background-clip: content-box; }
+    .nm-avatar-upload { width: 120px; height: 120px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--input-bg); cursor: pointer; transition: 0.2s; margin: 0 auto; color: var(--brand); box-sizing: border-box; background-image: url('https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png'); background-size: cover; background-position: center; border: 3px solid var(--brand); padding: 5px; background-clip: content-box; }
     .nm-avatar-upload:hover { filter: brightness(1.1); }
     .nm-avatar-upload i { display: none; }
     
@@ -264,9 +241,13 @@
         .nm-sidebar.active { transform: translateX(0); }
         .nm-sidebar-overlay.active { opacity: 1; visibility: visible; }
         
-        .we-header { padding: 15px 20px; gap: 15px; }
+        .we-header { padding: 15px 20px !important; gap: 15px; }
+        .nm-header-left { flex: 1; }
         .nm-mobile-hamburger { display: block; }
-        .nm-search-box { display: none; } 
+        .nm-search-box { display: block; flex: 1; width: auto; max-width: none; margin-left: 10px; }
+        .nm-search-box input { padding: 10px 16px 10px 36px; font-size: 13px; }
+        .nm-search-box i { left: 14px; }
+        .we-action-group { gap: 10px; }
         
         .nm-content-scroll { padding: 25px 20px 80px 20px; }
         

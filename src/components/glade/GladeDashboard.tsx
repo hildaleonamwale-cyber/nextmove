@@ -8,6 +8,77 @@ export default function GladeDashboard() {
     const [notifActive, setNotifActive] = useState(false);
     const [authModalActive, setAuthModalActive] = useState(false);
     const [listingPageActive, setListingPageActive] = useState(false);
+    const [agencyName, setAgencyName] = useState('');
+    const [adminEmail, setAdminEmail] = useState('');
+    const [billingPlan, setBillingPlan] = useState('Agency Pro ($250/mo)');
+    const [inviteSent, setInviteSent] = useState(false);
+    const [isSending, setIsSending] = useState(false);
+    const [pendingPayments, setPendingPayments] = useState<any[]>([
+        {
+            id: 'demo-1',
+            agentName: 'Apex Realty',
+            tier: 'TEAM_PRO',
+            amount: '$199.00',
+            ref: 'MP240326.1042',
+            phone: '077 890 1234',
+            date: new Date().toISOString(),
+            status: 'pending'
+        },
+        {
+            id: 'demo-2',
+            agentName: 'Sarah Moyo',
+            tier: 'SOLO_PRO',
+            amount: '$9.99',
+            ref: 'MP240325.0891',
+            phone: '071 987 6543',
+            date: new Date(Date.now() - 86400000).toISOString(),
+            status: 'approved'
+        }
+    ]);
+
+    useEffect(() => {
+        const loadPayments = () => {
+            const paymentData = localStorage.getItem('pending_payment');
+            if (paymentData) {
+                const parsed = JSON.parse(paymentData);
+                setPendingPayments(prev => {
+                    const exists = prev.find(p => p.id === parsed.id);
+                    if (exists) {
+                        return prev.map(p => p.id === parsed.id ? parsed : p);
+                    }
+                    return [parsed, ...prev];
+                });
+            }
+        };
+        
+        loadPayments();
+        const interval = setInterval(loadPayments, 2000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const handleApprove = (id: string) => {
+        setPendingPayments(prev => prev.map(p => p.id === id ? { ...p, status: 'approved' } : p));
+        const paymentData = localStorage.getItem('pending_payment');
+        if (paymentData) {
+            const parsed = JSON.parse(paymentData);
+            if (parsed.id === id) {
+                parsed.status = 'approved';
+                localStorage.setItem('pending_payment', JSON.stringify(parsed));
+            }
+        }
+    };
+
+    const handleReject = (id: string) => {
+        setPendingPayments(prev => prev.map(p => p.id === id ? { ...p, status: 'rejected' } : p));
+        const paymentData = localStorage.getItem('pending_payment');
+        if (paymentData) {
+            const parsed = JSON.parse(paymentData);
+            if (parsed.id === id) {
+                parsed.status = 'rejected';
+                localStorage.setItem('pending_payment', JSON.stringify(parsed));
+            }
+        }
+    };
 
     const switchTab = (tab: string) => {
         setActiveTab(tab);
@@ -34,6 +105,16 @@ export default function GladeDashboard() {
         return () => document.removeEventListener('click', handleClickOutside);
     }, [notifActive]);
 
+    const handleSendInvite = () => {
+        if (!agencyName || !adminEmail) return;
+        setIsSending(true);
+        setTimeout(() => {
+            setIsSending(false);
+            setInviteSent(true);
+            setTimeout(() => setInviteSent(false), 5000);
+        }, 1500);
+    };
+
     return (
         <>
             <div className="nm-dash-wrapper" id="dashWrapper">
@@ -43,7 +124,7 @@ export default function GladeDashboard() {
     <aside className={`nm-sidebar ${sidebarActive ? 'active' : ''}`} id="dashSidebar">
         <div className="nm-sidebar-header">
             <a href="#" className="nm-logo-wrap">
-                <img src="https://willowandelm.co.zw/wp-content/uploads/2026/03/nextmove.-5.png.png" alt="nextmove Logo" />
+                <img src="https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png" alt="nextmove Logo" />
                 <div className="nm-site-title"><span className="title-black">next</span><span className="title-brand">move</span></div>
             </a>
             <button className="nm-close-sidebar" onClick={toggleSidebar}><i className="fa-solid fa-xmark"></i></button>
@@ -55,11 +136,21 @@ export default function GladeDashboard() {
             <a className={`nm-nav-item ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => switchTab('overview')}>
                 <i className="fa-solid fa-gauge-high"></i> Overview
             </a>
-            <a className="nm-nav-item" onClick={() => switchTab('ecocash')}>
-                <i className="fa-solid fa-money-bill-transfer"></i> EcoCash Queue
-                <span className="nm-nav-badge">12</span>
+            <a className={`nm-nav-item ${activeTab === 'create-agency' ? 'active' : ''}`} onClick={() => switchTab('create-agency')}>
+                <i className="fa-solid fa-building-circle-check"></i> Create Pro Agency
             </a>
-            <a className="nm-nav-item" onClick={() => switchTab('listings')}>
+            <a className={`nm-nav-item ${activeTab === 'revenue' ? 'active' : ''}`} onClick={() => switchTab('revenue')}>
+                <i className="fa-solid fa-chart-line"></i> Revenue & Billing
+            </a>
+            <a className={`nm-nav-item ${activeTab === 'approvals' ? 'active' : ''}`} onClick={() => switchTab('approvals')}>
+                <i className="fa-solid fa-check-to-slot"></i> EcoCash Approvals
+                {pendingPayments.filter(p => p.status === 'pending').length > 0 && (
+                    <span className="nm-badge" style={{ marginLeft: 'auto', background: '#ef4444', color: 'white' }}>
+                        {pendingPayments.filter(p => p.status === 'pending').length}
+                    </span>
+                )}
+            </a>
+            <a className={`nm-nav-item ${activeTab === 'listings' ? 'active' : ''}`} onClick={() => switchTab('listings')}>
                 <i className="fa-solid fa-house-flag"></i> Manage Listings
             </a>
             <a className="nm-nav-item" onClick={() => switchTab('users')}>
@@ -209,40 +300,200 @@ export default function GladeDashboard() {
                 </div>
             </div>
 
-            <div id="viewEcoCash" className="nm-view" style={{ display: activeTab === 'ecocash' ? 'block' : 'none' }}>
+            <div id="viewCreateAgency" className="nm-view" style={{ display: activeTab === 'create-agency' ? 'block' : 'none' }}>
+                <div className="nm-page-header">
+                    <div>
+                        <h1>Create Pro Agency</h1>
+                        <p>Manually provision a new Pro Agency account and send an invite link.</p>
+                    </div>
+                </div>
+
+                <div className="nm-card" style={{ maxWidth: '600px', margin: '0 auto', padding: '30px' }}>
+                    <div className="nm-form-grid">
+                        <div className="nm-form-group full">
+                            <label className="nm-form-label">Agency Name</label>
+                            <input type="text" className="nm-form-input" placeholder="e.g. Willow & Elm Real Estate" value={agencyName} onChange={(e) => setAgencyName(e.target.value)} />
+                        </div>
+                        <div className="nm-form-group full">
+                            <label className="nm-form-label">Admin Email Address</label>
+                            <input type="email" className="nm-form-input" placeholder="admin@willowelm.co.zw" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} />
+                        </div>
+                        <div className="nm-form-group full">
+                            <label className="nm-form-label">Billing Plan</label>
+                            <select className="nm-form-input" value={billingPlan} onChange={(e) => setBillingPlan(e.target.value)}>
+                                <option>Agency Pro ($250/mo)</option>
+                                <option>Team ($19.99/mo + Seats)</option>
+                                <option>Individual Pro ($9.99/mo)</option>
+                            </select>
+                        </div>
+                        <div className="nm-form-group full" style={{ marginTop: '10px' }}>
+                            <button className="nm-btn-save" style={{ width: '100%', justifyContent: 'center' }} onClick={handleSendInvite} disabled={isSending || !agencyName || !adminEmail}>
+                                {isSending ? 'Sending Invite...' : 'Send Pro Invite Email'}
+                            </button>
+                        </div>
+                    </div>
+
+                    {inviteSent && (
+                        <div style={{ marginTop: '30px', padding: '20px', background: '#ECFDF5', borderRadius: '8px', border: '1px solid #10B981', textAlign: 'center' }}>
+                            <div style={{ color: '#10B981', fontSize: '32px', marginBottom: '10px' }}><i className="fa-solid fa-circle-check"></i></div>
+                            <p style={{ margin: '0 0 5px 0', fontSize: '16px', fontWeight: 'bold', color: '#065F46' }}>Invite Sent Successfully!</p>
+                            <p style={{ margin: 0, fontSize: '14px', color: '#047857' }}>An email has been sent to <strong>{adminEmail}</strong> with instructions to set up their Pro account.</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div id="viewRevenue" className="nm-view" style={{ display: activeTab === 'revenue' ? 'block' : 'none' }}>
+                <div className="nm-page-header">
+                    <div>
+                        <h1>Revenue & Billing</h1>
+                        <p>Monitor subscriptions, MRR, and recent transactions.</p>
+                    </div>
+                    <button className="nm-btn-save"><i className="fa-solid fa-download"></i> Export Report</button>
+                </div>
+
+                <div className="nm-stats-grid">
+                    <div className="nm-stat-card">
+                        <div className="nm-stat-icon" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}><i className="fa-solid fa-chart-line"></i></div>
+                        <div><div className="nm-stat-label">Monthly Recurring Revenue</div><div className="nm-stat-value">$12,450</div></div>
+                        <div className="nm-stat-trend"><i className="fa-solid fa-arrow-trend-up"></i> 12%</div>
+                    </div>
+                    <div className="nm-stat-card">
+                        <div className="nm-stat-icon" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}><i className="fa-solid fa-users"></i></div>
+                        <div><div className="nm-stat-label">Active Subscribers</div><div className="nm-stat-value">842</div></div>
+                        <div className="nm-stat-trend"><i className="fa-solid fa-arrow-trend-up"></i> 5%</div>
+                    </div>
+                    <div className="nm-stat-card">
+                        <div className="nm-stat-icon" style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}><i className="fa-solid fa-credit-card"></i></div>
+                        <div><div className="nm-stat-label">Net Volume (30d)</div><div className="nm-stat-value">$14,200</div></div>
+                    </div>
+                    <div className="nm-stat-card">
+                        <div className="nm-stat-icon" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}><i className="fa-solid fa-user-minus"></i></div>
+                        <div><div className="nm-stat-label">Churn Rate</div><div className="nm-stat-value">2.4%</div></div>
+                    </div>
+                </div>
+
+                <div className="nm-section-header" style={{ marginTop: '40px' }}><h3>Recent Transactions</h3></div>
+                <div className="nm-table-card">
+                    <table className="nm-table">
+                        <thead><tr><th>Customer</th><th>Plan</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Customer"><div className="nm-td-flex"><div className="nm-avatar initials">JD</div><div className="nm-info-text"><strong>John Doe</strong><span>johndoe@gmail.com</span></div></div></td>
+                                <td data-label="Plan">Individual Pro</td>
+                                <td data-label="Amount"><strong>$9.99</strong></td>
+                                <td data-label="Date">Today, 10:42 AM</td>
+                                <td data-label="Status"><span className="nm-badge active">Paid</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Customer"><div className="nm-td-flex"><div className="nm-avatar initials" style={{ background: 'rgba(31, 230, 212, 0.15)', color: '#0ba395' }}>WE</div><div className="nm-info-text"><strong>Willow & Elm</strong><span>hello@willowelm.co.zw</span></div></div></td>
+                                <td data-label="Plan">Agency Pro (Annual)</td>
+                                <td data-label="Amount"><strong>$199.00</strong></td>
+                                <td data-label="Date">Yesterday, 2:15 PM</td>
+                                <td data-label="Status"><span className="nm-badge active">Paid</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Customer"><div className="nm-td-flex"><div className="nm-avatar initials" style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>AR</div><div className="nm-info-text"><strong>Apex Realty</strong><span>apex@realty.co.zw</span></div></div></td>
+                                <td data-label="Plan">Team Upgrade</td>
+                                <td data-label="Amount"><strong>$19.99</strong></td>
+                                <td data-label="Date">Mar 26, 2026</td>
+                                <td data-label="Status"><span className="nm-badge pending">Processing</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Customer"><div className="nm-td-flex"><div className="nm-avatar initials" style={{ background: 'var(--input-bg)', color: 'var(--dark)' }}>SM</div><div className="nm-info-text"><strong>Sarah Moyo</strong><span>sarah.m@gmail.com</span></div></div></td>
+                                <td data-label="Plan">Individual Pro</td>
+                                <td data-label="Amount"><strong>$9.99</strong></td>
+                                <td data-label="Date">Mar 25, 2026</td>
+                                <td data-label="Status"><span className="nm-badge" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>Failed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="viewApprovals" className="nm-view" style={{ display: activeTab === 'approvals' ? 'block' : 'none' }}>
                 <div className="nm-page-header">
                     <div>
                         <h1>EcoCash Approvals</h1>
-                        <p>Verify transaction IDs against your merchant statement and approve upgrades.</p>
+                        <p>Review and approve pending EcoCash payments from agents.</p>
                     </div>
                 </div>
 
                 <div className="nm-table-card">
                     <table className="nm-table">
-                        <thead><tr><th>User / Company</th><th>Requested Plan</th><th>EcoCash Txn ID</th><th>Actions</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Agent</th>
+                                <th>Tier</th>
+                                <th>EcoCash Details</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
                         <tbody>
-                            <tr>
-                                <td data-label="User"><div className="nm-td-flex"><div className="nm-avatar initials">JD</div><div className="nm-info-text"><strong>John Doe</strong><span>Individual Pro</span></div></div></td>
-                                <td data-label="Plan"><strong>$9.99/mo</strong></td>
-                                <td data-label="Txn ID"><span className="nm-txn-code">PP240318X9A</span></td>
-                                <td data-label="Actions">
-                                    <div className="nm-actions">
-                                        <button className="nm-action-btn success" title="Approve"><i className="fa-solid fa-check"></i></button>
-                                        <button className="nm-action-btn danger" title="Decline"><i className="fa-solid fa-xmark"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td data-label="User"><div className="nm-td-flex"><div className="nm-avatar initials" style={{"background":"rgba(245, 158, 11, 0.1)","color":"#f59e0b"}}>AR</div><div className="nm-info-text"><strong>Apex Realty</strong><span>Team Upgrade</span></div></div></td>
-                                <td data-label="Plan"><strong>$19.99/mo</strong></td>
-                                <td data-label="Txn ID"><span className="nm-txn-code">PP240318Z7B</span></td>
-                                <td data-label="Actions">
-                                    <div className="nm-actions">
-                                        <button className="nm-action-btn success" title="Approve"><i className="fa-solid fa-check"></i></button>
-                                        <button className="nm-action-btn danger" title="Decline"><i className="fa-solid fa-xmark"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
+                            {pendingPayments.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} style={{ textAlign: 'center', padding: '40px' }}>
+                                        <div style={{ color: '#9ca3af', marginBottom: '10px' }}><i className="fa-solid fa-check-circle" style={{ fontSize: '32px' }}></i></div>
+                                        <p>No pending payments to approve.</p>
+                                    </td>
+                                </tr>
+                            ) : (
+                                pendingPayments.map((payment) => (
+                                    <tr key={payment.id}>
+                                        <td data-label="Agent">
+                                            <div className="nm-td-flex">
+                                                <div className="nm-avatar initials" style={{ background: 'var(--input-bg)', color: 'var(--dark)' }}>
+                                                    {payment.agentName.charAt(0)}
+                                                </div>
+                                                <div className="nm-info-text">
+                                                    <strong>{payment.agentName}</strong>
+                                                    <span>{new Date(payment.date).toLocaleString()}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Tier">
+                                            <div className="nm-info-text">
+                                                <strong>{payment.tier === 'SOLO_PRO' ? 'Solo Pro' : 'Team'}</strong>
+                                                <span>{payment.amount}</span>
+                                            </div>
+                                        </td>
+                                        <td data-label="EcoCash Details">
+                                            <div className="nm-info-text">
+                                                <strong style={{ fontFamily: 'monospace', background: '#f3f4f6', padding: '2px 6px', borderRadius: '4px' }}>{payment.ref}</strong>
+                                                <span>{payment.phone}</span>
+                                            </div>
+                                        </td>
+                                        <td data-label="Status">
+                                            {payment.status === 'pending' && <span className="nm-badge pending">Pending</span>}
+                                            {payment.status === 'approved' && <span className="nm-badge active">Approved</span>}
+                                            {payment.status === 'rejected' && <span className="nm-badge" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>Rejected</span>}
+                                        </td>
+                                        <td data-label="Actions">
+                                            {payment.status === 'pending' && (
+                                                <div className="nm-actions" style={{ justifyContent: 'flex-start' }}>
+                                                    <button 
+                                                        onClick={() => handleApprove(payment.id)}
+                                                        className="nm-action-btn success" 
+                                                        title="Approve Payment"
+                                                        style={{ width: 'auto', padding: '0 12px', borderRadius: '6px' }}
+                                                    >
+                                                        <i className="fa-solid fa-check" style={{ marginRight: '6px' }}></i> Approve
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => handleReject(payment.id)}
+                                                        className="nm-action-btn danger" 
+                                                        title="Reject Payment"
+                                                        style={{ width: 'auto', padding: '0 12px', borderRadius: '6px' }}
+                                                    >
+                                                        <i className="fa-solid fa-xmark" style={{ marginRight: '6px' }}></i> Reject
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>

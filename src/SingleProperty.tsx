@@ -19,7 +19,7 @@ const mockData: Record<string, any> = {
         location: "Borrowdale Brooke, Harare",
         desc: "Experience the pinnacle of luxury living in this stunning contemporary home. Featuring floor-to-ceiling windows, a private infinity pool, and state-of-the-art smart home integration. The open-concept design seamlessly blends indoor and outdoor spaces, perfect for entertaining.",
         company: "Willow & Elm",
-        companyLogo: "https://willowandelm.co.zw/wp-content/uploads/2026/03/nextmove.-5.png.png",
+        companyLogo: "https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png",
         quick: [
             { label: "Bedrooms", icon: "fa-bed", val: "5" },
             { label: "Bathrooms", icon: "fa-bath", val: "4" },
@@ -110,6 +110,7 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
     const [currentLbIndex, setCurrentLbIndex] = useState(0);
     const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
     const [appointmentStep, setAppointmentStep] = useState(1);
+    const [bookingSuccess, setBookingSuccess] = useState(false);
     const [appointmentData, setAppointmentData] = useState({
         date: '',
         time: '',
@@ -121,10 +122,6 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
     useEffect(() => {
         window.scrollTo(0, 0);
         document.body.style.overflow = 'auto'; // Ensure overflow is auto when mounting
-        
-        return () => {
-            document.body.style.overflow = 'auto'; // Cleanup
-        };
     }, []);
 
     const currentType = propTypes[propIndex];
@@ -170,15 +167,17 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
     const closeAppointmentModal = () => {
         setIsAppointmentModalOpen(false);
         document.body.style.overflow = 'auto';
+        setTimeout(() => {
+            setAppointmentStep(1);
+            setBookingSuccess(false);
+            setAppointmentData({ date: '', time: '', name: '', email: '', phone: '' });
+        }, 300);
     };
 
     return (
         <>
             <div className="sp-wrapper">
                 <div className="sp-content">
-                    <button onClick={onBack} style={{ marginBottom: '20px', background: 'none', border: 'none', color: 'var(--brand)', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <i className="fa-solid fa-arrow-left"></i> Back to Home
-                    </button>
                     <div className="sp-gallery" id="dynGallery">
                         <div className="sp-main-img" style={{ backgroundImage: `url('${lbImages[0]}')` }} onClick={() => openLightbox(0)}>
                             <div className="sp-badges" id="dynTags">
@@ -299,159 +298,198 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
                         style={{ animation: 'modalSlideUp 0.3s ease-out forwards' }}
                     >
                         {/* Header */}
-                        <div className="p-6 pb-4 border-b border-gray-100 flex justify-between items-center relative">
-                            <h3 className="text-xl font-semibold text-gray-900">Schedule Appointment</h3>
+                        <div className="p-6 pb-5 border-b border-gray-100 flex justify-between items-center relative bg-gradient-to-r from-gray-50 to-white">
+                            <div>
+                                <h3 className="text-xl font-bold text-gray-900">Schedule Appointment</h3>
+                                {!bookingSuccess && <p className="text-sm text-gray-500 mt-1">Step {appointmentStep} of 6</p>}
+                            </div>
                             <button onClick={closeAppointmentModal} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-800 transition-colors cursor-pointer">
                                 <i className="fa-solid fa-xmark"></i>
                             </button>
                             {/* Progress Bar */}
-                            <div className="absolute bottom-0 left-0 h-1 bg-gray-100 w-full">
-                                <div className="h-full bg-teal-500 transition-all duration-500 ease-out" style={{ width: `${(appointmentStep / 6) * 100}%` }}></div>
-                            </div>
+                            {!bookingSuccess && (
+                                <div className="absolute bottom-0 left-0 h-1 bg-gray-100 w-full">
+                                    <div className="h-full bg-teal-500 transition-all duration-500 ease-out" style={{ width: `${(appointmentStep / 6) * 100}%` }}></div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Body */}
                         <div className="p-6 relative min-h-[340px] flex flex-col">
                             <div className="flex-1 flex flex-col justify-center transition-opacity duration-300">
-                                {appointmentStep === 1 && (
+                                {bookingSuccess ? (
+                                    <div className="space-y-6 animate-fade-in h-full flex flex-col items-center justify-center text-center p-2">
+                                        <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center text-green-500 mb-2 shadow-lg shadow-green-100/50">
+                                            <i className="fa-solid fa-check text-4xl"></i>
+                                        </div>
+                                        <h4 className="text-2xl font-bold text-gray-900">Booking Request Sent!</h4>
+                                        <p className="text-gray-600 leading-relaxed text-sm">
+                                            An email link has been sent to <strong>{appointmentData.email}</strong> for you to verify your request.
+                                        </p>
+                                        <div className="bg-blue-50 text-blue-800 p-4 rounded-xl text-sm mt-2 border border-blue-100 text-left flex items-start gap-3">
+                                            <i className="fa-solid fa-circle-info mt-0.5 text-blue-500"></i>
+                                            <span>After the agent confirms your appointment, you will receive another email with the summary details.</span>
+                                        </div>
+                                        <button 
+                                            onClick={closeAppointmentModal}
+                                            className="mt-4 px-8 py-3 rounded-xl font-semibold bg-gray-900 text-white hover:bg-black transition-colors shadow-lg shadow-gray-900/20 w-full"
+                                        >
+                                            Done
+                                        </button>
+                                    </div>
+                                ) : appointmentStep === 1 ? (
                                     <div className="space-y-4 animate-fade-in">
-                                        <h4 className="text-lg font-medium text-gray-800 mb-2">Select a Date</h4>
+                                        <h4 className="text-lg font-semibold text-gray-800 mb-3">Select a Date</h4>
                                         <div className="grid grid-cols-2 gap-3">
                                             {['Today', 'Tomorrow', 'Wed, Oct 15', 'Thu, Oct 16', 'Fri, Oct 17', 'Sat, Oct 18'].map((d, i) => (
                                                 <button 
                                                     key={i} 
                                                     onClick={() => setAppointmentData({...appointmentData, date: d})}
-                                                    className={`p-4 rounded-2xl border-2 text-sm font-medium transition-all cursor-pointer ${appointmentData.date === d ? 'border-teal-500 bg-teal-50 text-teal-700' : 'border-gray-100 hover:border-teal-200 text-gray-600'}`}
+                                                    className={`p-4 rounded-2xl border-2 text-sm font-medium transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${appointmentData.date === d ? 'border-teal-500 bg-teal-50 text-teal-700 shadow-sm' : 'border-gray-100 hover:border-teal-200 hover:bg-gray-50 text-gray-600'}`}
                                                 >
+                                                    <i className="fa-regular fa-calendar text-lg mb-1 opacity-70"></i>
                                                     {d}
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
-                                )}
-                                {appointmentStep === 2 && (
+                                ) : appointmentStep === 2 ? (
                                     <div className="space-y-4 animate-fade-in">
-                                        <h4 className="text-lg font-medium text-gray-800 mb-2">Select a Time</h4>
+                                        <h4 className="text-lg font-semibold text-gray-800 mb-3">Select a Time</h4>
                                         <div className="grid grid-cols-2 gap-3">
                                             {['09:00 AM', '10:30 AM', '12:00 PM', '01:30 PM', '03:00 PM', '04:30 PM'].map((t, i) => (
                                                 <button 
                                                     key={i} 
                                                     onClick={() => setAppointmentData({...appointmentData, time: t})}
-                                                    className={`p-4 rounded-2xl border-2 text-sm font-medium transition-all cursor-pointer ${appointmentData.time === t ? 'border-teal-500 bg-teal-50 text-teal-700' : 'border-gray-100 hover:border-teal-200 text-gray-600'}`}
+                                                    className={`p-4 rounded-2xl border-2 text-sm font-medium transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${appointmentData.time === t ? 'border-teal-500 bg-teal-50 text-teal-700 shadow-sm' : 'border-gray-100 hover:border-teal-200 hover:bg-gray-50 text-gray-600'}`}
                                                 >
+                                                    <i className="fa-regular fa-clock text-lg mb-1 opacity-70"></i>
                                                     {t}
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
-                                )}
-                                {appointmentStep === 3 && (
+                                ) : appointmentStep === 3 ? (
                                     <div className="space-y-4 animate-fade-in">
-                                        <h4 className="text-lg font-medium text-gray-800 mb-2">Your Full Name</h4>
-                                        <input 
-                                            type="text" 
-                                            placeholder="e.g. Jane Doe" 
-                                            value={appointmentData.name}
-                                            onChange={e => setAppointmentData({...appointmentData, name: e.target.value})}
-                                            className="w-full p-4 rounded-2xl border-2 border-gray-100 focus:border-teal-500 focus:ring-0 outline-none transition-all text-lg bg-gray-50 focus:bg-white"
-                                            autoFocus
-                                        />
+                                        <h4 className="text-lg font-semibold text-gray-800 mb-3">Your Full Name</h4>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                                                <i className="fa-regular fa-user"></i>
+                                            </div>
+                                            <input 
+                                                type="text" 
+                                                placeholder="e.g. Jane Doe" 
+                                                value={appointmentData.name}
+                                                onChange={e => setAppointmentData({...appointmentData, name: e.target.value})}
+                                                className="w-full pl-11 p-4 rounded-2xl border-2 border-gray-100 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all text-lg bg-gray-50 focus:bg-white"
+                                                autoFocus
+                                            />
+                                        </div>
                                     </div>
-                                )}
-                                {appointmentStep === 4 && (
+                                ) : appointmentStep === 4 ? (
                                     <div className="space-y-4 animate-fade-in">
-                                        <h4 className="text-lg font-medium text-gray-800 mb-2">Your Email</h4>
-                                        <input 
-                                            type="email" 
-                                            placeholder="jane@example.com" 
-                                            value={appointmentData.email}
-                                            onChange={e => setAppointmentData({...appointmentData, email: e.target.value})}
-                                            className="w-full p-4 rounded-2xl border-2 border-gray-100 focus:border-teal-500 focus:ring-0 outline-none transition-all text-lg bg-gray-50 focus:bg-white"
-                                            autoFocus
-                                        />
+                                        <h4 className="text-lg font-semibold text-gray-800 mb-3">Your Email</h4>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                                                <i className="fa-regular fa-envelope"></i>
+                                            </div>
+                                            <input 
+                                                type="email" 
+                                                placeholder="jane@example.com" 
+                                                value={appointmentData.email}
+                                                onChange={e => setAppointmentData({...appointmentData, email: e.target.value})}
+                                                className="w-full pl-11 p-4 rounded-2xl border-2 border-gray-100 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all text-lg bg-gray-50 focus:bg-white"
+                                                autoFocus
+                                            />
+                                        </div>
                                     </div>
-                                )}
-                                {appointmentStep === 5 && (
+                                ) : appointmentStep === 5 ? (
                                     <div className="space-y-4 animate-fade-in">
-                                        <h4 className="text-lg font-medium text-gray-800 mb-2">Your Phone Number</h4>
-                                        <input 
-                                            type="tel" 
-                                            placeholder="+1 (555) 000-0000" 
-                                            value={appointmentData.phone}
-                                            onChange={e => setAppointmentData({...appointmentData, phone: e.target.value})}
-                                            className="w-full p-4 rounded-2xl border-2 border-gray-100 focus:border-teal-500 focus:ring-0 outline-none transition-all text-lg bg-gray-50 focus:bg-white"
-                                            autoFocus
-                                        />
+                                        <h4 className="text-lg font-semibold text-gray-800 mb-3">Your Phone Number</h4>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                                                <i className="fa-solid fa-phone"></i>
+                                            </div>
+                                            <input 
+                                                type="tel" 
+                                                placeholder="+1 (555) 000-0000" 
+                                                value={appointmentData.phone}
+                                                onChange={e => setAppointmentData({...appointmentData, phone: e.target.value})}
+                                                className="w-full pl-11 p-4 rounded-2xl border-2 border-gray-100 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all text-lg bg-gray-50 focus:bg-white"
+                                                autoFocus
+                                            />
+                                        </div>
                                     </div>
-                                )}
-                                {appointmentStep === 6 && (
+                                ) : appointmentStep === 6 ? (
                                     <div className="space-y-4 animate-fade-in h-full flex flex-col">
-                                        <h4 className="text-lg font-medium text-gray-800 mb-2">Review & Confirm</h4>
-                                        <div className="bg-gray-50 rounded-2xl p-6 space-y-5 flex-1 border border-gray-100">
+                                        <h4 className="text-lg font-semibold text-gray-800 mb-2">Review & Confirm</h4>
+                                        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 space-y-5 flex-1 border border-gray-200 shadow-inner">
                                             <div className="flex items-start gap-4">
-                                                <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 shrink-0">
-                                                    <i className="fa-regular fa-calendar"></i>
+                                                <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-teal-600 shrink-0 border border-teal-100">
+                                                    <i className="fa-regular fa-calendar-check text-xl"></i>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Date & Time</p>
-                                                    <p className="font-semibold text-gray-900">{appointmentData.date} at {appointmentData.time}</p>
+                                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Date & Time</p>
+                                                    <p className="font-semibold text-gray-900 text-lg">{appointmentData.date}</p>
+                                                    <p className="text-teal-600 font-medium">{appointmentData.time}</p>
                                                 </div>
                                             </div>
                                             <div className="h-px bg-gray-200 w-full"></div>
                                             <div className="flex items-start gap-4">
-                                                <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 shrink-0">
-                                                    <i className="fa-regular fa-user"></i>
+                                                <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-teal-600 shrink-0 border border-teal-100">
+                                                    <i className="fa-regular fa-address-card text-xl"></i>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Your Details</p>
+                                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Your Details</p>
                                                     <p className="font-semibold text-gray-900">{appointmentData.name}</p>
-                                                    <p className="text-sm text-gray-600 mt-0.5">{appointmentData.email}</p>
-                                                    <p className="text-sm text-gray-600 mt-0.5">{appointmentData.phone}</p>
+                                                    <p className="text-sm text-gray-600 mt-1 flex items-center gap-2"><i className="fa-regular fa-envelope opacity-50"></i> {appointmentData.email}</p>
+                                                    <p className="text-sm text-gray-600 mt-1 flex items-center gap-2"><i className="fa-solid fa-phone opacity-50"></i> {appointmentData.phone}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                )}
+                                ) : null}
                             </div>
                         </div>
 
                         {/* Footer */}
-                        <div className="p-6 border-t border-gray-100 flex justify-between items-center bg-gray-50">
-                            {appointmentStep > 1 ? (
-                                <button 
-                                    onClick={() => setAppointmentStep(s => s - 1)}
-                                    className="px-6 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer"
-                                >
-                                    Back
-                                </button>
-                            ) : <div></div>}
-                            
-                            {appointmentStep < 6 ? (
-                                <button 
-                                    onClick={() => setAppointmentStep(s => s + 1)}
-                                    disabled={
-                                        (appointmentStep === 1 && !appointmentData.date) ||
-                                        (appointmentStep === 2 && !appointmentData.time) ||
-                                        (appointmentStep === 3 && !appointmentData.name) ||
-                                        (appointmentStep === 4 && !appointmentData.email) ||
-                                        (appointmentStep === 5 && !appointmentData.phone)
-                                    }
-                                    className="px-8 py-3 rounded-xl font-semibold bg-teal-500 text-white hover:bg-teal-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
-                                >
-                                    Next <i className="fa-solid fa-arrow-right text-sm"></i>
-                                </button>
-                            ) : (
-                                <button 
-                                    onClick={() => {
-                                        alert('Appointment confirmed!');
-                                        closeAppointmentModal();
-                                    }}
-                                    className="px-8 py-3 rounded-xl font-semibold bg-gray-900 text-white hover:bg-black transition-colors shadow-lg shadow-gray-900/20 flex items-center gap-2 cursor-pointer"
-                                >
-                                    Confirm Booking <i className="fa-solid fa-check text-sm"></i>
-                                </button>
-                            )}
-                        </div>
+                        {!bookingSuccess && (
+                            <div className="p-6 border-t border-gray-100 flex justify-between items-center bg-gray-50">
+                                {appointmentStep > 1 ? (
+                                    <button 
+                                        onClick={() => setAppointmentStep(s => s - 1)}
+                                        className="px-6 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer"
+                                    >
+                                        Back
+                                    </button>
+                                ) : <div></div>}
+                                
+                                {appointmentStep < 6 ? (
+                                    <button 
+                                        onClick={() => setAppointmentStep(s => s + 1)}
+                                        disabled={
+                                            (appointmentStep === 1 && !appointmentData.date) ||
+                                            (appointmentStep === 2 && !appointmentData.time) ||
+                                            (appointmentStep === 3 && !appointmentData.name) ||
+                                            (appointmentStep === 4 && !appointmentData.email) ||
+                                            (appointmentStep === 5 && !appointmentData.phone)
+                                        }
+                                        className="px-8 py-3 rounded-xl font-semibold bg-teal-500 text-white hover:bg-teal-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
+                                    >
+                                        Next <i className="fa-solid fa-arrow-right text-sm"></i>
+                                    </button>
+                                ) : (
+                                    <button 
+                                        onClick={() => {
+                                            setBookingSuccess(true);
+                                        }}
+                                        className="px-8 py-3 rounded-xl font-semibold bg-gray-900 text-white hover:bg-black transition-colors shadow-lg shadow-gray-900/20 flex items-center gap-2 cursor-pointer"
+                                    >
+                                        Confirm Booking <i className="fa-solid fa-check text-sm"></i>
+                                    </button>
+                                )}
+                            </div>
+                        )}
                     </div>
                     <style>{`
                         @keyframes modalSlideUp {

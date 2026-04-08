@@ -316,7 +316,7 @@ export default function Profile() {
 
           <div className="nm-grid" id="propertyGrid">
             {filteredProperties.map((property) => (
-              <div key={property.id} className={`we-card ${property.featured ? 'featured' : ''}`}>
+              <div key={property.id} className={`we-card ${property.featured ? 'featured' : ''} ${property.status.toLowerCase() === 'sold' ? 'sold' : ''}`}>
                 <div
                   className="we-img"
                   style={{ backgroundImage: `url('${property.image}')` }}
@@ -327,6 +327,7 @@ export default function Profile() {
                       <i className="fa-solid fa-bolt"></i> Featured
                     </span>
                   )}
+                  <div className="we-lister-badge"><i className="fa-solid fa-building-circle-check"></i> Elite Realty</div>
                 </div>
                 <div className="we-body">
                   <div className="we-price">{property.price}</div>
@@ -364,10 +365,6 @@ export default function Profile() {
                         {feature}
                       </div>
                     ))}
-                  </div>
-                  <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
-                      <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
-                      <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
                   </div>
                 </div>
               </div>

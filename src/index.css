@@ -516,18 +516,18 @@ body {
 .we-full-bleed-container { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .we-full-bleed-container::-webkit-scrollbar { display: none; }
 .we-listings { display: inline-flex; gap: 20px; padding: 0 var(--side-margin) 20px var(--side-margin); }
-.we-card { width: 85vw; max-width: 320px; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #F3F4F6; box-shadow: 0 4px 12px rgba(0,0,0,0.05); flex: 0 0 auto; cursor: pointer; transition: transform 0.2s ease; }
+.we-card { width: 85vw; max-width: 320px; height: 380px; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #F3F4F6; box-shadow: 0 4px 12px rgba(0,0,0,0.05); flex: 0 0 auto; cursor: pointer; transition: transform 0.2s ease; display: flex; flex-direction: column; }
 .we-card.featured { border: 1px solid var(--brand); box-shadow: 0 0 12px rgba(31, 230, 212, 0.35), 0 4px 12px rgba(0,0,0,0.05); }
 .we-img { height: 210px; background-size: cover; background-position: center; position: relative; }
 .we-tag { position: absolute; top: 12px; left: 12px; background: var(--brand); color: #1A1C1E; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
 .we-featured-tag { position: absolute; top: 42px; left: 12px; background: rgba(26, 28, 30, 0.85); color: var(--brand); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px); border: 1px solid rgba(31, 230, 212, 0.2); }
-.we-lister-badge { position: absolute; top: 12px; right: 12px; background: rgba(255, 255, 255, 0.95); padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); backdrop-filter: blur(4px); }
+.we-lister-badge { position: absolute; bottom: 12px; right: 12px; background: rgba(255, 255, 255, 0.95); padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); backdrop-filter: blur(4px); }
 .we-lister-badge i { color: var(--brand); font-size: 12px; }
-.we-body { padding: 18px; }
+.we-body { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
 .we-price { color: var(--brand); font-size: 20px; font-weight: 800; }
 .we-title { font-size: 17px; font-weight: 700; margin: 4px 0; color: var(--dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .we-location { font-size: 13px; color: var(--gray-text); margin-bottom: 14px; display: flex; align-items: center; gap: 5px; }
-.we-icons-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f3f4f6; padding-top: 14px; color: var(--dark); font-size: 12px; font-weight: 600; }
+.we-icons-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f3f4f6; padding-top: 14px; color: var(--dark); font-size: 12px; font-weight: 600; margin-top: auto; }
 .we-icon-item { display: flex; align-items: center; gap: 6px; }
 .we-icon-item i { color: var(--brand); font-size: 14px; }
 .we-service-label { color: var(--gray-text); font-weight: 400; margin-right: 2px; }
@@ -686,7 +686,6 @@ body {
 
 /* Override we-card for the grid */
 .sr-grid .we-card { width: 100%; max-width: 100%; flex: auto; margin: 0; position: relative; }
-.sr-grid .we-img { height: 200px; }
 
 /* Heart Toggle Icon */
 .we-heart-btn { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.85); border: none; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; color: var(--gray-text); transition: 0.2s; backdrop-filter: blur(4px); z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}

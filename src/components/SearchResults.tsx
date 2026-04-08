@@ -111,14 +111,15 @@ export default function SearchResults() {
         }
 
         if (searchCategory !== 'all') {
-            if (searchCategory === 'residential' && !text.includes('bed')) isMatch = false;
-            if (searchCategory === 'commercial' && !text.includes('office') && !text.includes('retail')) isMatch = false;
-            if (searchCategory === 'stand' && !text.includes('stand') && prop.type !== 'stand') isMatch = false;
+            if (searchCategory === 'residential' && prop.type !== 'residential' && prop.type !== 'room') isMatch = false;
+            if (searchCategory === 'commercial' && prop.type !== 'commercial') isMatch = false;
+            if (searchCategory === 'stand' && prop.type !== 'stand') isMatch = false;
         }
 
         if (searchStatus !== 'all') {
-            if (searchStatus === 'sale' && !text.includes('for sale')) isMatch = false;
+            if (searchStatus === 'sale' && !text.includes('for sale') && !text.includes('new release')) isMatch = false;
             if (searchStatus === 'rent' && !text.includes('for rent') && !text.includes('for lease')) isMatch = false;
+            if (searchStatus === 'sold' && prop.status.toLowerCase() !== 'sold' && !text.includes('sold')) isMatch = false;
         }
 
         if (searchBeds !== 'all') {
@@ -227,7 +228,7 @@ export default function SearchResults() {
 
                     <div className="sr-grid">
                         {filteredProperties.map(prop => (
-                            <div key={prop.id} className={`we-card ${prop.featured || prop.isSponsored ? 'featured' : ''}`} onClick={() => { setSelectedPropertyType(prop.type); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
+                            <div key={prop.id} className={`we-card ${prop.featured || prop.isSponsored ? 'featured' : ''} ${prop.status.toLowerCase() === 'sold' ? 'sold' : ''}`} onClick={() => { setSelectedPropertyType(prop.type); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: `url('${prop.image}')`}}>
                                     <span className="we-tag" style={prop.tagStyle}>{prop.tag}</span>
                                     {prop.isSponsored ? (
@@ -235,9 +236,7 @@ export default function SearchResults() {
                                     ) : prop.featured ? (
                                         <span className="we-featured-tag"><i className="fa-solid fa-bolt"></i> Featured</span>
                                     ) : null}
-                                    <button className={`we-heart-btn ${savedProperties[prop.id] ? 'saved' : ''}`} onClick={(e) => toggleSave(e, prop.id)}>
-                                        <i className={`${savedProperties[prop.id] ? 'fa-solid' : 'fa-regular'} fa-heart`}></i>
-                                    </button>
+                                    <div className="we-lister-badge"><i className="fa-solid fa-building-circle-check"></i> Elite Realty</div>
                                 </div>
                                 <div className="we-body">
                                     <div className="we-price">{prop.price}</div>
@@ -251,10 +250,6 @@ export default function SearchResults() {
                                                 {' '}{icon.text}
                                             </div>
                                         ))}
-                                    </div>
-                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
-                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
-                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
                                     </div>
                                 </div>
                             </div>

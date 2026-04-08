@@ -223,6 +223,107 @@ export const initialProperties: Property[] = [
       status: 'Active',
       isSponsored: false,
       sponsorDaysLeft: 0
+  },
+  {
+      id: '10',
+      type: 'residential',
+      tag: 'SOLD',
+      featured: false,
+      image: "https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg?auto=compress&cs=tinysrgb&w=800",
+      price: "$320,000",
+      priceNum: 320000,
+      title: "Family Home in Mt Pleasant",
+      location: "Mt Pleasant",
+      icons: [
+          { icon: "fa-bed", text: "4 Bed" },
+          { icon: "fa-bath", text: "2 Bath" },
+          { icon: "fa-vector-square", text: "1500 m²" }
+      ],
+      views: 4500,
+      status: 'Sold',
+      isSponsored: false,
+      sponsorDaysLeft: 0
+  },
+  {
+      id: '11',
+      type: 'stand',
+      tag: 'SOLD',
+      featured: false,
+      image: "https://i.pinimg.com/736x/84/38/17/8438172e4fa57040c32c5a62f290dd8a.jpg",
+      price: "$18,000",
+      priceNum: 18000,
+      title: "Mabelreign Garden Plot",
+      location: "Mabelreign",
+      icons: [
+          { icon: "fa-ruler-combined", text: "800 m²" },
+          { icon: "fa-file-signature", text: "Cession" },
+          { label: "Service:", text: "100%" }
+      ],
+      views: 1200,
+      status: 'Sold',
+      isSponsored: false,
+      sponsorDaysLeft: 0
+  },
+  {
+      id: '12',
+      type: 'residential',
+      tag: 'SOLD',
+      featured: false,
+      image: "https://images.pexels.com/photos/2061057/pexels-photo-2061057.jpeg?auto=compress&cs=tinysrgb&w=800",
+      price: "$210,000",
+      priceNum: 210000,
+      title: "Cozy Greendale Cottage",
+      location: "Greendale",
+      icons: [
+          { icon: "fa-bed", text: "2 Bed" },
+          { icon: "fa-bath", text: "1 Bath" },
+          { icon: "fa-vector-square", text: "800 m²" }
+      ],
+      views: 3100,
+      status: 'Sold',
+      isSponsored: false,
+      sponsorDaysLeft: 0
+  },
+  {
+      id: '13',
+      type: 'residential',
+      tag: 'FOR RENT',
+      featured: true,
+      image: "https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=800",
+      price: "$1,800/mo",
+      priceNum: 1800,
+      title: "Modern Apartment",
+      location: "Newlands",
+      icons: [
+          { icon: "fa-bed", text: "2 Bed" },
+          { icon: "fa-bath", text: "2 Bath" },
+          { icon: "fa-vector-square", text: "120 m²" }
+      ],
+      views: 850,
+      status: 'Active',
+      isSponsored: true,
+      sponsorDaysLeft: 10
+  },
+  {
+      id: '14',
+      type: 'stand',
+      tag: 'NEW RELEASE',
+      tagStyle: { background: '#1A1C1E', color: '#1FE6D4' },
+      featured: true,
+      image: "https://i.pinimg.com/736x/ac/24/2b/ac242b20bb7872b1b839290d319adc79.jpg",
+      price: "$120,000",
+      priceNum: 120000,
+      title: "Highlands Luxury Estate",
+      location: "Harare East",
+      icons: [
+          { icon: "fa-ruler-combined", text: "4000 m²" },
+          { icon: "fa-file-contract", text: "Title Deed" },
+          { label: "Service:", text: "100%" }
+      ],
+      views: 500,
+      status: 'Active',
+      isSponsored: false,
+      sponsorDaysLeft: 0
   }
 ];
 

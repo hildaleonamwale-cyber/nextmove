@@ -75,8 +75,9 @@ export default function AgentPortal() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans overflow-hidden">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
+    <div className="min-h-screen bg-white flex flex-col py-12 sm:px-6 lg:px-8 font-sans">
+      <div className="flex-grow flex flex-col justify-center w-full max-w-md mx-auto">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
         <div className="flex justify-center">
           <div className="h-12 w-12 bg-[#1A1C1E] rounded-xl flex items-center justify-center shadow-lg">
             <ShieldCheck className="h-7 w-7 text-[#1FE6D4]" />
@@ -110,7 +111,7 @@ export default function AgentPortal() {
             <motion.div 
               key="login"
               variants={pageVariants} initial="initial" animate="animate" exit="exit"
-              className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100"
+              className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 rounded-3xl sm:px-10"
             >
               <form className="space-y-6" onSubmit={handleLoginSubmit}>
                 <div>
@@ -208,7 +209,7 @@ export default function AgentPortal() {
             <motion.div 
               key="signup-details"
               variants={pageVariants} initial="initial" animate="animate" exit="exit"
-              className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100"
+              className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 rounded-3xl sm:px-10"
             >
               <form className="space-y-6" onSubmit={handleSignupDetailsSubmit}>
                 <div>
@@ -270,7 +271,7 @@ export default function AgentPortal() {
             <motion.div 
               key="verify-email"
               variants={pageVariants} initial="initial" animate="animate" exit="exit"
-              className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100 text-center"
+              className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 rounded-3xl sm:px-10 text-center"
             >
               <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-[#1FE6D4]/10 mb-6">
                 <Mail className="h-8 w-8 text-[#15b8a9]" />
@@ -301,7 +302,7 @@ export default function AgentPortal() {
             <motion.div 
               key="role-selection"
               variants={pageVariants} initial="initial" animate="animate" exit="exit"
-              className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100"
+              className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 rounded-3xl sm:px-10"
             >
               <div className="text-center mb-8">
                 <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-50 mb-4">
@@ -379,7 +380,7 @@ export default function AgentPortal() {
             <motion.div 
               key="pro-invite"
               variants={pageVariants} initial="initial" animate="animate" exit="exit"
-              className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100"
+              className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 rounded-3xl sm:px-10"
             >
               <div className="text-center mb-8">
                 <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-[#1FE6D4]/10 mb-4">
@@ -451,6 +452,7 @@ export default function AgentPortal() {
           )}
 
         </AnimatePresence>
+      </div>
       </div>
     </div>
   );

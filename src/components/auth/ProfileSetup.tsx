@@ -9,8 +9,6 @@ import {
 export default function ProfileSetup() {
   const location = useLocation();
   const navigate = useNavigate();
-  const role = location.state?.role || 'OWNER';
-  
   // Brand Setup State
   const [displayName, setDisplayName] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
@@ -29,7 +27,7 @@ export default function ProfileSetup() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-3xl mx-auto">
         
         {/* Progress Header */}
@@ -46,7 +44,7 @@ export default function ProfileSetup() {
           <motion.div
             key="brand"
             variants={pageVariants} initial="initial" animate="animate" exit="exit"
-            className="bg-white shadow-xl shadow-gray-200/50 rounded-2xl overflow-hidden border border-gray-100"
+            className="bg-white shadow-xl shadow-gray-200/50 rounded-3xl overflow-hidden"
           >
             <form onSubmit={handleBrandSubmit} className="p-8 space-y-8">
               
@@ -91,7 +89,7 @@ export default function ProfileSetup() {
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Display Name ({role === 'AGENT' ? 'Company or Agent Name' : 'Your Name'})</label>
+                  <label className="block text-sm font-medium text-gray-700">Display Name (Company or Your Name)</label>
                   <div className="mt-1 relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Building2 className="h-5 w-5 text-gray-400" />

@@ -5,7 +5,7 @@ interface CompanyProfileProps {
 }
 
 export default function CompanyProfile({ currentRole }: CompanyProfileProps) {
-  const isPro = currentRole === 'pro';
+  const isPro = currentRole === 'premium';
   const headerText = isPro ? "Profile Editor" : "Company Profile Editor";
   const descText = isPro ? "Customize how you appear to potential clients." : "Customize how your agency appears to potential clients.";
 

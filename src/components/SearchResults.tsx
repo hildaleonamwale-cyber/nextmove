@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import SingleProperty from '../SingleProperty';
+import { useAppContext } from '../context/AppContext';
 
 const safetyTipsList = [
     "Never transfer funds before viewing a property and verifying documents.",
@@ -98,107 +99,8 @@ export default function SearchResults() {
         }
     }, [isMobileMenuOpen, isAuthModalOpen, isListingPageOpen]);
 
-    const [savedProperties, setSavedProperties] = useState<Record<number, boolean>>({ 1: true }); // ID 1 is saved by default
-
-    const properties = [
-        {
-            id: 0,
-            type: 'residential',
-            tag: 'FOR SALE',
-            featured: true,
-            image: "https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=800",
-            price: "$850,000",
-            priceNum: 850000,
-            title: "The Glass Pavilion",
-            location: "Borrowdale Brooke",
-            icons: [
-                { icon: "fa-bed", text: "3 Bed" },
-                { icon: "fa-bath", text: "2 Bath" },
-                { icon: "fa-vector-square", text: "220 m²" }
-            ]
-        },
-        {
-            id: 1,
-            type: 'residential',
-            tag: 'FOR RENT',
-            featured: false,
-            image: "https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg?auto=compress&cs=tinysrgb&w=800",
-            price: "$2,500/mo",
-            priceNum: 2500,
-            title: "The Nexus Tower",
-            location: "CBD, Harare",
-            icons: [
-                { icon: "fa-layer-group", text: "Open Plan" },
-                { icon: "fa-snowflake", text: "Air Con" },
-                { icon: "fa-vector-square", text: "850 m²" }
-            ]
-        },
-        {
-            id: 2,
-            type: 'stand',
-            tag: 'NEW RELEASE',
-            tagStyle: { background: '#1A1C1E', color: '#1FE6D4' },
-            featured: false,
-            image: "https://i.pinimg.com/736x/98/04/69/980469f630d50176a5ac8c663437e632.jpg",
-            price: "$28,000",
-            priceNum: 28000,
-            title: "Glen Lorne Extension",
-            location: "Harare North",
-            icons: [
-                { icon: "fa-ruler-combined", text: "1200 m²" },
-                { icon: "fa-file-signature", text: "Cession" },
-                { label: "Service:", text: "60%" }
-            ]
-        },
-        {
-            id: 3,
-            type: 'residential',
-            tag: 'FOR SALE',
-            featured: false,
-            image: "https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=800",
-            price: "$450,000",
-            priceNum: 450000,
-            title: "Willow Terrace",
-            location: "Greendale",
-            icons: [
-                { icon: "fa-bed", text: "4 Bed" },
-                { icon: "fa-bath", text: "3 Bath" },
-                { icon: "fa-vector-square", text: "320 m²" }
-            ]
-        },
-        {
-            id: 4,
-            type: 'room',
-            tag: 'FOR RENT',
-            featured: false,
-            image: "https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg?auto=compress&cs=tinysrgb&w=800",
-            price: "$150/mo",
-            priceNum: 150,
-            title: "Spacious Room Avondale",
-            location: "Avondale",
-            icons: [
-                { icon: "fa-bed", text: "Private Room" },
-                { icon: "fa-bath", text: "Shared Bath" },
-                { icon: "fa-door-open", text: "Own Entrance" }
-            ]
-        },
-        {
-            id: 5,
-            type: 'stand',
-            tag: 'FOR SALE',
-            featured: false,
-            image: "https://i.pinimg.com/736x/53/0f/1a/530f1ade4b644c91dfed9d53a072b905.jpg",
-            price: "$45,000",
-            priceNum: 45000,
-            title: "Borrowdale East Phase 2",
-            location: "Harare North",
-            icons: [
-                { icon: "fa-ruler-combined", text: "2000 m²" },
-                { icon: "fa-file-contract", text: "Title Deed" },
-                { label: "Service:", text: "80%" }
-            ]
-        }
-    ];
+    const [savedProperties, setSavedProperties] = useState<Record<string, boolean>>({ '1': true }); // ID 1 is saved by default
+    const { properties } = useAppContext();
 
     const filteredProperties = properties.filter(prop => {
         const text = `${prop.title} ${prop.location} ${prop.tag} ${prop.icons.map(i => i.text).join(' ')}`.toLowerCase();
@@ -227,9 +129,13 @@ export default function SearchResults() {
         if (searchMaxPrice && prop.priceNum > parseInt(searchMaxPrice, 10)) isMatch = false;
 
         return isMatch;
+    }).sort((a, b) => {
+        if (a.isSponsored && !b.isSponsored) return -1;
+        if (!a.isSponsored && b.isSponsored) return 1;
+        return 0;
     });
 
-    const toggleSave = (e: React.MouseEvent, id: number) => {
+    const toggleSave = (e: React.MouseEvent, id: string) => {
         e.stopPropagation();
         setSavedProperties(prev => ({ ...prev, [id]: !prev[id] }));
     };
@@ -321,10 +227,14 @@ export default function SearchResults() {
 
                     <div className="sr-grid">
                         {filteredProperties.map(prop => (
-                            <div key={prop.id} className={`we-card ${prop.featured ? 'featured' : ''}`} onClick={() => { setSelectedPropertyType(prop.type); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
+                            <div key={prop.id} className={`we-card ${prop.featured || prop.isSponsored ? 'featured' : ''}`} onClick={() => { setSelectedPropertyType(prop.type); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: `url('${prop.image}')`}}>
                                     <span className="we-tag" style={prop.tagStyle}>{prop.tag}</span>
-                                    {prop.featured && <span className="we-featured-tag"><i className="fa-solid fa-bolt"></i> Featured</span>}
+                                    {prop.isSponsored ? (
+                                        <span className="we-featured-tag" style={{ background: '#1FE6D4', color: '#1A1C1E' }}><i className="fa-solid fa-star"></i> Sponsored</span>
+                                    ) : prop.featured ? (
+                                        <span className="we-featured-tag"><i className="fa-solid fa-bolt"></i> Featured</span>
+                                    ) : null}
                                     <button className={`we-heart-btn ${savedProperties[prop.id] ? 'saved' : ''}`} onClick={(e) => toggleSave(e, prop.id)}>
                                         <i className={`${savedProperties[prop.id] ? 'fa-solid' : 'fa-regular'} fa-heart`}></i>
                                     </button>
@@ -341,6 +251,10 @@ export default function SearchResults() {
                                                 {' '}{icon.text}
                                             </div>
                                         ))}
+                                    </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
                                     </div>
                                 </div>
                             </div>

@@ -15,7 +15,7 @@
     /* =========================================
        OFFICIAL NEXTMOVE HEADER (RESTORED)
        ========================================= */
-    .we-header-wrapper { position: sticky; top: 0; z-index: 10001; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.03); background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(31, 230, 212, 0.15); }
+    .we-header-wrapper { position: sticky; top: 0; z-index: 10001; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.04); background: #ffffff; border-bottom: none; }
     .we-header { display: flex; justify-content: space-between; align-items: center; padding: 15px var(--side-margin); max-width: 1400px; margin: 0 auto; transition: all 0.3s ease; }
     .we-logo-group { display: flex; align-items: center; gap: 12px; text-decoration: none; }
     .we-left-logo img { height: 45px; width: auto; display: block; }

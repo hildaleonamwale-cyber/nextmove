@@ -12,11 +12,11 @@
     /* =========================================
        DASHBOARD LAYOUT & SIDEBAR
        ========================================= */
-    .nm-dash-wrapper { display: flex; height: 100vh; width: 100vw; overflow: hidden; background: #ffffff; position: relative; }
+    .nm-dash-wrapper { display: flex; height: 100dvh; width: 100%; overflow: hidden; background: #ffffff; position: relative; }
 
-    .nm-sidebar { width: var(--sidebar-width); background: #ffffff; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 1000; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); flex-shrink: 0; }
+    .nm-sidebar { width: var(--sidebar-width); background: #ffffff; border-right: none; box-shadow: 4px 0 24px rgba(0,0,0,0.03); display: flex; flex-direction: column; z-index: 100002; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); flex-shrink: 0; }
     
-    .nm-sidebar-header { padding: 30px 25px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; border-bottom: 1px solid var(--border-color); }
+    .nm-sidebar-header { padding: 30px 25px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; border-bottom: none; }
     .nm-logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .nm-logo-wrap img { height: 35px; width: auto; }
     .nm-site-title { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
@@ -33,7 +33,7 @@
     .nm-nav-item.active { background: var(--dark); color: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
     .nm-nav-item.active i { color: var(--brand); }
 
-    .nm-sidebar-footer { padding: 20px 15px; border-top: 1px solid var(--border-color); }
+    .nm-sidebar-footer { padding: 20px 15px; border-top: none; }
     .nm-sidebar-profile-card { background: var(--input-bg); border-radius: 16px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; border: 1px solid var(--border-color); }
     .nm-sp-avatar { width: 40px; height: 40px; border-radius: 50%; background-size: cover; background-position: center; }
     .nm-sp-info { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
@@ -46,7 +46,7 @@
     .nm-upsell-btn { display: none; background: linear-gradient(135deg, #1A1C1E 0%, #2d3136 100%); color: var(--brand); text-decoration: none; padding: 14px; border-radius: 14px; text-align: center; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 13px; margin-bottom: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); transition: transform 0.2s; }
     .nm-upsell-btn:hover { transform: translateY(-2px); }
 
-    .nm-sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 999; opacity: 0; visibility: hidden; transition: 0.4s ease; }
+    .nm-sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; opacity: 0; visibility: hidden; transition: 0.4s ease; }
 
     /* =========================================
        MAIN CONTENT & DASHBOARD HEADER
@@ -54,8 +54,8 @@
     .nm-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; width: 100%; background: #ffffff; }
 
     /* Matching the user's requested we-header structure */
-    .we-header-wrapper { position: sticky; top: 0; z-index: 90; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.03); flex-shrink: 0; }
-    .we-header { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 15px 40px !important; border-bottom: 1px solid rgba(31, 230, 212, 0.15); transition: all 0.3s ease; }
+    .we-header-wrapper { z-index: 90; width: 100%; flex-shrink: 0; }
+    .we-header { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 15px 40px !important; border-bottom: none; box-shadow: 0 4px 24px rgba(0,0,0,0.04); transition: all 0.3s ease; }
     
     .nm-header-left { display: flex; align-items: center; gap: 20px; }
     .nm-mobile-hamburger { display: none; background: none; border: none; font-size: 24px; color: var(--dark); cursor: pointer; padding: 0; transition: 0.2s; }
@@ -110,8 +110,8 @@
     .nm-page-header h1 { font-family: 'Poppins', sans-serif; font-size: 21px; font-weight: 800; color: var(--dark); margin: 0; letter-spacing: -0.5px; }
     .nm-page-header p { font-family: 'Poppins', sans-serif; color: var(--gray-text); font-size: 14px; margin: 4px 0 0 0; }
     
-    .nm-card { background: #ffffff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid var(--border-color); }
-    .nm-table-card { background: #ffffff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid var(--border-color); overflow: hidden; }
+    .nm-card { background: #ffffff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid var(--border-color); box-sizing: border-box; }
+    .nm-table-card { background: #ffffff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid var(--border-color); overflow: hidden; box-sizing: border-box; }
 
     .nm-table-wrapper { width: 100%; overflow-x: auto; }
     .nm-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 700px; }
@@ -237,11 +237,16 @@
        NATIVE APP MOBILE RESPONSIVENESS
        ========================================= */
     @media (max-width: 1024px) {
+        .nm-dash-wrapper { height: auto; min-height: 100dvh; overflow-x: hidden; overflow-y: auto; flex-direction: column; width: 100%; }
+        .nm-main { overflow: visible; height: auto; width: 100%; }
+        .nm-content-scroll { overflow: visible; padding: 25px 25px 80px 25px; width: 100%; box-sizing: border-box; }
+        .we-header-wrapper { position: sticky; top: 0; background: #fff; z-index: 90; }
+
         .nm-sidebar { position: fixed; transform: translateX(-100%); top: 0; bottom: 0; box-shadow: 10px 0 40px rgba(0,0,0,0.15); border-radius: 0 30px 30px 0; }
         .nm-sidebar.active { transform: translateX(0); }
         .nm-sidebar-overlay.active { opacity: 1; visibility: visible; }
         
-        .we-header { padding: 15px 20px !important; gap: 15px; }
+        .we-header { padding: 15px 25px !important; gap: 15px; }
         .nm-header-left { flex: 1; }
         .nm-mobile-hamburger { display: block; }
         .nm-search-box { display: block; flex: 1; width: auto; max-width: none; margin-left: 10px; }
@@ -249,15 +254,13 @@
         .nm-search-box i { left: 14px; }
         .we-action-group { gap: 10px; }
         
-        .nm-content-scroll { padding: 25px 20px 80px 20px; }
-        
         .nm-bottom-grid { grid-template-columns: 1fr; gap: 20px; }
         .nm-editor-grid { grid-template-columns: 1fr; gap: 20px;}
         .nm-editor-bottom-grid { grid-template-columns: 1fr; gap: 20px;}
         
         .nm-user-profile { display: none; } 
         .nm-close-sidebar { display: block; }
-        .nm-card, .nm-table-card { padding: 20px; border-radius: 20px;}
+        .nm-card, .nm-table-card { padding: 25px; border-radius: 20px;}
     }
 
     @media (max-width: 768px) {
@@ -280,7 +283,7 @@
         .nm-table { display: block; min-width: 100%; }
         .nm-table thead { display: none; } 
         .nm-table tbody { display: flex; flex-direction: column; gap: 15px; }
-        .nm-table tr { display: flex; flex-direction: column; background: #fff; padding: 20px; border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .nm-table tr { display: flex; flex-direction: column; background: #fff; padding: 25px; border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); box-sizing: border-box; }
         .nm-table td { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--input-bg); width: 100%; text-align: right; box-sizing: border-box; }
         .nm-table td::before { content: attr(data-label); font-size: 11px; font-weight: 700; color: var(--gray-text); text-transform: uppercase; letter-spacing: 0.5px; text-align: left; }
         .nm-table td:last-child { border-bottom: none; padding-bottom: 0; padding-top: 15px; margin-top: 5px; justify-content: flex-end; }
@@ -291,7 +294,7 @@
         .nm-form-grid { grid-template-columns: 1fr; gap: 15px;}
         .nm-form-group.full { grid-column: span 1; }
         
-        .nm-update-list-item { flex-direction: column; align-items: flex-start; gap: 15px; padding: 20px;}
+        .nm-update-list-item { flex-direction: column; align-items: flex-start; gap: 15px; padding: 25px;}
         .nm-update-list-item .nm-action-btn { align-self: flex-end; width: 100%; }
         
         .nm-notification-popover { right: -60px; width: 300px; }

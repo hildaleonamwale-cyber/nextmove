@@ -1,8 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import './GladeDashboard.css';
+import { useAppContext } from '../../context/AppContext';
 
 export default function GladeDashboard() {
+    const { users, updateUser } = useAppContext();
     const [activeTab, setActiveTab] = useState('cms');
     const [sidebarActive, setSidebarActive] = useState(false);
     const [notifActive, setNotifActive] = useState(false);
@@ -13,6 +15,9 @@ export default function GladeDashboard() {
     const [billingPlan, setBillingPlan] = useState('Agency Pro ($250/mo)');
     const [inviteSent, setInviteSent] = useState(false);
     const [isSending, setIsSending] = useState(false);
+    const [topUpModalActive, setTopUpModalActive] = useState(false);
+    const [topUpUserId, setTopUpUserId] = useState<string | null>(null);
+    const [topUpAmount, setTopUpAmount] = useState<number>(0);
     const [pendingPayments, setPendingPayments] = useState<any[]>([
         {
             id: 'demo-1',
@@ -505,7 +510,7 @@ export default function GladeDashboard() {
                         <h1>Global Listing Moderation</h1>
                         <p>Monitor, feature, or ban properties across the entire platform.</p>
                     </div>
-                    <div className="nm-search-box" style={{"width":"250px"}}>
+                    <div className="nm-search-box">
                         <i className="fa-solid fa-magnifying-glass"></i>
                         <input type="text" placeholder="Search by ID or Title..." />
                     </div>
@@ -785,7 +790,7 @@ export default function GladeDashboard() {
                         <h1>Manage Users</h1>
                         <p>Global directory of all registered accounts.</p>
                     </div>
-                    <div className="nm-search-box" style={{"width":"250px"}}>
+                    <div className="nm-search-box">
                         <i className="fa-solid fa-magnifying-glass"></i>
                         <input type="text" placeholder="Search by name or email..." />
                     </div>
@@ -793,40 +798,28 @@ export default function GladeDashboard() {
 
                 <div className="nm-table-card">
                     <table className="nm-table">
-                        <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+                        <thead><tr><th>User</th><th>Role</th><th>Wallet Balance</th><th>Status</th><th>Actions</th></tr></thead>
                         <tbody>
-                            <tr>
-                                <td data-label="User">
-                                    <div className="nm-td-flex">
-                                        <div className="nm-avatar initials" style={{"background":"rgba(31, 230, 212, 0.15)","color":"#0ba395"}}>WE</div>
-                                        <div className="nm-info-text"><strong>Willow & Elm</strong><span>hello@willowelm.co.zw</span></div>
-                                    </div>
-                                </td>
-                                <td data-label="Role">Agency Pro</td>
-                                <td data-label="Status"><span className="nm-badge active">Active</span></td>
-                                <td data-label="Actions">
-                                    <div className="nm-actions">
-                                        <button className="nm-action-btn"><i className="fa-solid fa-pen-to-square"></i></button>
-                                        <button className="nm-action-btn warn" title="Suspend"><i className="fa-solid fa-ban"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td data-label="User">
-                                    <div className="nm-td-flex">
-                                        <div className="nm-avatar initials" style={{"background":"var(--input-bg)","color":"var(--dark)"}}>JD</div>
-                                        <div className="nm-info-text"><strong>John Doe</strong><span>johndoe@gmail.com</span></div>
-                                    </div>
-                                </td>
-                                <td data-label="Role">Basic User</td>
-                                <td data-label="Status"><span className="nm-badge active">Active</span></td>
-                                <td data-label="Actions">
-                                    <div className="nm-actions">
-                                        <button className="nm-action-btn"><i className="fa-solid fa-pen-to-square"></i></button>
-                                        <button className="nm-action-btn warn" title="Suspend"><i className="fa-solid fa-ban"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
+                            {users.map(user => (
+                                <tr key={user.id}>
+                                    <td data-label="User">
+                                        <div className="nm-td-flex">
+                                            <div className="nm-avatar initials" style={{"background":"rgba(31, 230, 212, 0.15)","color":"#0ba395"}}>{user.name.substring(0, 2).toUpperCase()}</div>
+                                            <div className="nm-info-text"><strong>{user.name}</strong><span>{user.id}@example.com</span></div>
+                                        </div>
+                                    </td>
+                                    <td data-label="Role">{user.role}</td>
+                                    <td data-label="Wallet Balance">${user.walletBalance}</td>
+                                    <td data-label="Status"><span className="nm-badge active">Active</span></td>
+                                    <td data-label="Actions">
+                                        <div className="nm-actions">
+                                            <button className="nm-action-btn" title="Top Up Wallet" onClick={() => { setTopUpUserId(user.id); setTopUpAmount(0); setTopUpModalActive(true); }}><i className="fa-solid fa-wallet"></i></button>
+                                            <button className="nm-action-btn"><i className="fa-solid fa-pen-to-square"></i></button>
+                                            <button className="nm-action-btn warn" title="Suspend"><i className="fa-solid fa-ban"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
@@ -1120,6 +1113,31 @@ export default function GladeDashboard() {
     </div>
 </div>
 
+
+<div className={`we-modal-overlay ${topUpModalActive ? 'active' : ''}`} id="topUpModal" onClick={() => setTopUpModalActive(false)} style={{ display: topUpModalActive ? 'flex' : 'none' }}>
+    <div className="we-auth-card" onClick={(e) => e.stopPropagation()}>
+        <i className="fa-solid fa-xmark we-modal-close-icon" onClick={() => setTopUpModalActive(false)}></i>
+        <div className="we-auth-icon">
+            <i className="fa-solid fa-wallet"></i>
+        </div>
+        <h3 className="we-auth-title">Top Up Wallet</h3>
+        <p className="we-auth-desc">Add funds to user's wallet.</p>
+        <div style={{ marginBottom: '20px' }}>
+            <label className="nm-form-label">Amount ($)</label>
+            <input type="number" className="nm-form-input" value={topUpAmount} onChange={(e) => setTopUpAmount(Number(e.target.value))} />
+        </div>
+        <button className="we-auth-btn we-auth-primary" onClick={() => {
+            if (topUpUserId && topUpAmount > 0) {
+                const user = users.find(u => u.id === topUpUserId);
+                if (user) {
+                    updateUser(topUpUserId, { walletBalance: user.walletBalance + topUpAmount });
+                    setTopUpModalActive(false);
+                    alert(`Successfully added $${topUpAmount} to ${user.name}'s wallet.`);
+                }
+            }
+        }}>Top Up</button>
+    </div>
+</div>
 
         </>
     );

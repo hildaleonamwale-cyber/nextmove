@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAppContext } from './context/AppContext';
 
 const propTypes = ['residential', 'commercial', 'stand', 'room'];
 
@@ -104,6 +105,8 @@ const mockData: Record<string, any> = {
 };
 
 export default function SingleProperty({ onBack, propertyType = 'residential' }: { onBack: () => void, propertyType?: string }) {
+    const { currentUser } = useAppContext();
+    const isFreePlan = currentUser?.role === 'basic';
     const initialIndex = propTypes.indexOf(propertyType) !== -1 ? propTypes.indexOf(propertyType) : 0;
     const [propIndex, setPropIndex] = useState(initialIndex);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -241,13 +244,6 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
                             <div className="sp-amenity-pill" key={i}>{item}</div>
                         ))}
                     </div>
-
-                    <h2 className="sp-section-title">Location</h2>
-                    <div className="sp-map-box" style={{ backgroundImage: "url('https://www.mapquest.com/mq/maps/mapUrl?size=1200,600&zoom=13&center=-17.753,31.082')" }}>
-                        <div className="sp-map-overlay">
-                            <button className="sp-map-btn"><i className="fa-solid fa-map-location-dot"></i> Map preview block — <span id="mapLoc">{data.location}</span></button>
-                        </div>
-                    </div>
                 </div>
 
                 <div className="sp-sidebar">
@@ -272,11 +268,13 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
                                 </div>
                             </div>
 
-                            <p className="sp-agent-prompt">Interested in this listing? Schedule an appointment or contact the agent directly for more information.</p>
+                            <p className="sp-agent-prompt">Interested in this listing? {isFreePlan ? 'Contact the agent directly for more information.' : 'Schedule an appointment or contact the agent directly for more information.'}</p>
 
-                            <button className="sp-btn sp-btn-brand" onClick={handleSchedule}><i className="fa-regular fa-calendar-check"></i> Schedule Appointment</button>
+                            {!isFreePlan && (
+                                <button className="sp-btn sp-btn-brand" onClick={handleSchedule}><i className="fa-regular fa-calendar-check"></i> Schedule Appointment</button>
+                            )}
                             <button className="sp-btn sp-btn-dark" onClick={handleWhatsApp}><i className="fa-brands fa-whatsapp" style={{ fontSize: '16px' }}></i> WhatsApp Agent</button>
-                            <Link to="/profile" className="sp-btn sp-btn-outline" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}><i className="fa-regular fa-user"></i> View Profile</Link>
+                            <Link to="/profile" className="sp-btn sp-btn-outline" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}><i className="fa-regular fa-user"></i> {isFreePlan ? 'View All Listings' : 'View Profile'}</Link>
 
                             <div className="sp-meta" style={{ marginTop: '25px', paddingTop: '20px', borderTop: '1px solid var(--input-bg)' }}>
                                 <div className="sp-meta-row"><span className="sp-meta-label">Response Time</span><span className="sp-meta-val">Usually within 1 hour</span></div>

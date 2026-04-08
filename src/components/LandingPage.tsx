@@ -378,6 +378,10 @@ export default function LandingPage() {
                                         <div className="we-icon-item"><i className="fa-solid fa-bath"></i> 2 Bath</div>
                                         <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 220 m²</div>
                                     </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -394,6 +398,10 @@ export default function LandingPage() {
                                         <div className="we-icon-item"><i className="fa-solid fa-bed"></i> 2 Bed</div>
                                         <div className="we-icon-item"><i className="fa-solid fa-bath"></i> 1 Bath</div>
                                         <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 110 m²</div>
+                                    </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
                                     </div>
                                 </div>
                             </div>
@@ -412,6 +420,10 @@ export default function LandingPage() {
                                         <div className="we-icon-item"><i className="fa-solid fa-snowflake"></i> Air Con</div>
                                         <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 850 m²</div>
                                     </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -427,6 +439,10 @@ export default function LandingPage() {
                                         <div className="we-icon-item"><i className="fa-solid fa-bed"></i> Private Room</div>
                                         <div className="we-icon-item"><i className="fa-solid fa-bath"></i> Shared Bath</div>
                                         <div className="we-icon-item"><i className="fa-solid fa-door-open"></i> Own Entrance</div>
+                                    </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
                                     </div>
                                 </div>
                             </div>
@@ -444,6 +460,10 @@ export default function LandingPage() {
                                         <div className="we-icon-item"><i className="fa-solid fa-users"></i> High Traffic</div>
                                         <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 120 m²</div>
                                     </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -457,6 +477,10 @@ export default function LandingPage() {
                                         <div className="we-icon-item"><i className="fa-solid fa-bed"></i> 4 Bed</div>
                                         <div className="we-icon-item"><i className="fa-solid fa-bath"></i> 3 Bath</div>
                                         <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 320 m²</div>
+                                    </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
                                     </div>
                                 </div>
                             </div>
@@ -488,6 +512,10 @@ export default function LandingPage() {
                                         <div className="we-icon-item"><i className="fa-solid fa-file-contract"></i> Title Deed</div>
                                         <div className="we-icon-item"><span className="we-service-label">Service:</span> 80%</div>
                                     </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -501,6 +529,10 @@ export default function LandingPage() {
                                         <div className="we-icon-item"><i className="fa-solid fa-ruler-combined"></i> 1200 m²</div>
                                         <div className="we-icon-item"><i className="fa-solid fa-file-signature"></i> Cession</div>
                                         <div className="we-icon-item"><span className="we-service-label">Service:</span> 60%</div>
+                                    </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
                                     </div>
                                 </div>
                             </div>
@@ -516,6 +548,10 @@ export default function LandingPage() {
                                         <div className="we-icon-item"><i className="fa-solid fa-file-contract"></i> Title Deed</div>
                                         <div className="we-icon-item"><span className="we-service-label">Service:</span> 100%</div>
                                     </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -529,6 +565,10 @@ export default function LandingPage() {
                                         <div className="we-icon-item"><i className="fa-solid fa-ruler-combined"></i> 800 m²</div>
                                         <div className="we-icon-item"><i className="fa-solid fa-file-signature"></i> Cession</div>
                                         <div className="we-icon-item"><span className="we-service-label">Service:</span> 40%</div>
+                                    </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
                                     </div>
                                 </div>
                             </div>
@@ -557,6 +597,10 @@ export default function LandingPage() {
                                     <div className="we-icons-row">
                                         <div className="we-icon-item" style={{color: 'var(--gray-text)'}}>Closed 2 days ago</div>
                                     </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -571,6 +615,10 @@ export default function LandingPage() {
                                     <div className="we-icons-row">
                                         <div className="we-icon-item" style={{color: 'var(--gray-text)'}}>Closed 1 week ago</div>
                                     </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -584,6 +632,10 @@ export default function LandingPage() {
                                     <div className="we-location"><i className="fa-solid fa-location-dot"></i> Highlands</div>
                                     <div className="we-icons-row">
                                         <div className="we-icon-item" style={{color: 'var(--gray-text)'}}>Closed Oct 2025</div>
+                                    </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
                                     </div>
                                 </div>
                             </div>
@@ -773,6 +825,10 @@ export default function LandingPage() {
                                     </div>
                                     <div className="we-form-group"><label className="we-form-label">Corner Stand?</label>
                                         <select className="we-form-select"><option>No</option><option>Yes</option></select>
+                                    </div>
+                                    <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                                        <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
                                     </div>
                                 </div>
                             </div>

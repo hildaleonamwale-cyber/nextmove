@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Download, CreditCard, CheckCircle2, Clock, AlertCircle, X, Copy, AlertTriangle, Check } from 'lucide-react';
+import { Download, CreditCard, CheckCircle2, Clock, AlertCircle, X, Copy, AlertTriangle, Check, Wallet } from 'lucide-react';
+import { useAppContext } from '../../context/AppContext';
 
 interface BillingProps {
   currentRole: string;
@@ -7,6 +8,7 @@ interface BillingProps {
 }
 
 export default function Billing({ currentRole, onUpgradeClick }: BillingProps) {
+  const { currentUser, updateUser } = useAppContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [phone, setPhone] = useState('');
   const [txn, setTxn] = useState('');
@@ -14,8 +16,18 @@ export default function Billing({ currentRole, onUpgradeClick }: BillingProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [demoState, setDemoState] = useState<'active' | 'expiring' | 'expired'>('expiring');
 
-  const planName = currentRole === 'admin' ? 'Agency' : currentRole === 'pro' ? 'Individual Pro' : 'Basic';
-  const planPrice = currentRole === 'admin' ? 250 : currentRole === 'pro' ? 9.99 : 0;
+  const planName = currentRole === 'admin' ? 'Agency' : currentRole === 'premium' ? 'Individual Premium' : 'Basic';
+  const planPrice = currentRole === 'admin' ? 250 : currentRole === 'premium' ? 9.99 : 0;
+
+  const handleWalletPayment = () => {
+    if (currentUser && currentUser.walletBalance >= planPrice) {
+      updateUser(currentUser.id, { walletBalance: currentUser.walletBalance - planPrice });
+      setDemoState('active');
+      alert(`Successfully renewed ${planName} plan using wallet balance!`);
+    } else {
+      alert("Insufficient wallet balance. Please top up or use another payment method.");
+    }
+  };
 
   const getStatusDetails = () => {
     const today = new Date();
@@ -132,14 +144,25 @@ export default function Billing({ currentRole, onUpgradeClick }: BillingProps) {
               <p style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#6B7280', fontWeight: 500 }}>Upcoming Invoice</p>
               <p style={{ margin: 0, fontSize: '16px', color: '#111827', fontWeight: 600 }}>${planPrice.toFixed(2)} <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 400 }}>due {endDate.toLocaleDateString()}</span></p>
             </div>
-            <button 
-              onClick={() => setIsModalOpen(true)}
-              style={{ background: '#111827', color: '#fff', padding: '10px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer', transition: 'background 0.2s' }}
-              onMouseOver={(e) => e.currentTarget.style.background = '#000'}
-              onMouseOut={(e) => e.currentTarget.style.background = '#111827'}
-            >
-              Pay Invoice
-            </button>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button 
+                onClick={handleWalletPayment}
+                style={{ background: '#F3F4F6', color: '#111827', padding: '10px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, border: '1px solid #D1D5DB', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
+                onMouseOver={(e) => e.currentTarget.style.background = '#E5E7EB'}
+                onMouseOut={(e) => e.currentTarget.style.background = '#F3F4F6'}
+              >
+                <Wallet size={16} />
+                Pay with Wallet (${currentUser?.walletBalance?.toFixed(2) || '0.00'})
+              </button>
+              <button 
+                onClick={() => setIsModalOpen(true)}
+                style={{ background: '#111827', color: '#fff', padding: '10px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer', transition: 'background 0.2s' }}
+                onMouseOver={(e) => e.currentTarget.style.background = '#000'}
+                onMouseOut={(e) => e.currentTarget.style.background = '#111827'}
+              >
+                Pay Invoice
+              </button>
+            </div>
           </div>
         </div>
       </div>

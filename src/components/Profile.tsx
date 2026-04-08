@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/profile.css';
+import { useAppContext } from '../context/AppContext';
 
 export default function Profile() {
+  const { currentUser } = useAppContext();
+  const isFreePlan = currentUser?.role === 'basic';
   const [activeTab, setActiveTab] = useState('listings');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -261,18 +264,22 @@ export default function Profile() {
           >
             LISTINGS
           </div>
-          <div
-            className={`nm-tab ${activeTab === 'updates' ? 'active' : ''}`}
-            onClick={() => setActiveTab('updates')}
-          >
-            UPDATES
-          </div>
-          <div
-            className={`nm-tab ${activeTab === 'info' ? 'active' : ''}`}
-            onClick={() => setActiveTab('info')}
-          >
-            INFO
-          </div>
+          {!isFreePlan && (
+            <>
+              <div
+                className={`nm-tab ${activeTab === 'updates' ? 'active' : ''}`}
+                onClick={() => setActiveTab('updates')}
+              >
+                UPDATES
+              </div>
+              <div
+                className={`nm-tab ${activeTab === 'info' ? 'active' : ''}`}
+                onClick={() => setActiveTab('info')}
+              >
+                INFO
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -358,6 +365,10 @@ export default function Profile() {
                       </div>
                     ))}
                   </div>
+                  <div className="we-card-actions" style={{ display: 'flex', gap: '10px', marginTop: '15px', borderTop: '1px solid #F3F4F6', paddingTop: '15px' }}>
+                      <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'mailto:agent@example.com'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-regular fa-envelope"></i> Email</button>
+                      <button className="we-action-btn" style={{ flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#fff', color: '#4B5563', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s' }} onClick={(e) => { e.stopPropagation(); window.location.href = 'tel:+1234567890'; }} onMouseOver={(e) => e.currentTarget.style.background = '#F9FAFB'} onMouseOut={(e) => e.currentTarget.style.background = '#fff'}><i className="fa-solid fa-phone"></i> Phone</button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -365,7 +376,7 @@ export default function Profile() {
         </div>
       )}
 
-      {activeTab === 'updates' && (
+      {!isFreePlan && activeTab === 'updates' && (
         <div id="tab-updates" className="nm-tab-content active">
           <div className="nm-updates-container">
             <div className="nm-update-card">
@@ -400,7 +411,7 @@ export default function Profile() {
         </div>
       )}
 
-      {activeTab === 'info' && (
+      {!isFreePlan && activeTab === 'info' && (
         <div id="tab-info" className="nm-tab-content active">
           <div className="nm-info-container">
             <div className="nm-info-box">

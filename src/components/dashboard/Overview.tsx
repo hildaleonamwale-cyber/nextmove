@@ -18,7 +18,7 @@ export default function Overview({ currentRole }: OverviewProps) {
           tableTitle: "Recent Company Requests",
           rankText: "Your company is in the top 5% this month!"
         };
-      case 'pro':
+      case 'premium':
         return {
           welcomeText: "Welcome back, Sarah",
           welcomeSub: "Here's what's happening with your portfolio today.",
@@ -50,7 +50,7 @@ export default function Overview({ currentRole }: OverviewProps) {
           stat3Label: "New Requests (Locked)", stat3Val: "2",
           stat4Label: "Sold Properties", stat4Val: "0",
           tableTitle: "My Properties",
-          rankText: "Upgrade to Pro to boost visibility!"
+          rankText: "Upgrade to Premium to boost visibility!"
         };
     }
   };

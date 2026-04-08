@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/dashboard.css';
+import { useAppContext } from '../context/AppContext';
 
 import Overview from './dashboard/Overview';
 import Listings from './dashboard/Listings';
@@ -11,11 +12,13 @@ import ManageStaff from './dashboard/ManageStaff';
 import Billing from './dashboard/Billing';
 import ContactCard from './dashboard/ContactCard';
 import AddListingModal from './dashboard/AddListingModal';
+import Wallet from './dashboard/Wallet';
 
-const roles = ['admin', 'pro', 'worker', 'basic'];
-const roleLabels = ['God Mode', 'Pro User', 'Staff Agent', 'Basic User'];
+const roles = ['admin', 'premium', 'worker', 'basic'];
+const roleLabels = ['God Mode', 'Premium User', 'Staff Agent', 'Basic User'];
 
 export default function Dashboard() {
+  const { users, setCurrentUser } = useAppContext();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [currentTab, setCurrentTab] = useState('overview');
@@ -30,10 +33,16 @@ export default function Dashboard() {
   useEffect(() => {
     if ((currentRole === 'worker' || currentRole === 'basic') && ['company', 'staff', 'billing'].includes(currentTab)) {
       setCurrentTab('overview');
-    } else if (currentRole === 'pro' && currentTab === 'staff') {
+    } else if (currentRole === 'premium' && currentTab === 'staff') {
       setCurrentTab('overview');
     }
-  }, [currentRole, currentTab]);
+    
+    // Update current user in context based on role
+    const user = users.find(u => u.role === currentRole);
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, [currentRole, currentTab, users, setCurrentUser]);
 
   const cycleRole = () => {
     setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
@@ -62,10 +71,10 @@ export default function Dashboard() {
           avatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')",
           sideAvatar: "url('https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png')"
         };
-      case 'pro':
+      case 'premium':
         return {
-          name: "Sarah Jenkins", role: "Pro Agent",
-          sideName: "Sarah Jenkins", sideRole: "Pro Plan",
+          name: "Sarah Jenkins", role: "Premium Agent",
+          sideName: "Sarah Jenkins", sideRole: "Premium Plan",
           avatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')",
           sideAvatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')"
         };
@@ -120,13 +129,16 @@ export default function Dashboard() {
             <i className="fa-solid fa-border-all"></i> Overview
           </button>
           <button className={`nm-nav-item ${currentTab === 'listings' ? 'active' : ''}`} onClick={() => switchTab('listings')}>
-            <i className="fa-solid fa-house"></i> {currentRole === 'admin' || currentRole === 'pro' ? 'All Listings' : 'My Listings'}
+            <i className="fa-solid fa-house"></i> {currentRole === 'admin' || currentRole === 'premium' ? 'All Listings' : 'My Listings'}
           </button>
           <button className={`nm-nav-item ${currentTab === 'requests' ? 'active' : ''}`} onClick={() => switchTab('requests')}>
             <i className="fa-regular fa-calendar-check"></i> Viewing Requests
           </button>
+          <button className={`nm-nav-item ${currentTab === 'wallet' ? 'active' : ''}`} onClick={() => switchTab('wallet')}>
+            <i className="fa-solid fa-wallet"></i> My Wallet
+          </button>
           
-          {(currentRole === 'admin' || currentRole === 'pro') && (
+          {(currentRole === 'admin' || currentRole === 'premium') && (
             <>
               <div className="nm-nav-label">Settings</div>
               <button className={`nm-nav-item ${currentTab === 'company' ? 'active' : ''}`} onClick={() => switchTab('company')}>
@@ -149,13 +161,16 @@ export default function Dashboard() {
               <button className={`nm-nav-item ${currentTab === 'contact' ? 'active' : ''}`} onClick={() => switchTab('contact')}>
                 <i className="fa-regular fa-id-badge"></i> Contact Card
               </button>
+              <button className={`nm-nav-item ${currentTab === 'billing' ? 'active' : ''}`} onClick={() => switchTab('billing')}>
+                <i className="fa-solid fa-credit-card"></i> Billing & Plan
+              </button>
             </>
           )}
         </div>
 
         <div className="nm-sidebar-footer">
           {currentRole === 'basic' && (
-            <button className="nm-upsell-btn" onClick={handleUpgradeClick}>⭐ Upgrade to Pro</button>
+            <button className="nm-upsell-btn" onClick={handleUpgradeClick}>⭐ Upgrade to Premium</button>
           )}
           
           <div className="nm-sidebar-profile-card">
@@ -240,6 +255,7 @@ export default function Dashboard() {
           {currentTab === 'staff' && <ManageStaff />}
           {currentTab === 'billing' && <Billing currentRole={currentRole} onUpgradeClick={handleUpgradeClick} />}
           {currentTab === 'contact' && <ContactCard />}
+          {currentTab === 'wallet' && <Wallet />}
         </div>
       </main>
 

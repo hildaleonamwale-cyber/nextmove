@@ -11,6 +11,7 @@ import ProfileSetup from './components/auth/ProfileSetup';
 import GladeDashboard from './components/glade/GladeDashboard';
 import SearchResults from './components/SearchResults';
 import Calculator from './components/Calculator';
+import DemoDataSeeder from './components/admin/DemoDataSeeder';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
             <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
             <Route path="/glade" element={<GladeDashboard />} />
+            <Route path="/admin/seed-demo-data" element={<DemoDataSeeder />} />
           </Routes>
         </Router>
       </AppProvider>

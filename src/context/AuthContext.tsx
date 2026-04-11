@@ -102,58 +102,71 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            full_name: fullName,
+            role: role,
+          }
+        }
       });
 
       if (error) throw error;
+      if (!data.user) throw new Error('No user returned from signup');
 
-      if (data.user) {
-        setUser({
-          id: data.user.id,
-          email: data.user.email || '',
-        });
+      const userId = data.user.id;
+      setUser({
+        id: userId,
+        email: data.user.email || '',
+      });
 
-        // Create profile
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: data.user.id,
-              email,
-              full_name: fullName,
-              role,
-            },
-          ])
-          .select()
-          .maybeSingle();
+      // Create profile with proper error handling
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .insert([
+          {
+            id: userId,
+            email,
+            full_name: fullName,
+            role,
+            is_active: true,
+          },
+        ])
+        .select()
+        .maybeSingle();
 
-        if (profileError) throw profileError;
-        setProfile(profileData);
+      if (profileError) throw profileError;
+      setProfile(profileData);
 
-        // Create wallet
-        const { error: walletError } = await supabase
-          .from('wallet')
-          .insert([
-            {
-              user_id: data.user.id,
-              balance: role === 'basic' ? 0 : role === 'premium' ? 100 : role === 'admin' ? 500 : 0,
-            },
-          ]);
+      // Create wallet
+      const { error: walletError } = await supabase
+        .from('wallet')
+        .insert([
+          {
+            user_id: userId,
+            balance: role === 'basic' ? 0 : role === 'premium' ? 100 : role === 'admin' ? 500 : 0,
+          },
+        ]);
 
-        if (walletError) throw walletError;
+      if (walletError) {
+        console.error('Wallet creation error:', walletError);
+        throw walletError;
+      }
 
-        // Create subscription
-        const { error: subError } = await supabase
-          .from('subscriptions')
-          .insert([
-            {
-              user_id: data.user.id,
-              plan: role,
-              status: 'active',
-              current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            },
-          ]);
+      // Create subscription
+      const { error: subError } = await supabase
+        .from('subscriptions')
+        .insert([
+          {
+            user_id: userId,
+            plan: role,
+            status: 'active',
+            current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+        ]);
 
-        if (subError) throw subError;
+      if (subError) {
+        console.error('Subscription creation error:', subError);
+        throw subError;
       }
     } catch (error) {
       console.error('Sign up error:', error);

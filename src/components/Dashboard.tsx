@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/dashboard.css';
 import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 
 import Overview from './dashboard/Overview';
 import Listings from './dashboard/Listings';
@@ -20,15 +21,36 @@ const roleLabels = ['God Mode', 'Premium User', 'Staff Agent', 'Basic User'];
 
 export default function Dashboard() {
   const { users, setCurrentUser } = useAppContext();
+  const { user, profile, loading, signOut } = useAuth();
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [currentTab, setCurrentTab] = useState('overview');
-  
+
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-  
+
   const [isAddListingOpen, setIsAddListingOpen] = useState(false);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
-  const currentRole = roles[currentRoleIndex];
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/login');
+    }
+  }, [loading, user, navigate]);
+
+  if (loading || !user || !profile) {
+    return (
+      <div className="nm-dash-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#f8f9fa' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '14px', color: '#9CA3AF', marginBottom: '20px' }}>Loading dashboard...</div>
+          <div style={{ width: '40px', height: '40px', border: '3px solid #e5e7eb', borderTop: '3px solid #1FE6D4', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto' }} />
+        </div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  const currentRole = profile?.role || 'basic';
 
   // Smart routing when role changes
   useEffect(() => {
@@ -63,38 +85,27 @@ export default function Dashboard() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const getProfileData = () => {
-    switch (currentRole) {
-      case 'admin':
-        return {
-          name: "Sarah Jenkins", role: "Agency Admin",
-          sideName: "Willow & Elm", sideRole: "Agency Pro",
-          avatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')",
-          sideAvatar: "url('https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png')"
-        };
-      case 'premium':
-        return {
-          name: "Sarah Jenkins", role: "Premium Agent",
-          sideName: "Sarah Jenkins", sideRole: "Premium Plan",
-          avatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')",
-          sideAvatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')"
-        };
-      case 'worker':
-        return {
-          name: "Mike Ross", role: "Staff Agent",
-          sideName: "Mike Ross", sideRole: "Elite Realty",
-          avatar: "url('https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150')",
-          sideAvatar: "url('https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150')"
-        };
-      case 'basic':
-      default:
-        return {
-          name: "Jane Doe", role: "Private Lister",
-          sideName: "Jane Doe", sideRole: "Basic Plan",
-          avatar: "url('https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150')",
-          sideAvatar: "url('https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150')"
-        };
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case 'admin': return 'Agency Admin';
+      case 'premium': return 'Premium Agent';
+      case 'worker': return 'Staff Agent';
+      default: return 'Private Lister';
     }
+  };
+
+  const getProfileData = () => {
+    const avatarUrl = profile?.avatar_url || 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150';
+    const companyName = profile?.company_name || (currentRole === 'admin' ? 'Willow & Elm' : profile?.full_name);
+
+    return {
+      name: profile?.full_name || 'User',
+      role: getRoleLabel(currentRole),
+      sideName: currentRole === 'admin' ? companyName : profile?.full_name,
+      sideRole: currentRole === 'admin' ? 'Agency Pro' : currentRole === 'premium' ? 'Premium Plan' : 'Basic Plan',
+      avatar: `url('${avatarUrl}')`,
+      sideAvatar: `url('${avatarUrl}')`
+    };
   };
 
   const profileData = getProfileData();
@@ -187,7 +198,15 @@ export default function Dashboard() {
             </div>
           </div>
           
-          <Link to="/" className="nm-logout"><i className="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</Link>
+          <button
+            onClick={async () => {
+              await signOut();
+              navigate('/');
+            }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%' }}
+            className="nm-logout">
+            <i className="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+          </button>
         </div>
       </aside>
 

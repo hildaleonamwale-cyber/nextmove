@@ -1,59 +1,75 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Eye, EyeOff, Mail, Lock, User, ArrowRight, ShieldCheck, 
-  CheckCircle2, Loader2, Building2, Home
-} from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, ShieldCheck, CircleCheck as CheckCircle2, Loader as Loader2, Building2, Hop as Home } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
-type Step = 
-  | 'LOGIN' 
-  | 'SIGNUP_DETAILS' 
-  | 'VERIFY_EMAIL' 
+type Step =
+  | 'LOGIN'
+  | 'SIGNUP_DETAILS'
+  | 'VERIFY_EMAIL'
   | 'PRO_INVITE';
 
 type Role = 'OWNER' | 'AGENT' | null;
 
 export default function AgentPortal() {
   const navigate = useNavigate();
+  const { signUp, signIn } = useAuth();
   const [step, setStep] = useState<Step>('LOGIN');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [error, setError] = useState('');
+
   // Form State
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+
   // Role State
   const [role, setRole] = useState<Role>(null);
   const [agentFee, setAgentFee] = useState('');
 
-  // Handlers
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const emailInput = (e.currentTarget.elements.namedItem('email') as HTMLInputElement).value;
+      const passwordInput = (e.currentTarget.elements.namedItem('password') as HTMLInputElement).value;
+      await signIn(emailInput, passwordInput);
       navigate('/dashboard');
-    }, 1000);
+    } catch (err: any) {
+      setError(err.message || 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSignupDetailsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    if (!name || !email || !password) {
+      setError('Please fill in all fields');
+      return;
+    }
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
       setStep('VERIFY_EMAIL');
-    }, 1000);
+    }, 500);
   };
 
-  const handleSimulateVerification = () => {
+  const handleSimulateVerification = async () => {
+    setError('');
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      await signUp(email, password, name, 'premium');
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Sign up failed. Please try again.');
+    } finally {
       setIsLoading(false);
-      navigate('/setup', { state: { role: 'AGENT' } });
-    }, 1000);
+    }
   };
 
   const handleRoleSubmit = (e: React.FormEvent) => {
@@ -112,11 +128,16 @@ export default function AgentPortal() {
               
               {/* LOGIN STEP */}
               {step === 'LOGIN' && (
-                <motion.div 
+                <motion.div
                   key="login"
                   variants={pageVariants} initial="initial" animate="animate" exit="exit"
                 >
                   <form className="space-y-6" onSubmit={handleLoginSubmit}>
+                    {error && (
+                      <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-sm text-red-700">{error}</p>
+                      </div>
+                    )}
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Email address</label>
                       <div className="mt-1 relative rounded-md shadow-sm">
@@ -124,6 +145,7 @@ export default function AgentPortal() {
                           <Mail className="h-5 w-5 text-gray-400" />
                         </div>
                         <input
+                          name="email"
                           type="email" required
                           className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
                           placeholder="you@example.com"
@@ -138,6 +160,7 @@ export default function AgentPortal() {
                           <Lock className="h-5 w-5 text-gray-400" />
                         </div>
                         <input
+                          name="password"
                           type={showPassword ? "text" : "password"} required
                           className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 pr-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
                           placeholder="••••••••"

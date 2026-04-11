@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, ShieldCheck, CircleCheck as CheckCircle2, Loader as Loader2, Building2, Hop as Home } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import OtpVerification from './OtpVerification';
+import { supabase } from '../../lib/supabase';
 
 type Step =
   | 'LOGIN'
@@ -24,6 +26,7 @@ export default function AgentPortal() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userId, setUserId] = useState('');
 
   // Role State
   const [role, setRole] = useState<Role>(null);
@@ -59,17 +62,44 @@ export default function AgentPortal() {
     }, 500);
   };
 
-  const handleSimulateVerification = async () => {
+  const handleSignupVerification = async () => {
     setError('');
     setIsLoading(true);
     try {
-      await signUp(email, password, name, 'premium');
-      navigate('/dashboard');
+      const response = await signUp(email, password, name, 'premium');
+      if (response?.user?.id) {
+        setUserId(response.user.id);
+
+        const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL;
+        const anonKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY;
+
+        const sendOtpResponse = await fetch(`${supabaseUrl}/functions/v1/send-otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${anonKey}`,
+          },
+          body: JSON.stringify({
+            email,
+            userId: response.user.id,
+          }),
+        });
+
+        if (!sendOtpResponse.ok) {
+          throw new Error('Failed to send verification code');
+        }
+
+        setStep('VERIFY_EMAIL');
+      }
     } catch (err: any) {
       setError(err.message || 'Sign up failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleOtpVerificationComplete = () => {
+    navigate('/dashboard');
   };
 
   const handleRoleSubmit = (e: React.FormEvent) => {
@@ -236,7 +266,15 @@ export default function AgentPortal() {
                   key="signup-details"
                   variants={pageVariants} initial="initial" animate="animate" exit="exit"
                 >
-                  <form className="space-y-6" onSubmit={handleSignupDetailsSubmit}>
+                  <form className="space-y-6" onSubmit={async (e) => {
+                    e.preventDefault();
+                    setError('');
+                    if (!name || !email || !password) {
+                      setError('Please fill in all fields');
+                      return;
+                    }
+                    await handleSignupVerification();
+                  }}>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Full Name</label>
                       <div className="mt-1 relative rounded-md shadow-sm">
@@ -293,33 +331,11 @@ export default function AgentPortal() {
 
               {/* VERIFY EMAIL STEP */}
               {step === 'VERIFY_EMAIL' && (
-                <motion.div 
-                  key="verify-email"
-                  variants={pageVariants} initial="initial" animate="animate" exit="exit"
-                  className="text-center"
-                >
-                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-[#1FE6D4]/10 mb-6">
-                    <Mail className="h-8 w-8 text-[#15b8a9]" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Check your email</h3>
-                  <p className="text-sm text-gray-500 mb-6">
-                    We've sent a verification link to <br/><span className="font-medium text-gray-900">{email || 'your email'}</span>. You must click the link to continue.
-                  </p>
-                  
-                  <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-xl mb-6">
-                    <p className="text-xs text-yellow-800 font-medium">
-                      Developer Simulation: Click the button below to simulate clicking the email verification link.
-                    </p>
-                  </div>
-
-                  <button 
-                    onClick={handleSimulateVerification}
-                    disabled={isLoading}
-                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-[#1A1C1E] hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70"
-                  >
-                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Simulate Email Verification'}
-                  </button>
-                </motion.div>
+                <OtpVerification
+                  email={email}
+                  userId={userId}
+                  onVerificationComplete={handleOtpVerificationComplete}
+                />
               )}
 
               {/* PRO INVITE STEP */}

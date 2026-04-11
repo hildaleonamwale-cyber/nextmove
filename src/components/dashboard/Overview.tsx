@@ -9,8 +9,8 @@ export default function Overview({ currentRole }: OverviewProps) {
     switch (currentRole) {
       case 'admin':
         return {
-          welcomeText: "Welcome back, Sarah",
-          welcomeSub: "Here's what's happening with your entire company today.",
+          welcomeText: "Command Center",
+          welcomeSub: "Monitor your agency's performance metrics and recent activities in real-time.",
           stat1Label: "Company Active Listings", stat1Val: "142",
           stat2Label: "Total Company Views", stat2Val: "45.2k",
           stat3Label: "Company New Requests", stat3Val: "84",
@@ -20,8 +20,8 @@ export default function Overview({ currentRole }: OverviewProps) {
         };
       case 'premium':
         return {
-          welcomeText: "Welcome back, Sarah",
-          welcomeSub: "Here's what's happening with your portfolio today.",
+          welcomeText: "Command Center",
+          welcomeSub: "Monitor your portfolio's performance metrics and recent activities in real-time.",
           stat1Label: "Active Listings", stat1Val: "42",
           stat2Label: "Total Views", stat2Val: "15.2k",
           stat3Label: "New Requests", stat3Val: "24",
@@ -31,8 +31,8 @@ export default function Overview({ currentRole }: OverviewProps) {
         };
       case 'worker':
         return {
-          welcomeText: "Hello, Mike",
-          welcomeSub: "Here is the performance of your assigned portfolio.",
+          welcomeText: "Command Center",
+          welcomeSub: "Monitor your assigned portfolio's performance metrics and recent activities in real-time.",
           stat1Label: "My Active Listings", stat1Val: "12",
           stat2Label: "Total Profile Views", stat2Val: "1.2k",
           stat3Label: "My New Requests", stat3Val: "5",
@@ -43,8 +43,8 @@ export default function Overview({ currentRole }: OverviewProps) {
       case 'basic':
       default:
         return {
-          welcomeText: "Welcome, Jane",
-          welcomeSub: "Manage your personal property listings.",
+          welcomeText: "Command Center",
+          welcomeSub: "Monitor your property performance metrics and recent activities in real-time.",
           stat1Label: "My Active Listings", stat1Val: "1",
           stat2Label: "Total Property Views", stat2Val: "340",
           stat3Label: "New Requests (Locked)", stat3Val: "2",
@@ -73,6 +73,11 @@ export default function Overview({ currentRole }: OverviewProps) {
             <div className="nm-stat-label">{data.stat1Label}</div>
             <div className="nm-stat-value">{data.stat1Val}</div>
           </div>
+          <div style={{ position: 'absolute', bottom: '15px', right: '20px', opacity: 0.3 }}>
+            <svg width="80" height="30" viewBox="0 0 80 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 28 L20 20 L40 22 L60 10 L78 5" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
         </div>
         <div className="nm-stat-card">
           <div className="nm-stat-icon"><i className="fa-regular fa-eye"></i></div>
@@ -81,6 +86,11 @@ export default function Overview({ currentRole }: OverviewProps) {
             <div className="nm-stat-value">{data.stat2Val}</div>
           </div>
           <div className="nm-stat-trend"><i className="fa-solid fa-arrow-trend-up"></i> 12%</div>
+          <div style={{ position: 'absolute', bottom: '15px', right: '20px', opacity: 0.3 }}>
+            <svg width="80" height="30" viewBox="0 0 80 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 15 L20 10 L40 20 L60 5 L78 2" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
         </div>
         <div className="nm-stat-card highlight">
           <div className="nm-stat-icon"><i className="fa-regular fa-calendar"></i></div>
@@ -89,12 +99,22 @@ export default function Overview({ currentRole }: OverviewProps) {
             <div className="nm-stat-value">{data.stat3Val}</div>
           </div>
           <div className="nm-stat-trend"><i className="fa-solid fa-arrow-trend-up"></i> 5%</div>
+          <div style={{ position: 'absolute', bottom: '15px', right: '20px', opacity: 0.8 }}>
+            <svg width="80" height="30" viewBox="0 0 80 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 25 L15 15 L30 20 L50 5 L78 12" stroke="#1FE6D4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
         </div>
         <div className="nm-stat-card">
           <div className="nm-stat-icon"><i className="fa-solid fa-chart-line"></i></div>
           <div>
             <div className="nm-stat-label">{data.stat4Label}</div>
             <div className="nm-stat-value">{data.stat4Val}</div>
+          </div>
+          <div style={{ position: 'absolute', bottom: '15px', right: '20px', opacity: 0.3 }}>
+            <svg width="80" height="30" viewBox="0 0 80 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 20 L20 25 L40 10 L60 15 L78 5" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -137,7 +157,7 @@ export default function Overview({ currentRole }: OverviewProps) {
                   </td>
                   <td data-label="Status"><span className="nm-badge brand">Confirmed</span></td>
                 </tr>
-                <tr>
+                <tr className="nm-row-pending">
                   <td data-label="Client">
                     <div className="nm-td-flex">
                       <div className="nm-avatar initials">AS</div>

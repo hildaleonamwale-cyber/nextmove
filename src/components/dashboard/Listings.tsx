@@ -32,8 +32,8 @@ export default function Listings({ currentRole, onAddProperty }: ListingsProps) 
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h1>{pageTitle}</h1>
-          <p>Manage and track the performance of your properties.</p>
+          <h1>Property Portfolio</h1>
+          <p>Manage, optimize, and track the performance of your real estate assets.</p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <div style={{ background: '#F9FAFB', padding: '10px 15px', borderRadius: '12px', fontWeight: 'bold', color: '#1A1C1E', border: '1px solid #D1D5DB' }}>

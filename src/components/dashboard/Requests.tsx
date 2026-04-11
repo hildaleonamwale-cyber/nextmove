@@ -43,8 +43,8 @@ export default function Requests() {
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
         <div>
-          <h1>Viewing Requests</h1>
-          <p>Manage tour requests from potential buyers and renters.</p>
+          <h1>Inbound Inquiries</h1>
+          <p>Process and manage viewing requests from prospective clients.</p>
         </div>
       </div>
       <div className="nm-table-card">
@@ -60,7 +60,7 @@ export default function Requests() {
           </thead>
           <tbody>
             {requests.map(req => (
-              <tr key={req.id}>
+              <tr key={req.id} className={req.status === 'Pending' ? 'nm-row-pending' : ''}>
                 <td data-label="Client">
                   <div className="nm-td-flex">
                     <div className="nm-avatar initials" style={req.id === 2 ? { background: 'var(--input-bg)', color: 'var(--dark)' } : {}}>{req.clientInitials}</div>

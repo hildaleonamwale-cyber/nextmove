@@ -14,15 +14,15 @@ export default function Wallet() {
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
         <div>
-          <h1>My Wallet</h1>
-          <p>Manage your funds for ads, sponsored posts, and membership renewals.</p>
+          <h1>Financial Hub</h1>
+          <p>Manage your advertising budget, sponsored campaigns, and subscription funds.</p>
         </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '40px' }}>
         {/* Balance Card */}
-        <div className="nm-card" style={{ padding: '32px', background: 'linear-gradient(135deg, #111827 0%, #1f2937 100%)', color: 'white', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: '-20px', right: '-20px', opacity: 0.1 }}>
+        <div className="nm-card" style={{ padding: '32px', background: '#021211', color: 'white', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: '-20px', right: '-20px', opacity: 0.05, color: '#1FE6D4' }}>
             <WalletIcon size={150} />
           </div>
           <div style={{ position: 'relative', zIndex: 1 }}>

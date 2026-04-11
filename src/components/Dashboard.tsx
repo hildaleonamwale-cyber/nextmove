@@ -13,6 +13,7 @@ import Billing from './dashboard/Billing';
 import ContactCard from './dashboard/ContactCard';
 import AddListingModal from './dashboard/AddListingModal';
 import Wallet from './dashboard/Wallet';
+import Forms from './dashboard/Forms';
 
 const roles = ['admin', 'premium', 'worker', 'basic'];
 const roleLabels = ['God Mode', 'Premium User', 'Staff Agent', 'Basic User'];
@@ -134,6 +135,11 @@ export default function Dashboard() {
           <button className={`nm-nav-item ${currentTab === 'requests' ? 'active' : ''}`} onClick={() => switchTab('requests')}>
             <i className="fa-regular fa-calendar-check"></i> Viewing Requests
           </button>
+          {(currentRole === 'admin' || currentRole === 'premium') && (
+            <button className={`nm-nav-item ${currentTab === 'forms' ? 'active' : ''}`} onClick={() => switchTab('forms')}>
+              <i className="fa-solid fa-clipboard-list"></i> Form Submissions
+            </button>
+          )}
           <button className={`nm-nav-item ${currentTab === 'wallet' ? 'active' : ''}`} onClick={() => switchTab('wallet')}>
             <i className="fa-solid fa-wallet"></i> My Wallet
           </button>
@@ -192,7 +198,7 @@ export default function Dashboard() {
           <header className="we-header">
             <div className="nm-header-left">
               <button className="nm-mobile-hamburger" onClick={() => setIsSidebarOpen(true)}>
-                <i className="fa-solid fa-bars-staggered"></i>
+                <img src="https://image2url.com/r2/default/images/1775520819070-397d094c-92e4-4f64-af30-e2881143cc7e.png" alt="Menu" style={{ width: '35px', height: 'auto' }} />
               </button>
               <div className="nm-search-box">
                 <i className="fa-solid fa-magnifying-glass"></i>
@@ -201,6 +207,9 @@ export default function Dashboard() {
             </div>
 
           <div className="we-action-group">
+            <button className="nm-mobile-search-btn">
+              <i className="fa-solid fa-magnifying-glass"></i>
+            </button>
             <div className="nm-notif-wrap">
               <button className="nm-icon-btn" onClick={(e) => { e.stopPropagation(); setIsNotifOpen(!isNotifOpen); }}>
                 <i className="fa-regular fa-bell"></i>
@@ -251,6 +260,7 @@ export default function Dashboard() {
             }
           }} />}
           {currentTab === 'requests' && (currentRole === 'basic' ? <Paywall onUpgradeClick={handleUpgradeClick} /> : <Requests />)}
+          {currentTab === 'forms' && <Forms />}
           {currentTab === 'company' && <CompanyProfile currentRole={currentRole} />}
           {currentTab === 'staff' && <ManageStaff />}
           {currentTab === 'billing' && <Billing currentRole={currentRole} onUpgradeClick={handleUpgradeClick} />}

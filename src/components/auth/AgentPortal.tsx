@@ -10,7 +10,6 @@ type Step =
   | 'LOGIN' 
   | 'SIGNUP_DETAILS' 
   | 'VERIFY_EMAIL' 
-  | 'ROLE_SELECTION'
   | 'PRO_INVITE';
 
 type Role = 'OWNER' | 'AGENT' | null;
@@ -53,7 +52,7 @@ export default function AgentPortal() {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      setStep('ROLE_SELECTION');
+      navigate('/setup', { state: { role: 'AGENT' } });
     }, 1000);
   };
 
@@ -75,20 +74,20 @@ export default function AgentPortal() {
   };
 
   return (
-    <div className="h-screen bg-white flex font-sans overflow-hidden">
-      {/* Left Side: Form */}
-      <div className="flex-1 flex flex-col py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 lg:w-1/2 overflow-y-auto">
-        <div className="mx-auto w-full max-w-sm lg:w-96 my-auto">
+    <div className="min-h-screen bg-[#f8f9fa] flex font-sans overflow-hidden relative">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-gradient-to-br from-[#1FE6D4]/20 to-transparent rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-5%] left-[-5%] w-[30%] h-[30%] bg-gradient-to-tr from-gray-200/50 to-transparent rounded-full blur-[80px] pointer-events-none" />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24 relative z-10">
+        <div className="mx-auto w-full max-w-sm lg:w-96 backdrop-blur-xl bg-white/40 p-8 rounded-3xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)]">
           
-          <div className="mb-8">
-            <div className="h-12 w-12 bg-[#1A1C1E] rounded-xl flex items-center justify-center shadow-lg">
-              <ShieldCheck className="h-7 w-7 text-[#1FE6D4]" />
-            </div>
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900 tracking-tight">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
               {step === 'LOGIN' && 'Sign In'}
               {step === 'SIGNUP_DETAILS' && 'Create Free Account'}
               {step === 'VERIFY_EMAIL' && 'Verify Your Email'}
-              {step === 'ROLE_SELECTION' && 'Choose Your Role'}
               {step === 'PRO_INVITE' && 'Accept Pro Invite'}
             </h2>
             
@@ -126,7 +125,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type="email" required
-                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
+                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
                           placeholder="you@example.com"
                         />
                       </div>
@@ -140,7 +139,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type={showPassword ? "text" : "password"} required
-                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
+                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 pr-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
                           placeholder="••••••••"
                         />
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -179,16 +178,16 @@ export default function AgentPortal() {
                     <div className="mt-6 space-y-3">
                       <button
                         onClick={() => navigate('/glade')}
-                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
+                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-200 rounded-xl shadow-sm bg-white/50 backdrop-blur-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
                       >
-                        <ShieldCheck className="h-5 w-5 text-gray-400 mr-2 group-hover:text-[#1FE6D4] transition-colors" />
+                        <Building2 className="h-5 w-5 text-gray-400 mr-2 group-hover:text-[#1FE6D4] transition-colors" />
                         Super Admin Panel (The Glade)
                         <ArrowRight className="h-4 w-4 ml-2 text-gray-400 group-hover:translate-x-1 transition-transform" />
                       </button>
                       
                       <button
                         onClick={() => navigate('/dashboard')}
-                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
+                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-200 rounded-xl shadow-sm bg-white/50 backdrop-blur-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
                       >
                         <User className="h-5 w-5 text-gray-400 mr-2 group-hover:text-[#1FE6D4] transition-colors" />
                         Skip Login (Go to Dashboard)
@@ -197,7 +196,7 @@ export default function AgentPortal() {
 
                       <button
                         onClick={() => setStep('PRO_INVITE')}
-                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
+                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-200 rounded-xl shadow-sm bg-white/50 backdrop-blur-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
                       >
                         <Mail className="h-5 w-5 text-gray-400 mr-2 group-hover:text-[#1FE6D4] transition-colors" />
                         Demo: Accept Pro Invite Link
@@ -223,7 +222,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type="text" required value={name} onChange={(e) => setName(e.target.value)}
-                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
+                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
                           placeholder="John Doe"
                         />
                       </div>
@@ -237,7 +236,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
+                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
                           placeholder="you@example.com"
                         />
                       </div>
@@ -251,7 +250,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)}
-                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
+                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 pr-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
                           placeholder="••••••••"
                         />
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -300,83 +299,6 @@ export default function AgentPortal() {
                 </motion.div>
               )}
 
-              {/* ROLE SELECTION STEP */}
-              {step === 'ROLE_SELECTION' && (
-                <motion.div 
-                  key="role-selection"
-                  variants={pageVariants} initial="initial" animate="animate" exit="exit"
-                >
-                  <div className="mb-8">
-                    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-blue-50 mb-4">
-                      <User className="h-8 w-8 text-blue-600" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900">How will you use Nextmove?</h3>
-                    <p className="text-sm text-gray-500 mt-2">Select your role to continue setting up your profile.</p>
-                  </div>
-
-                  <form onSubmit={handleRoleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 gap-4">
-                      <div 
-                        onClick={() => setRole('OWNER')}
-                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-start gap-4 ${role === 'OWNER' ? 'border-[#1FE6D4] bg-[#1FE6D4]/5' : 'border-gray-200 hover:border-gray-300'}`}
-                      >
-                        <div className={`mt-1 h-5 w-5 rounded-full border flex items-center justify-center ${role === 'OWNER' ? 'border-[#1FE6D4]' : 'border-gray-300'}`}>
-                          {role === 'OWNER' && <div className="h-2.5 w-2.5 rounded-full bg-[#1FE6D4]" />}
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900 flex items-center gap-2"><Home className="h-4 w-4 text-gray-500" /> Property Owner</h4>
-                          <p className="text-sm text-gray-500 mt-1">I want to list my own properties for sale or rent.</p>
-                        </div>
-                      </div>
-
-                      <div 
-                        onClick={() => setRole('AGENT')}
-                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-start gap-4 ${role === 'AGENT' ? 'border-[#1FE6D4] bg-[#1FE6D4]/5' : 'border-gray-200 hover:border-gray-300'}`}
-                      >
-                        <div className={`mt-1 h-5 w-5 rounded-full border flex items-center justify-center ${role === 'AGENT' ? 'border-[#1FE6D4]' : 'border-gray-300'}`}>
-                          {role === 'AGENT' && <div className="h-2.5 w-2.5 rounded-full bg-[#1FE6D4]" />}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-gray-900 flex items-center gap-2"><Building2 className="h-4 w-4 text-gray-500" /> Real Estate Agent</h4>
-                          <p className="text-sm text-gray-500 mt-1">I am a professional agent listing properties for clients.</p>
-                          
-                          <AnimatePresence>
-                            {role === 'AGENT' && (
-                              <motion.div 
-                                initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                                className="mt-4"
-                              >
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Standard Agent Fee (%) <span className="text-red-500">*</span></label>
-                                <p className="text-xs text-gray-500 mb-2">This fee will be displayed publicly on all your listings for transparency.</p>
-                                <div className="relative rounded-md shadow-sm">
-                                  <input
-                                    type="number" min="0" max="100" step="0.1" required
-                                    value={agentFee} onChange={(e) => setAgentFee(e.target.value)}
-                                    className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pr-8 sm:text-sm border-gray-300 rounded-lg py-2 bg-white border transition-colors"
-                                    placeholder="e.g. 5"
-                                  />
-                                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                    <span className="text-gray-500 sm:text-sm">%</span>
-                                  </div>
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </div>
-                    </div>
-
-                    <button 
-                      type="submit" 
-                      disabled={!role || isLoading || (role === 'AGENT' && !agentFee)} 
-                      className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-[#1A1C1E] hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70"
-                    >
-                      {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Continue to Profile Setup'}
-                    </button>
-                  </form>
-                </motion.div>
-              )}
-
               {/* PRO INVITE STEP */}
               {step === 'PRO_INVITE' && (
                 <motion.div 
@@ -399,7 +321,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type="text" required value={name} onChange={(e) => setName(e.target.value)}
-                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
+                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
                           placeholder="Sarah Jenkins"
                         />
                       </div>
@@ -413,7 +335,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type="email" disabled value="admin@willowelm.co.zw"
-                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-100 text-gray-500 border transition-colors cursor-not-allowed"
+                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-100 text-gray-500 border transition-all cursor-not-allowed"
                         />
                       </div>
                     </div>
@@ -426,7 +348,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)}
-                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
+                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 pr-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
                           placeholder="••••••••"
                         />
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -446,20 +368,6 @@ export default function AgentPortal() {
 
             </AnimatePresence>
           </div>
-        </div>
-      </div>
-
-      {/* Right Side: Image */}
-      <div className="hidden lg:block relative w-0 flex-1">
-        <img 
-          className="absolute inset-0 h-full w-full object-cover" 
-          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
-          alt="Beautiful home" 
-        />
-        <div className="absolute inset-0 bg-[#1A1C1E]/60 mix-blend-multiply" />
-        <div className="absolute inset-0 flex flex-col justify-center px-16 text-white">
-          <h2 className="text-4xl font-bold mb-4">Welcome to Nextmove</h2>
-          <p className="text-xl text-gray-200">The modern platform for real estate professionals and property owners.</p>
         </div>
       </div>
     </div>

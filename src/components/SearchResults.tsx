@@ -102,32 +102,53 @@ export default function SearchResults() {
     const [savedProperties, setSavedProperties] = useState<Record<string, boolean>>({ '1': true }); // ID 1 is saved by default
     const { properties } = useAppContext();
 
+    // Filter states
+    const [priceFilter, setPriceFilter] = useState('all');
+    const [typeFilter, setTypeFilter] = useState('all');
+    const [bedsFilter, setBedsFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [locationFilter, setLocationFilter] = useState('all');
+    const [searchInput, setSearchInput] = useState(searchQuery);
+
+    const uniqueLocations = Array.from(new Set(properties.map(p => p.location))).sort();
+
     const filteredProperties = properties.filter(prop => {
         const text = `${prop.title} ${prop.location} ${prop.tag} ${prop.icons.map(i => i.text).join(' ')}`.toLowerCase();
         let isMatch = true;
 
-        if (searchQuery && !text.includes(searchQuery.toLowerCase())) {
+        if (searchInput && !text.includes(searchInput.toLowerCase())) {
             isMatch = false;
         }
 
-        if (searchCategory !== 'all') {
-            if (searchCategory === 'residential' && prop.type !== 'residential' && prop.type !== 'room') isMatch = false;
-            if (searchCategory === 'commercial' && prop.type !== 'commercial') isMatch = false;
-            if (searchCategory === 'stand' && prop.type !== 'stand') isMatch = false;
+        // Apply UI filters
+        if (typeFilter !== 'all' && prop.type !== typeFilter) isMatch = false;
+        if (locationFilter !== 'all' && prop.location !== locationFilter) isMatch = false;
+        
+        if (statusFilter !== 'all') {
+            if (statusFilter === 'sale' && !prop.tag.toLowerCase().includes('sale')) isMatch = false;
+            if (statusFilter === 'rent' && !prop.tag.toLowerCase().includes('rent')) isMatch = false;
         }
-
-        if (searchStatus !== 'all') {
-            if (searchStatus === 'sale' && !text.includes('for sale') && !text.includes('new release')) isMatch = false;
-            if (searchStatus === 'rent' && !text.includes('for rent') && !text.includes('for lease')) isMatch = false;
-            if (searchStatus === 'sold' && prop.status.toLowerCase() !== 'sold' && !text.includes('sold')) isMatch = false;
+        
+        if (bedsFilter !== 'all') {
+            const bedIcon = prop.icons.find(i => i.icon === 'fa-bed');
+            if (!bedIcon) {
+                isMatch = false;
+            } else {
+                const bedCount = parseInt(bedIcon.text);
+                if (isNaN(bedCount) || bedCount < parseInt(bedsFilter)) {
+                    isMatch = false;
+                }
+            }
         }
-
-        if (searchBeds !== 'all') {
-            if (!text.includes(`${searchBeds} bed`)) isMatch = false;
+        
+        if (priceFilter !== 'all') {
+            const [min, max] = priceFilter.split('-').map(Number);
+            if (max) {
+                if (prop.priceNum < min || prop.priceNum > max) isMatch = false;
+            } else {
+                if (prop.priceNum < min) isMatch = false;
+            }
         }
-
-        if (searchMinPrice && prop.priceNum < parseInt(searchMinPrice, 10)) isMatch = false;
-        if (searchMaxPrice && prop.priceNum > parseInt(searchMaxPrice, 10)) isMatch = false;
 
         return isMatch;
     }).sort((a, b) => {
@@ -160,7 +181,12 @@ export default function SearchResults() {
 
                     <div className="we-search-bar">
                         <i className="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" placeholder="Search properties..." />
+                        <input 
+                            type="text" 
+                            placeholder="Search properties..." 
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
+                        />
                     </div>
 
                     <div className="we-action-group">
@@ -214,15 +240,38 @@ export default function SearchResults() {
                 <div className="sr-left">
                     <div className="sr-filter-bar">
                         <button className="sr-filter-btn"><i className="fa-solid fa-sliders"></i> Filters</button>
-                        <button className="sr-filter-btn active">Any Price <i className="fa-solid fa-chevron-down"></i></button>
-                        <button className="sr-filter-btn">Property Type <i className="fa-solid fa-chevron-down"></i></button>
-                        <button className="sr-filter-btn">Beds & Baths <i className="fa-solid fa-chevron-down"></i></button>
-                        <button className="sr-filter-btn">For Sale <i className="fa-solid fa-chevron-down"></i></button>
-                        <button className="sr-filter-btn">For Rent <i className="fa-solid fa-chevron-down"></i></button>
+                        <select className="sr-filter-btn" value={locationFilter} onChange={(e) => setLocationFilter(e.target.value)}>
+                            <option value="all">All Locations</option>
+                            {uniqueLocations.map(loc => (
+                                <option key={loc} value={loc}>{loc}</option>
+                            ))}
+                        </select>
+                        <select className="sr-filter-btn" value={priceFilter} onChange={(e) => setPriceFilter(e.target.value)}>
+                            <option value="all">Any Price</option>
+                            <option value="0-50000">$0 - $50k</option>
+                            <option value="50000-150000">$50k - $150k</option>
+                            <option value="150000-500000">$150k - $500k</option>
+                            <option value="500000">$500k+</option>
+                        </select>
+                        <select className="sr-filter-btn" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+                            <option value="all">Property Type</option>
+                            <option value="residential">Residential</option>
+                            <option value="stand">Stands / Land</option>
+                            <option value="commercial">Commercial</option>
+                        </select>
+                        <select className="sr-filter-btn" value={bedsFilter} onChange={(e) => setBedsFilter(e.target.value)}>
+                            <option value="all">Beds & Baths</option>
+                            <option value="1">1+ Bed</option>
+                            <option value="2">2+ Bed</option>
+                            <option value="3">3+ Bed</option>
+                            <option value="4">4+ Bed</option>
+                        </select>
+                        <button className={`sr-filter-btn ${statusFilter === 'sale' ? 'active' : ''}`} onClick={() => setStatusFilter(statusFilter === 'sale' ? 'all' : 'sale')}>For Sale</button>
+                        <button className={`sr-filter-btn ${statusFilter === 'rent' ? 'active' : ''}`} onClick={() => setStatusFilter(statusFilter === 'rent' ? 'all' : 'rent')}>For Rent</button>
                     </div>
 
                     <div className="sr-header-text">
-                        <h1>{searchQuery ? `Results for "${searchQuery}"` : '142 Homes in Harare'}</h1>
+                        <h1>{searchInput ? `Results for "${searchInput}"` : `${filteredProperties.length} Homes in Harare`}</h1>
                         <button className="sr-sort"><span>Sort by:</span> Newest <i className="fa-solid fa-chevron-down"></i></button>
                     </div>
 
@@ -230,6 +279,11 @@ export default function SearchResults() {
                         {filteredProperties.map(prop => (
                             <div key={prop.id} className={`we-card ${prop.featured || prop.isSponsored ? 'featured' : ''} ${prop.status.toLowerCase() === 'sold' ? 'sold' : ''}`} onClick={() => { setSelectedPropertyType(prop.type); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: `url('${prop.image}')`}}>
+                                    {prop.status.toLowerCase() === 'sold' && (
+                                        <div className="we-sold-overlay">
+                                            <div className="we-sold-badge">SOLD</div>
+                                        </div>
+                                    )}
                                     <span className="we-tag" style={prop.tagStyle}>{prop.tag}</span>
                                     {prop.isSponsored ? (
                                         <span className="we-featured-tag" style={{ background: '#1FE6D4', color: '#1A1C1E' }}><i className="fa-solid fa-star"></i> Sponsored</span>

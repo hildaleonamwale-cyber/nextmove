@@ -548,7 +548,9 @@ export default function LandingPage() {
                             
                             <div className="we-card sold" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/1200x/58/75/a4/5875a4552941b69103b105da039155fe.jpg')"}}>
-                                    <div className="we-sold-overlay"><span className="we-sold-banner">SOLD</span></div>
+                                    <div className="we-sold-overlay">
+                                        <div className="we-sold-badge">SOLD</div>
+                                    </div>
                                 </div>
                                 <div className="we-body">
                                     <div className="we-price" style={{textDecoration: 'line-through', opacity: 0.6}}>$950,000</div>
@@ -562,7 +564,9 @@ export default function LandingPage() {
 
                             <div className="we-card sold" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/1200x/e7/89/16/e78916a958980deeec5ca032bdff3247.jpg')"}}>
-                                    <div className="we-sold-overlay"><span className="we-sold-banner">SOLD</span></div>
+                                    <div className="we-sold-overlay">
+                                        <div className="we-sold-badge">SOLD</div>
+                                    </div>
                                 </div>
                                 <div className="we-body">
                                     <div className="we-price" style={{textDecoration: 'line-through', opacity: 0.6}}>$320,000</div>
@@ -576,7 +580,9 @@ export default function LandingPage() {
 
                             <div className="we-card sold" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
                                 <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/1200x/fb/32/27/fb3227a1d3765b94578c1514f9e26fb2.jpg')"}}>
-                                    <div className="we-sold-overlay"><span className="we-sold-banner">SOLD</span></div>
+                                    <div className="we-sold-overlay">
+                                        <div className="we-sold-badge">SOLD</div>
+                                    </div>
                                 </div>
                                 <div className="we-body">
                                     <div className="we-price" style={{textDecoration: 'line-through', opacity: 0.6}}>$1.1M</div>

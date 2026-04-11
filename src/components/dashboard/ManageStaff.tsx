@@ -5,8 +5,8 @@ export default function ManageStaff() {
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
         <div>
-          <h1>Manage Staff</h1>
-          <p>Invite agents to list properties under your company name.</p>
+          <h1>Team Management</h1>
+          <p>Coordinate your agents, assign roles, and scale your real estate operations.</p>
         </div>
         <button className="nm-btn-save"><i className="fa-solid fa-user-plus"></i> Invite Agent</button>
       </div>

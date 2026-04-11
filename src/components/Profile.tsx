@@ -145,7 +145,8 @@ export default function Profile() {
       id: 6,
       category: 'house',
       image: 'https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=800',
-      tag: 'FOR SALE',
+      tag: 'SOLD',
+      status: 'sold',
       featured: false,
       price: '$450,000',
       title: 'Willow Terrace',
@@ -236,7 +237,7 @@ export default function Profile() {
           </div>
         </div>
         <div className="nm-avatar-wrapper">
-          <div className="nm-profile-pic">
+          <div className="nm-profile-pic has-story">
             <div className="nm-verified-badge">
               <i className="fa-solid fa-check"></i>
             </div>
@@ -316,11 +317,16 @@ export default function Profile() {
 
           <div className="nm-grid" id="propertyGrid">
             {filteredProperties.map((property) => (
-              <div key={property.id} className={`we-card ${property.featured ? 'featured' : ''} ${property.status.toLowerCase() === 'sold' ? 'sold' : ''}`}>
+              <div key={property.id} className={`we-card ${property.featured ? 'featured' : ''} ${property.status?.toLowerCase() === 'sold' ? 'sold' : ''}`}>
                 <div
                   className="we-img"
                   style={{ backgroundImage: `url('${property.image}')` }}
                 >
+                  {property.status?.toLowerCase() === 'sold' && (
+                    <div className="we-sold-overlay">
+                      <div className="we-sold-badge">SOLD</div>
+                    </div>
+                  )}
                   <span className="we-tag">{property.tag}</span>
                   {property.featured && (
                     <span className="we-featured-tag">

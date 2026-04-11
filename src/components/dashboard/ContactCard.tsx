@@ -5,8 +5,8 @@ export default function ContactCard() {
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
         <div>
-          <h1>Contact Card</h1>
-          <p>This information appears on your property listings.</p>
+          <h1>Agent Contact Card</h1>
+          <p>Configure the public contact details displayed on your property listings.</p>
         </div>
         <button className="nm-btn-save"><i className="fa-solid fa-floppy-disk"></i> Save Profile</button>
       </div>

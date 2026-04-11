@@ -10,7 +10,7 @@ export default function Forms() {
   return (
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
-        <div>
+        <div className="nm-page-header-text">
           <h1>Form Submissions</h1>
           <p>Review and manage inquiries submitted through your profile contact form.</p>
         </div>

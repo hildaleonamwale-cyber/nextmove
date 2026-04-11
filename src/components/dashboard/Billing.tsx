@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, CreditCard, CheckCircle2, Clock, AlertCircle, X, Copy, AlertTriangle, Check, Wallet } from 'lucide-react';
+import { Download, CreditCard, CircleCheck as CheckCircle2, Clock, CircleAlert as AlertCircle, X, Copy, TriangleAlert as AlertTriangle, Check, Wallet } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
 
 interface BillingProps {
@@ -89,7 +89,7 @@ export default function Billing({ currentRole, onUpgradeClick }: BillingProps) {
   return (
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
-        <div>
+        <div className="nm-page-header-text">
           <h1>Billing & Plans</h1>
           <p>Manage your subscription tier, billing history, and payment methods.</p>
         </div>

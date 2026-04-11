@@ -13,7 +13,7 @@ export default function Wallet() {
   return (
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
-        <div>
+        <div className="nm-page-header-text">
           <h1>Financial Hub</h1>
           <p>Manage your advertising budget, sponsored campaigns, and subscription funds.</p>
         </div>

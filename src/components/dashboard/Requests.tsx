@@ -42,7 +42,7 @@ export default function Requests() {
   return (
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
-        <div>
+        <div className="nm-page-header-text">
           <h1>Inbound Inquiries</h1>
           <p>Process and manage viewing requests from prospective clients.</p>
         </div>

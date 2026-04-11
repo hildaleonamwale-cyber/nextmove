@@ -154,11 +154,13 @@ export default function CompanyProfile({ currentRole }: CompanyProfileProps) {
   return (
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
-        <div>
+        <div className="nm-page-header-text">
           <h1>Brand Identity</h1>
           <p>Customize your public-facing agency profile and brand presence.</p>
         </div>
-        <button className="nm-btn-save"><i className="fa-solid fa-floppy-disk"></i> Save Changes</button>
+        <div className="nm-page-header-actions">
+          <button className="nm-btn-primary"><i className="fa-solid fa-floppy-disk"></i> Save Changes</button>
+        </div>
       </div>
 
       <div className="nm-profile-wrapper" style={{ padding: 0, margin: 0, maxWidth: '100%' }}>

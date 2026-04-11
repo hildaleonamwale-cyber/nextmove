@@ -60,7 +60,7 @@ export default function Overview({ currentRole }: OverviewProps) {
   return (
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
-        <div>
+        <div className="nm-page-header-text">
           <h1>{data.welcomeText}</h1>
           <p>{data.welcomeSub}</p>
         </div>

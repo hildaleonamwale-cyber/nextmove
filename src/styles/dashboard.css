@@ -109,9 +109,20 @@
     .nm-view { display: none; animation: fadeIn 0.4s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .nm-page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; gap: 15px; flex-wrap: wrap; border-bottom: none !important; padding-bottom: 15px;}
-    .nm-page-header h1 { font-family: 'Poppins', sans-serif; font-size: 21px; font-weight: 800; color: var(--dark); margin: 0; letter-spacing: -0.5px; }
-    .nm-page-header p { font-family: 'Poppins', sans-serif; color: var(--gray-text); font-size: 14px; margin: 4px 0 0 0; }
+    .nm-page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; gap: 20px; flex-wrap: wrap; border-bottom: none !important; padding-bottom: 0; }
+    .nm-page-header-text { display: flex; flex-direction: column; gap: 4px; }
+    .nm-page-header h1 { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 800; color: var(--dark); margin: 0; letter-spacing: -0.5px; }
+    .nm-page-header p { font-family: 'Inter', sans-serif; color: var(--gray-text); font-size: 13.5px; margin: 0; line-height: 1.5; }
+    .nm-page-header-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .nm-btn-primary { display: inline-flex; align-items: center; gap: 8px; background: #021211; color: #fff; border: none; padding: 11px 20px; border-radius: 10px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13.5px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(2,18,17,0.12); white-space: nowrap; }
+    .nm-btn-primary i { color: var(--brand); font-size: 14px; }
+    .nm-btn-primary:hover { background: #042422; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(31,230,212,0.2); }
+
+    .nm-wallet-chip { display: inline-flex; align-items: center; gap: 8px; background: #F9FAFB; border: 1px solid #E5E7EB; padding: 9px 16px; border-radius: 10px; font-family: 'Inter', sans-serif; }
+    .nm-wallet-chip i { font-size: 14px; color: var(--brand); }
+    .nm-wallet-label { font-size: 12px; font-weight: 500; color: var(--gray-text); }
+    .nm-wallet-amount { font-size: 14px; font-weight: 700; color: var(--dark); }
     
     .nm-card { background: #ffffff !important; padding: 30px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03), 0 1px 3px rgba(0,0,0,0.02) !important; border: none !important; box-sizing: border-box; }
     .nm-table-card { background: #ffffff !important; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03), 0 1px 3px rgba(0,0,0,0.02) !important; border: none !important; overflow: hidden; box-sizing: border-box; padding: 10px; }
@@ -277,9 +288,10 @@
     }
 
     @media (max-width: 768px) {
-        .nm-page-header { flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 25px;}
-        .nm-page-header .nm-btn-save { width: 100%; }
-        .nm-page-header h1 { font-size: 24px; }
+        .nm-page-header { flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
+        .nm-page-header-actions { width: 100%; }
+        .nm-page-header-actions .nm-btn-primary { width: 100%; justify-content: center; }
+        .nm-page-header h1 { font-size: 21px; }
         
         /* Stats: Premium 2-Column Mobile Grid */
         .nm-stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }

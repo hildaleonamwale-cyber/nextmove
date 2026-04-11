@@ -271,31 +271,23 @@ export default function Dashboard() {
 
       <AddListingModal isOpen={isAddListingOpen} onClose={() => setIsAddListingOpen(false)} />
 
-      {/* Upgrade Modal */}
       {isUpgradeModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 overflow-hidden">
-            <div className="text-center mb-6">
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-50 mb-4">
-                <i className="fa-solid fa-star text-yellow-500 text-2xl"></i>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Want unlimited listings and premium features?</h3>
-              <p className="text-gray-500">
-                Upgrade to Pro to unlock unlimited listings, team management, and priority support.
-              </p>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000003, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', background: 'rgba(2,18,17,0.6)', backdropFilter: 'blur(8px)' }}>
+          <div style={{ background: '#021211', borderRadius: '20px', maxWidth: '420px', width: '100%', padding: '36px 28px', textAlign: 'center', boxShadow: '0 24px 48px rgba(0,0,0,0.3)' }}>
+            <div style={{ width: '60px', height: '60px', background: 'rgba(232,85,16,0.15)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px', color: '#E85510', fontSize: '24px' }}>
+              <i className="fa-solid fa-rocket"></i>
             </div>
-            
-            <div className="space-y-3">
-              <button 
-                onClick={requestProAccess}
-                className="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-[#1A1C1E] bg-[#1FE6D4] hover:bg-[#15b8a9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1FE6D4] transition-colors"
-              >
-                <i className="fa-brands fa-whatsapp mr-2 text-lg"></i> Request Pro Access
+            <h3 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '21px', fontWeight: 800, color: '#fff', margin: '0 0 10px', letterSpacing: '-0.4px' }}>
+              Unlock the full platform
+            </h3>
+            <p style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, margin: '0 0 24px' }}>
+              Upgrade to Pro for unlimited listings, viewing requests, team management, and priority support.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <button onClick={requestProAccess} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: '#1FE6D4', color: '#021211', border: 'none', padding: '14px', borderRadius: '12px', fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: '14px', cursor: 'pointer', boxShadow: '0 6px 18px rgba(31,230,212,0.25)', transition: '0.2s' }}>
+                <i className="fa-brands fa-whatsapp" style={{ fontSize: '18px' }}></i> Request Pro Access
               </button>
-              <button 
-                onClick={() => setIsUpgradeModalOpen(false)}
-                className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1FE6D4] transition-colors"
-              >
+              <button onClick={() => setIsUpgradeModalOpen(false)} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.5)', padding: '13px', borderRadius: '12px', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '13.5px', cursor: 'pointer', transition: '0.2s' }}>
                 Maybe Later
               </button>
             </div>

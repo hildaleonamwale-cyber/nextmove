@@ -4,13 +4,11 @@ export default function ManageStaff() {
   return (
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
-        <div className="nm-page-header-text">
-          <h1>Team Management</h1>
-          <p>Coordinate your agents, assign roles, and scale your real estate operations.</p>
+        <div>
+          <h1>Manage Staff</h1>
+          <p>Invite agents to list properties under your company name.</p>
         </div>
-        <div className="nm-page-header-actions">
-          <button className="nm-btn-primary"><i className="fa-solid fa-user-plus"></i> Invite Agent</button>
-        </div>
+        <button className="nm-btn-save"><i className="fa-solid fa-user-plus"></i> Invite Agent</button>
       </div>
       <div className="nm-table-card">
         <table className="nm-table">

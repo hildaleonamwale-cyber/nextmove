@@ -1,105 +1,59 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, ShieldCheck, CircleCheck as CheckCircle2, Loader as Loader2, Building2, Hop as Home } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import OtpVerification from './OtpVerification';
-import { supabase } from '../../lib/supabase';
+import { 
+  Eye, EyeOff, Mail, Lock, User, ArrowRight, ShieldCheck, 
+  CheckCircle2, Loader2, Building2, Home
+} from 'lucide-react';
 
-type Step =
-  | 'LOGIN'
-  | 'SIGNUP_DETAILS'
-  | 'VERIFY_EMAIL'
+type Step = 
+  | 'LOGIN' 
+  | 'SIGNUP_DETAILS' 
+  | 'VERIFY_EMAIL' 
   | 'PRO_INVITE';
 
 type Role = 'OWNER' | 'AGENT' | null;
 
 export default function AgentPortal() {
   const navigate = useNavigate();
-  const { signUp, signIn } = useAuth();
   const [step, setStep] = useState<Step>('LOGIN');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
+  
   // Form State
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userId, setUserId] = useState('');
-
+  
   // Role State
   const [role, setRole] = useState<Role>(null);
   const [agentFee, setAgentFee] = useState('');
 
-  const handleLoginSubmit = async (e: React.FormEvent) => {
+  // Handlers
+  const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setIsLoading(true);
-    try {
-      const emailInput = (e.currentTarget.elements.namedItem('email') as HTMLInputElement).value;
-      const passwordInput = (e.currentTarget.elements.namedItem('password') as HTMLInputElement).value;
-      await signIn(emailInput, passwordInput);
-      navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.');
-    } finally {
+    setTimeout(() => {
       setIsLoading(false);
-    }
+      navigate('/dashboard');
+    }, 1000);
   };
 
   const handleSignupDetailsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    if (!name || !email || !password) {
-      setError('Please fill in all fields');
-      return;
-    }
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
       setStep('VERIFY_EMAIL');
-    }, 500);
+    }, 1000);
   };
 
-  const handleSignupVerification = async () => {
-    setError('');
+  const handleSimulateVerification = () => {
     setIsLoading(true);
-    try {
-      const response = await signUp(email, password, name, 'premium');
-      if (response?.user?.id) {
-        setUserId(response.user.id);
-
-        const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL;
-        const anonKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY;
-
-        const sendOtpResponse = await fetch(`${supabaseUrl}/functions/v1/send-otp`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${anonKey}`,
-          },
-          body: JSON.stringify({
-            email,
-            userId: response.user.id,
-          }),
-        });
-
-        if (!sendOtpResponse.ok) {
-          throw new Error('Failed to send verification code');
-        }
-
-        setStep('VERIFY_EMAIL');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Sign up failed. Please try again.');
-    } finally {
+    setTimeout(() => {
       setIsLoading(false);
-    }
-  };
-
-  const handleOtpVerificationComplete = () => {
-    navigate('/dashboard');
+      navigate('/setup', { state: { role: 'AGENT' } });
+    }, 1000);
   };
 
   const handleRoleSubmit = (e: React.FormEvent) => {
@@ -120,17 +74,16 @@ export default function AgentPortal() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] flex font-sans overflow-hidden relative">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-gradient-to-br from-[#1FE6D4]/20 to-transparent rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-5%] left-[-5%] w-[30%] h-[30%] bg-gradient-to-tr from-gray-200/50 to-transparent rounded-full blur-[80px] pointer-events-none" />
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24 relative z-10">
-        <div className="mx-auto w-full max-w-sm lg:w-96 backdrop-blur-xl bg-white/40 p-8 rounded-3xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)]">
+    <div className="h-screen bg-white flex font-sans overflow-hidden">
+      {/* Left Side: Form */}
+      <div className="flex-1 flex flex-col py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 lg:w-1/2 overflow-y-auto">
+        <div className="mx-auto w-full max-w-sm lg:w-96 my-auto">
           
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+          <div className="mb-8">
+            <div className="h-12 w-12 bg-[#1A1C1E] rounded-xl flex items-center justify-center shadow-lg">
+              <ShieldCheck className="h-7 w-7 text-[#1FE6D4]" />
+            </div>
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900 tracking-tight">
               {step === 'LOGIN' && 'Sign In'}
               {step === 'SIGNUP_DETAILS' && 'Create Free Account'}
               {step === 'VERIFY_EMAIL' && 'Verify Your Email'}
@@ -158,16 +111,11 @@ export default function AgentPortal() {
               
               {/* LOGIN STEP */}
               {step === 'LOGIN' && (
-                <motion.div
+                <motion.div 
                   key="login"
                   variants={pageVariants} initial="initial" animate="animate" exit="exit"
                 >
                   <form className="space-y-6" onSubmit={handleLoginSubmit}>
-                    {error && (
-                      <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-sm text-red-700">{error}</p>
-                      </div>
-                    )}
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Email address</label>
                       <div className="mt-1 relative rounded-md shadow-sm">
@@ -175,9 +123,8 @@ export default function AgentPortal() {
                           <Mail className="h-5 w-5 text-gray-400" />
                         </div>
                         <input
-                          name="email"
                           type="email" required
-                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
+                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
                           placeholder="you@example.com"
                         />
                       </div>
@@ -190,9 +137,8 @@ export default function AgentPortal() {
                           <Lock className="h-5 w-5 text-gray-400" />
                         </div>
                         <input
-                          name="password"
                           type={showPassword ? "text" : "password"} required
-                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 pr-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
+                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
                           placeholder="••••••••"
                         />
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -231,16 +177,16 @@ export default function AgentPortal() {
                     <div className="mt-6 space-y-3">
                       <button
                         onClick={() => navigate('/glade')}
-                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-200 rounded-xl shadow-sm bg-white/50 backdrop-blur-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
+                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
                       >
-                        <Building2 className="h-5 w-5 text-gray-400 mr-2 group-hover:text-[#1FE6D4] transition-colors" />
+                        <ShieldCheck className="h-5 w-5 text-gray-400 mr-2 group-hover:text-[#1FE6D4] transition-colors" />
                         Super Admin Panel (The Glade)
                         <ArrowRight className="h-4 w-4 ml-2 text-gray-400 group-hover:translate-x-1 transition-transform" />
                       </button>
                       
                       <button
                         onClick={() => navigate('/dashboard')}
-                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-200 rounded-xl shadow-sm bg-white/50 backdrop-blur-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
+                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
                       >
                         <User className="h-5 w-5 text-gray-400 mr-2 group-hover:text-[#1FE6D4] transition-colors" />
                         Skip Login (Go to Dashboard)
@@ -249,7 +195,7 @@ export default function AgentPortal() {
 
                       <button
                         onClick={() => setStep('PRO_INVITE')}
-                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-200 rounded-xl shadow-sm bg-white/50 backdrop-blur-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
+                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
                       >
                         <Mail className="h-5 w-5 text-gray-400 mr-2 group-hover:text-[#1FE6D4] transition-colors" />
                         Demo: Accept Pro Invite Link
@@ -266,15 +212,7 @@ export default function AgentPortal() {
                   key="signup-details"
                   variants={pageVariants} initial="initial" animate="animate" exit="exit"
                 >
-                  <form className="space-y-6" onSubmit={async (e) => {
-                    e.preventDefault();
-                    setError('');
-                    if (!name || !email || !password) {
-                      setError('Please fill in all fields');
-                      return;
-                    }
-                    await handleSignupVerification();
-                  }}>
+                  <form className="space-y-6" onSubmit={handleSignupDetailsSubmit}>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Full Name</label>
                       <div className="mt-1 relative rounded-md shadow-sm">
@@ -283,7 +221,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type="text" required value={name} onChange={(e) => setName(e.target.value)}
-                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
+                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
                           placeholder="John Doe"
                         />
                       </div>
@@ -297,7 +235,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
+                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
                           placeholder="you@example.com"
                         />
                       </div>
@@ -311,7 +249,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)}
-                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 pr-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
+                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
                           placeholder="••••••••"
                         />
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -331,11 +269,33 @@ export default function AgentPortal() {
 
               {/* VERIFY EMAIL STEP */}
               {step === 'VERIFY_EMAIL' && (
-                <OtpVerification
-                  email={email}
-                  userId={userId}
-                  onVerificationComplete={handleOtpVerificationComplete}
-                />
+                <motion.div 
+                  key="verify-email"
+                  variants={pageVariants} initial="initial" animate="animate" exit="exit"
+                  className="text-center"
+                >
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-[#1FE6D4]/10 mb-6">
+                    <Mail className="h-8 w-8 text-[#15b8a9]" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Check your email</h3>
+                  <p className="text-sm text-gray-500 mb-6">
+                    We've sent a verification link to <br/><span className="font-medium text-gray-900">{email || 'your email'}</span>. You must click the link to continue.
+                  </p>
+                  
+                  <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-xl mb-6">
+                    <p className="text-xs text-yellow-800 font-medium">
+                      Developer Simulation: Click the button below to simulate clicking the email verification link.
+                    </p>
+                  </div>
+
+                  <button 
+                    onClick={handleSimulateVerification}
+                    disabled={isLoading}
+                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-[#1A1C1E] hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70"
+                  >
+                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Simulate Email Verification'}
+                  </button>
+                </motion.div>
               )}
 
               {/* PRO INVITE STEP */}
@@ -360,7 +320,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type="text" required value={name} onChange={(e) => setName(e.target.value)}
-                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
+                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
                           placeholder="Sarah Jenkins"
                         />
                       </div>
@@ -374,7 +334,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type="email" disabled value="admin@willowelm.co.zw"
-                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-100 text-gray-500 border transition-all cursor-not-allowed"
+                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-100 text-gray-500 border transition-colors cursor-not-allowed"
                         />
                       </div>
                     </div>
@@ -387,7 +347,7 @@ export default function AgentPortal() {
                         </div>
                         <input
                           type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)}
-                          className="focus:ring-gray-400 focus:border-gray-400 block w-full pl-10 pr-10 sm:text-sm border-gray-200 rounded-xl py-3 bg-gray-50/30 border transition-all"
+                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
                           placeholder="••••••••"
                         />
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -407,6 +367,20 @@ export default function AgentPortal() {
 
             </AnimatePresence>
           </div>
+        </div>
+      </div>
+
+      {/* Right Side: Image */}
+      <div className="hidden lg:block relative w-0 flex-1">
+        <img 
+          className="absolute inset-0 h-full w-full object-cover" 
+          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+          alt="Beautiful home" 
+        />
+        <div className="absolute inset-0 bg-[#1A1C1E]/60 mix-blend-multiply" />
+        <div className="absolute inset-0 flex flex-col justify-center px-16 text-white">
+          <h2 className="text-4xl font-bold mb-4">Welcome to Nextmove</h2>
+          <p className="text-xl text-gray-200">The modern platform for real estate professionals and property owners.</p>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, CreditCard, CircleCheck as CheckCircle2, Clock, CircleAlert as AlertCircle, X, Copy, TriangleAlert as AlertTriangle, Check, Wallet } from 'lucide-react';
+import { Download, CreditCard, CheckCircle2, Clock, AlertCircle, X, Copy, AlertTriangle, Check, Wallet } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
 
 interface BillingProps {
@@ -89,9 +89,9 @@ export default function Billing({ currentRole, onUpgradeClick }: BillingProps) {
   return (
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
-        <div className="nm-page-header-text">
-          <h1>Billing & Plans</h1>
-          <p>Manage your subscription tier, billing history, and payment methods.</p>
+        <div>
+          <h1>Billing & Subscription</h1>
+          <p>Manage your plan and EcoCash payments.</p>
         </div>
       </div>
       
@@ -103,195 +103,97 @@ export default function Billing({ currentRole, onUpgradeClick }: BillingProps) {
         <button onClick={() => setDemoState('expired')} style={{ padding: '4px 12px', fontSize: '12px', borderRadius: '4px', border: 'none', background: demoState === 'expired' ? '#111827' : 'transparent', color: demoState === 'expired' ? '#fff' : '#6B7280', cursor: 'pointer' }}>Expired</button>
       </div>
 
-      <div style={{ marginBottom: '40px', maxWidth: '900px' }}>
-        <div className="nm-card" style={{ padding: '0', overflow: 'hidden', border: 'none', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
-          {/* Main Plan Card - Dark Gradient Style */}
-          <div style={{ padding: '40px', background: 'linear-gradient(135deg, #111827 0%, #1f2937 100%)', color: 'white', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: '-20px', right: '-20px', opacity: 0.05, color: 'white' }}>
-              <CreditCard size={200} />
-            </div>
-            
-            <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                  <h2 style={{ fontSize: '28px', fontWeight: 700, color: 'white', margin: 0 }}>{planName}</h2>
-                  <span style={{ 
-                    background: demoState === 'active' ? 'rgba(16, 185, 129, 0.2)' : demoState === 'expiring' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(239, 68, 68, 0.2)', 
-                    color: demoState === 'active' ? '#34D399' : demoState === 'expiring' ? '#FBBF24' : '#F87171', 
-                    padding: '4px 12px', 
-                    borderRadius: '20px', 
-                    fontSize: '12px', 
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                    border: `1px solid ${demoState === 'active' ? 'rgba(16, 185, 129, 0.3)' : demoState === 'expiring' ? 'rgba(245, 158, 11, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
-                  }}>
-                    {statusLabel}
-                  </span>
-                </div>
-                <p style={{ margin: 0, fontSize: '15px', color: '#9ca3af', fontWeight: 500 }}>
-                  {demoState === 'expired' ? `Subscription ended on ${endDate.toLocaleDateString()}` : `Next billing date: ${endDate.toLocaleDateString()}`}
-                </p>
+      <div style={{ marginBottom: '40px', maxWidth: '800px' }}>
+        <div className="nm-card" style={{ padding: '32px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                <h2 style={{ fontSize: '24px', fontWeight: 600, color: '#111827', margin: 0 }}>{planName} Plan</h2>
+                <span style={{ background: statusBg, color: statusColor, padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 600 }}>{statusLabel}</span>
               </div>
-              
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '48px', fontWeight: 800, color: 'var(--brand)', lineHeight: 1 }}>
-                  ${planPrice.toFixed(2)}
-                  <span style={{ fontSize: '16px', color: '#9ca3af', fontWeight: 500, marginLeft: '4px' }}>/month</span>
-                </div>
-              </div>
+              <p style={{ margin: 0, fontSize: '14px', color: '#6B7280' }}>
+                {demoState === 'expired' ? `Expired on ${endDate.toLocaleDateString()}` : `Renews on ${endDate.toLocaleDateString()}`}
+              </p>
             </div>
-
-            {/* Expiry Alert Section - Integrated into Dark Card */}
-            {demoState !== 'active' && (
-              <div style={{ 
-                marginTop: '32px',
-                padding: '20px 24px', 
-                background: 'rgba(0, 0, 0, 0.25)', 
-                borderRadius: '16px',
-                border: `1px solid ${demoState === 'expired' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(245, 158, 11, 0.2)'}`,
-                display: 'flex',
-                gap: '16px',
-                alignItems: 'center',
-                position: 'relative',
-                zIndex: 2,
-                backdropFilter: 'blur(8px)'
-              }}>
-                <div style={{ 
-                  background: demoState === 'expired' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)', 
-                  padding: '10px', 
-                  borderRadius: '10px',
-                  color: demoState === 'expired' ? '#F87171' : '#FBBF24'
-                }}>
-                  {demoState === 'expired' ? <AlertCircle size={20} /> : <AlertTriangle size={20} />}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <h4 style={{ margin: '0 0 2px 0', fontSize: '15px', fontWeight: 700, color: 'white' }}>
-                    {demoState === 'expired' ? 'Action Required: Subscription Expired' : 'Heads up! Your plan is expiring soon'}
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--brand)', lineHeight: 1 }}>${planPrice.toFixed(2)}<span style={{ fontSize: '16px', color: '#6B7280', fontWeight: 500 }}>/mo</span></div>
+            </div>
+          </div>
+          
+          {/* Expiry Message */}
+          {demoState !== 'active' && (
+            <div style={{ marginTop: '24px', padding: '16px', borderRadius: '8px', background: demoState === 'expired' ? '#FEF2F2' : '#FFFBEB', border: `1px solid ${demoState === 'expired' ? '#FCA5A5' : '#FCD34D'}` }}>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                {demoState === 'expired' ? <AlertCircle color="#EF4444" size={20} style={{ marginTop: '2px' }} /> : <AlertTriangle color="#F59E0B" size={20} style={{ marginTop: '2px' }} />}
+                <div>
+                  <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 600, color: demoState === 'expired' ? '#991B1B' : '#92400E' }}>
+                    {demoState === 'expired' ? 'Plan Expired' : 'Plan Expiring Soon'}
                   </h4>
-                  <p style={{ margin: 0, fontSize: '13px', color: '#9ca3af', lineHeight: 1.5 }}>
+                  <p style={{ margin: 0, fontSize: '13px', color: demoState === 'expired' ? '#B91C1C' : '#B45309', lineHeight: 1.5 }}>
                     {demoState === 'expired' 
-                      ? `Your access was suspended on ${endDate.toLocaleDateString()}. Please settle your outstanding invoice.` 
-                      : `Your current cycle ends soon. Renew before ${endDate.toLocaleDateString()} to keep your listings live.`}
+                      ? `Your plan expired on ${endDate.toLocaleDateString()}. Please pay your invoice to restore full access to your dashboard and listings.` 
+                      : `Your plan will expire in 4 days on ${endDate.toLocaleDateString()}. Renew now to avoid any interruption to your services.`}
                   </p>
                 </div>
               </div>
-            )}
-
-            <div style={{ marginTop: '40px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-              <button 
-                onClick={() => setIsModalOpen(true)}
-                style={{ background: 'var(--brand)', color: '#111827', padding: '12px 28px', borderRadius: '10px', fontSize: '15px', fontWeight: 700, border: 'none', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 14px 0 rgba(31, 230, 212, 0.39)' }}
-                onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-                onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-              >
-                Renew Subscription
-              </button>
+            </div>
+          )}
+          
+          <div style={{ marginTop: '32px', paddingTop: '24px', borderTop: '1px solid #E5E7EB', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <p style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#6B7280', fontWeight: 500 }}>Upcoming Invoice</p>
+              <p style={{ margin: 0, fontSize: '16px', color: '#111827', fontWeight: 600 }}>${planPrice.toFixed(2)} <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 400 }}>due {endDate.toLocaleDateString()}</span></p>
+            </div>
+            <div style={{ display: 'flex', gap: '12px' }}>
               <button 
                 onClick={handleWalletPayment}
-                style={{ background: 'rgba(255,255,255,0.1)', color: 'white', padding: '12px 24px', borderRadius: '10px', fontSize: '15px', fontWeight: 600, border: '1px solid rgba(255,255,255,0.2)', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '8px', backdropFilter: 'blur(4px)' }}
-                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
-                onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                style={{ background: '#F3F4F6', color: '#111827', padding: '10px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, border: '1px solid #D1D5DB', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
+                onMouseOver={(e) => e.currentTarget.style.background = '#E5E7EB'}
+                onMouseOut={(e) => e.currentTarget.style.background = '#F3F4F6'}
               >
-                <Wallet size={18} />
-                Pay with Wallet
+                <Wallet size={16} />
+                Pay with Wallet (${currentUser?.walletBalance?.toFixed(2) || '0.00'})
+              </button>
+              <button 
+                onClick={() => setIsModalOpen(true)}
+                style={{ background: '#111827', color: '#fff', padding: '10px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer', transition: 'background 0.2s' }}
+                onMouseOver={(e) => e.currentTarget.style.background = '#000'}
+                onMouseOut={(e) => e.currentTarget.style.background = '#111827'}
+              >
+                Pay Invoice
               </button>
             </div>
           </div>
-          
-          {/* Wallet Balance Info */}
-          <div style={{ padding: '20px 40px', background: '#F9FAFB', borderTop: '1px solid #F3F4F6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(31, 230, 212, 0.1)', display: 'flex', alignItems: 'center', justifyCenter: 'center', color: 'var(--brand)' }}>
-                <Wallet size={16} style={{ margin: 'auto' }} />
-              </div>
-              <span style={{ fontSize: '14px', color: '#4B5563', fontWeight: 500 }}>Your Wallet Balance: <strong style={{ color: '#111827' }}>${currentUser?.walletBalance?.toFixed(2) || '0.00'}</strong></span>
-            </div>
-            <a href="#" style={{ fontSize: '13px', color: 'var(--brand)', fontWeight: 600, textDecoration: 'none' }}>Top up wallet →</a>
-          </div>
         </div>
       </div>
 
-      <div className="nm-section-header" style={{ marginTop: '60px', marginBottom: '24px' }}>
-        <h3 style={{ fontSize: '20px', fontWeight: 700 }}>Choose the Perfect Plan</h3>
-      </div>
-      
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', marginBottom: '60px' }}>
+      <div className="nm-section-header" style={{ marginTop: '40px' }}><h3>Upgrade Your Plan</h3></div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '40px' }}>
         
-        {/* Individual Pro Card */}
-        <div className="nm-card" style={{ padding: '40px', display: 'flex', flexDirection: 'column', border: '1px solid #E5E7EB', transition: 'all 0.3s' }}>
-          <div style={{ marginBottom: '24px' }}>
-            <span style={{ background: '#F3F4F6', color: '#4B5563', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>For Solo Agents</span>
-            <h3 style={{ fontSize: '22px', fontWeight: 700, margin: '12px 0 8px 0', color: '#111827' }}>Individual Pro</h3>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-              <span style={{ fontSize: '32px', fontWeight: 800, color: '#111827' }}>$9.99</span>
-              <span style={{ fontSize: '14px', color: '#6B7280', fontWeight: 500 }}>/month</span>
-            </div>
-          </div>
-          
-          <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px 0', flex: 1 }}>
-            {['Unlimited Listings', 'Direct Viewing Requests', 'Pro Badge on Profile', 'Basic Analytics'].map((feat, i) => (
-              <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: '14px', color: '#4B5563' }}>
-                <CheckCircle2 size={18} color="#10B981" /> {feat}
-              </li>
-            ))}
-          </ul>
-          
-          <button onClick={onUpgradeClick} style={{ width: '100%', padding: '14px', borderRadius: '12px', background: '#F3F4F6', color: '#111827', fontWeight: 700, border: 'none', cursor: 'pointer', transition: 'all 0.2s' }}>
-            Get Started
+        <div className="nm-card" style={{ padding: '30px', display: 'flex', flexDirection: 'column' }}>
+          <h3 style={{ fontFamily: 'Poppins', fontSize: '18px', margin: '0 0 5px 0', color: 'var(--dark)' }}>Individual Pro</h3>
+          <h2 style={{ fontFamily: 'Poppins', fontSize: '32px', color: 'var(--brand)', margin: '0 0 15px 0' }}>$9.99<span style={{ fontSize: '13px', color: 'var(--gray-text)' }}>/mo</span></h2>
+          <p style={{ fontSize: '13px', color: 'var(--gray-text)', marginBottom: '20px', lineHeight: '1.6', flex: 1 }}>Instant access to Pro features. Direct viewing requests unlocked.</p>
+          <button className="nm-btn-save" onClick={onUpgradeClick} style={{ width: '100%', justifyContent: 'center', background: '#F3F4F6', color: '#111827', boxShadow: 'none' }}>
+            Request Pro Access
           </button>
         </div>
 
-        {/* Team Card - Featured */}
-        <div className="nm-card" style={{ padding: '40px', display: 'flex', flexDirection: 'column', border: '2px solid var(--brand)', position: 'relative', boxShadow: '0 20px 25px -5px rgba(31, 230, 212, 0.1)' }}>
-          <div style={{ position: 'absolute', top: '-14px', left: '50%', transform: 'translateX(-50%)', background: 'var(--brand)', color: '#111827', padding: '6px 16px', borderRadius: '20px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Most Popular
-          </div>
-          
-          <div style={{ marginBottom: '24px' }}>
-            <span style={{ background: 'rgba(31, 230, 212, 0.1)', color: '#0ba395', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>For Growing Teams</span>
-            <h3 style={{ fontSize: '22px', fontWeight: 700, margin: '12px 0 8px 0', color: '#111827' }}>Team Pro</h3>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-              <span style={{ fontSize: '32px', fontWeight: 800, color: '#111827' }}>$19.99</span>
-              <span style={{ fontSize: '14px', color: '#6B7280', fontWeight: 500 }}>/month + seats</span>
-            </div>
-          </div>
-          
-          <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px 0', flex: 1 }}>
-            {['Everything in Pro', 'Manage up to 5 Staff', 'Shared Team Wallet', 'Advanced Lead Tracking', 'Priority Support'].map((feat, i) => (
-              <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: '14px', color: '#4B5563' }}>
-                <CheckCircle2 size={18} color="#10B981" /> {feat}
-              </li>
-            ))}
-          </ul>
-          
-          <button onClick={onUpgradeClick} style={{ width: '100%', padding: '14px', borderRadius: '12px', background: '#111827', color: '#fff', fontWeight: 700, border: 'none', cursor: 'pointer', transition: 'all 0.2s' }}>
-            Start Free Trial
-          </button>
+        <div className="nm-card" style={{ padding: '30px', border: '2px solid var(--brand)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+          <span className="nm-badge brand" style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: 'var(--brand)', color: '#000', fontWeight: '700', padding: '4px 12px', borderRadius: '20px', fontSize: '10px', letterSpacing: '0.5px' }}>1-MONTH FREE TRIAL</span>
+          <h3 style={{ fontFamily: 'Poppins', fontSize: '18px', margin: '0 0 5px 0', color: 'var(--dark)' }}>Team</h3>
+          <h2 style={{ fontFamily: 'Poppins', fontSize: '32px', color: 'var(--brand)', margin: '0 0 15px 0' }}>$19.99<span style={{ fontSize: '13px', color: 'var(--gray-text)' }}>/mo + Seats</span></h2>
+          <p style={{ fontSize: '13px', color: 'var(--gray-text)', marginBottom: '20px', lineHeight: '1.6', flex: 1 }}>Includes 'Manage Staff' functionality. Build your real estate team.</p>
+          <button className="nm-btn-save" onClick={onUpgradeClick} style={{ width: '100%', justifyContent: 'center', background: '#111827', color: '#fff' }}>Request Pro Access</button>
         </div>
 
-        {/* Agency Card */}
-        <div className="nm-card" style={{ padding: '40px', display: 'flex', flexDirection: 'column', border: '1px solid #E5E7EB' }}>
-          <div style={{ marginBottom: '24px' }}>
-            <span style={{ background: '#F3F4F6', color: '#4B5563', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>For Large Agencies</span>
-            <h3 style={{ fontSize: '22px', fontWeight: 700, margin: '12px 0 8px 0', color: '#111827' }}>Agency Enterprise</h3>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-              <span style={{ fontSize: '32px', fontWeight: 800, color: '#111827' }}>$250</span>
-              <span style={{ fontSize: '14px', color: '#6B7280', fontWeight: 500 }}>/month</span>
-            </div>
-          </div>
-          
-          <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px 0', flex: 1 }}>
-            {['Unlimited Staff Seats', 'Custom API Integration', 'Dedicated Account Manager', 'White-label Reports', 'Concierge Onboarding'].map((feat, i) => (
-              <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: '14px', color: '#4B5563' }}>
-                <CheckCircle2 size={18} color="#10B981" /> {feat}
-              </li>
-            ))}
-          </ul>
-          
-          <button onClick={onUpgradeClick} style={{ width: '100%', padding: '14px', borderRadius: '12px', background: '#25D366', color: '#fff', fontWeight: 700, border: 'none', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></svg>
-            Contact Sales
+        <div className="nm-card" style={{ padding: '30px', display: 'flex', flexDirection: 'column' }}>
+          <h3 style={{ fontFamily: 'Poppins', fontSize: '18px', margin: '0 0 5px 0', color: 'var(--dark)' }}>Agency</h3>
+          <h2 style={{ fontFamily: 'Poppins', fontSize: '32px', color: 'var(--brand)', margin: '0 0 15px 0' }}>$250<span style={{ fontSize: '13px', color: 'var(--gray-text)' }}>/mo</span></h2>
+          <p style={{ fontSize: '13px', color: 'var(--gray-text)', marginBottom: '20px', lineHeight: '1.6', flex: 1 }}>+$500 Setup. Bespoke API integration and full concierge onboarding.</p>
+          <button className="nm-btn-save" onClick={onUpgradeClick} style={{ width: '100%', justifyContent: 'center', background: '#25D366', color: '#fff', boxShadow: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></svg>
+            Talk to a Human
           </button>
         </div>
       </div>

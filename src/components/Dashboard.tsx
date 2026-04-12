@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../styles/dashboard.css';
 import { useAppContext } from '../context/AppContext';
-import { useAuth } from '../context/AuthContext';
 
 import Overview from './dashboard/Overview';
 import Listings from './dashboard/Listings';
@@ -14,43 +13,21 @@ import Billing from './dashboard/Billing';
 import ContactCard from './dashboard/ContactCard';
 import AddListingModal from './dashboard/AddListingModal';
 import Wallet from './dashboard/Wallet';
-import Forms from './dashboard/Forms';
 
 const roles = ['admin', 'premium', 'worker', 'basic'];
 const roleLabels = ['God Mode', 'Premium User', 'Staff Agent', 'Basic User'];
 
 export default function Dashboard() {
   const { users, setCurrentUser } = useAppContext();
-  const { user, profile, loading, signOut } = useAuth();
-  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [currentTab, setCurrentTab] = useState('overview');
-
+  
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-
+  
   const [isAddListingOpen, setIsAddListingOpen] = useState(false);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate('/login');
-    }
-  }, [loading, user, navigate]);
-
-  if (loading || !user || !profile) {
-    return (
-      <div className="nm-dash-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#f8f9fa' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '14px', color: '#9CA3AF', marginBottom: '20px' }}>Loading dashboard...</div>
-          <div style={{ width: '40px', height: '40px', border: '3px solid #e5e7eb', borderTop: '3px solid #1FE6D4', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto' }} />
-        </div>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      </div>
-    );
-  }
-
-  const currentRole = profile?.role || 'basic';
+  const currentRole = roles[currentRoleIndex];
 
   // Smart routing when role changes
   useEffect(() => {
@@ -85,27 +62,38 @@ export default function Dashboard() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case 'admin': return 'Agency Admin';
-      case 'premium': return 'Premium Agent';
-      case 'worker': return 'Staff Agent';
-      default: return 'Private Lister';
-    }
-  };
-
   const getProfileData = () => {
-    const avatarUrl = profile?.avatar_url || 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150';
-    const companyName = profile?.company_name || (currentRole === 'admin' ? 'Willow & Elm' : profile?.full_name);
-
-    return {
-      name: profile?.full_name || 'User',
-      role: getRoleLabel(currentRole),
-      sideName: currentRole === 'admin' ? companyName : profile?.full_name,
-      sideRole: currentRole === 'admin' ? 'Agency Pro' : currentRole === 'premium' ? 'Premium Plan' : 'Basic Plan',
-      avatar: `url('${avatarUrl}')`,
-      sideAvatar: `url('${avatarUrl}')`
-    };
+    switch (currentRole) {
+      case 'admin':
+        return {
+          name: "Sarah Jenkins", role: "Agency Admin",
+          sideName: "Willow & Elm", sideRole: "Agency Pro",
+          avatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')",
+          sideAvatar: "url('https://image2url.com/r2/bucket2/images/1775993105962-31e87a44-28d1-4cf3-a0e7-3d505b5a82bc.png')"
+        };
+      case 'premium':
+        return {
+          name: "Sarah Jenkins", role: "Premium Agent",
+          sideName: "Sarah Jenkins", sideRole: "Premium Plan",
+          avatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')",
+          sideAvatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')"
+        };
+      case 'worker':
+        return {
+          name: "Mike Ross", role: "Staff Agent",
+          sideName: "Mike Ross", sideRole: "Elite Realty",
+          avatar: "url('https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150')",
+          sideAvatar: "url('https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150')"
+        };
+      case 'basic':
+      default:
+        return {
+          name: "Jane Doe", role: "Private Lister",
+          sideName: "Jane Doe", sideRole: "Basic Plan",
+          avatar: "url('https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150')",
+          sideAvatar: "url('https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150')"
+        };
+    }
   };
 
   const profileData = getProfileData();
@@ -125,7 +113,7 @@ export default function Dashboard() {
       <aside className={`nm-sidebar ${isSidebarOpen ? 'active' : ''}`} id="dashSidebar">
         <div className="nm-sidebar-header">
           <Link to="/" className="nm-logo-wrap">
-            <img src="https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png" alt="Logo" />
+            <img src="https://image2url.com/r2/bucket2/images/1775993105962-31e87a44-28d1-4cf3-a0e7-3d505b5a82bc.png" alt="Logo" />
             <div className="nm-site-title">
               <span className="title-black">next</span><span className="title-brand">move</span>
             </div>
@@ -146,11 +134,6 @@ export default function Dashboard() {
           <button className={`nm-nav-item ${currentTab === 'requests' ? 'active' : ''}`} onClick={() => switchTab('requests')}>
             <i className="fa-regular fa-calendar-check"></i> Viewing Requests
           </button>
-          {(currentRole === 'admin' || currentRole === 'premium') && (
-            <button className={`nm-nav-item ${currentTab === 'forms' ? 'active' : ''}`} onClick={() => switchTab('forms')}>
-              <i className="fa-solid fa-clipboard-list"></i> Form Submissions
-            </button>
-          )}
           <button className={`nm-nav-item ${currentTab === 'wallet' ? 'active' : ''}`} onClick={() => switchTab('wallet')}>
             <i className="fa-solid fa-wallet"></i> My Wallet
           </button>
@@ -198,15 +181,7 @@ export default function Dashboard() {
             </div>
           </div>
           
-          <button
-            onClick={async () => {
-              await signOut();
-              navigate('/');
-            }}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%' }}
-            className="nm-logout">
-            <i className="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
-          </button>
+          <Link to="/" className="nm-logout"><i className="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</Link>
         </div>
       </aside>
 
@@ -217,7 +192,7 @@ export default function Dashboard() {
           <header className="we-header">
             <div className="nm-header-left">
               <button className="nm-mobile-hamburger" onClick={() => setIsSidebarOpen(true)}>
-                <img src="https://image2url.com/r2/default/images/1775520819070-397d094c-92e4-4f64-af30-e2881143cc7e.png" alt="Menu" style={{ width: '35px', height: 'auto' }} />
+                <i className="fa-solid fa-bars-staggered"></i>
               </button>
               <div className="nm-search-box">
                 <i className="fa-solid fa-magnifying-glass"></i>
@@ -226,9 +201,6 @@ export default function Dashboard() {
             </div>
 
           <div className="we-action-group">
-            <button className="nm-mobile-search-btn">
-              <i className="fa-solid fa-magnifying-glass"></i>
-            </button>
             <div className="nm-notif-wrap">
               <button className="nm-icon-btn" onClick={(e) => { e.stopPropagation(); setIsNotifOpen(!isNotifOpen); }}>
                 <i className="fa-regular fa-bell"></i>
@@ -279,7 +251,6 @@ export default function Dashboard() {
             }
           }} />}
           {currentTab === 'requests' && (currentRole === 'basic' ? <Paywall onUpgradeClick={handleUpgradeClick} /> : <Requests />)}
-          {currentTab === 'forms' && <Forms />}
           {currentTab === 'company' && <CompanyProfile currentRole={currentRole} />}
           {currentTab === 'staff' && <ManageStaff />}
           {currentTab === 'billing' && <Billing currentRole={currentRole} onUpgradeClick={handleUpgradeClick} />}
@@ -290,23 +261,31 @@ export default function Dashboard() {
 
       <AddListingModal isOpen={isAddListingOpen} onClose={() => setIsAddListingOpen(false)} />
 
+      {/* Upgrade Modal */}
       {isUpgradeModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 1000003, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', background: 'rgba(2,18,17,0.6)', backdropFilter: 'blur(8px)' }}>
-          <div style={{ background: '#021211', borderRadius: '20px', maxWidth: '420px', width: '100%', padding: '36px 28px', textAlign: 'center', boxShadow: '0 24px 48px rgba(0,0,0,0.3)' }}>
-            <div style={{ width: '60px', height: '60px', background: 'rgba(232,85,16,0.15)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px', color: '#E85510', fontSize: '24px' }}>
-              <i className="fa-solid fa-rocket"></i>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 overflow-hidden">
+            <div className="text-center mb-6">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-50 mb-4">
+                <i className="fa-solid fa-star text-yellow-500 text-2xl"></i>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Want unlimited listings and premium features?</h3>
+              <p className="text-gray-500">
+                Upgrade to Pro to unlock unlimited listings, team management, and priority support.
+              </p>
             </div>
-            <h3 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '21px', fontWeight: 800, color: '#fff', margin: '0 0 10px', letterSpacing: '-0.4px' }}>
-              Unlock the full platform
-            </h3>
-            <p style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, margin: '0 0 24px' }}>
-              Upgrade to Pro for unlimited listings, viewing requests, team management, and priority support.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <button onClick={requestProAccess} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: '#1FE6D4', color: '#021211', border: 'none', padding: '14px', borderRadius: '12px', fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: '14px', cursor: 'pointer', boxShadow: '0 6px 18px rgba(31,230,212,0.25)', transition: '0.2s' }}>
-                <i className="fa-brands fa-whatsapp" style={{ fontSize: '18px' }}></i> Request Pro Access
+            
+            <div className="space-y-3">
+              <button 
+                onClick={requestProAccess}
+                className="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-[#1A1C1E] bg-[#1FE6D4] hover:bg-[#15b8a9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1FE6D4] transition-colors"
+              >
+                <i className="fa-brands fa-whatsapp mr-2 text-lg"></i> Request Pro Access
               </button>
-              <button onClick={() => setIsUpgradeModalOpen(false)} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.5)', padding: '13px', borderRadius: '12px', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '13.5px', cursor: 'pointer', transition: '0.2s' }}>
+              <button 
+                onClick={() => setIsUpgradeModalOpen(false)}
+                className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1FE6D4] transition-colors"
+              >
                 Maybe Later
               </button>
             </div>
@@ -318,3 +297,4 @@ export default function Dashboard() {
     </div>
   );
 }
+   

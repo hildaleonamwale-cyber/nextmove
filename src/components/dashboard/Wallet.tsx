@@ -1,70 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { getWallet, getTransactions } from '../../lib/supabase';
-import { useAuth } from '../../context/AuthContext';
-
-interface Transaction {
-  id: string;
-  amount: number;
-  type: string;
-  description: string;
-  created_at: string;
-  balance_after: number;
-}
+import React from 'react';
+import { useAppContext } from '../../context/AppContext';
+import { Wallet as WalletIcon, ArrowUpRight, History, CreditCard, Info } from 'lucide-react';
 
 export default function Wallet() {
-  const { user } = useAuth();
-  const [balance, setBalance] = useState(0);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadWalletData = async () => {
-      if (!user) return;
-      try {
-        const walletData = await getWallet(user.id);
-        setBalance(walletData?.balance || 0);
-
-        const txData = await getTransactions(user.id);
-        setTransactions(txData);
-      } catch (error) {
-        console.error('Failed to load wallet data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadWalletData();
-  }, [user]);
+  const { currentUser } = useAppContext();
 
   const handleTopUpRequest = () => {
-    if (!user) return;
-    const message = encodeURIComponent(`Hi Nextmove, I would like to top up my wallet balance. My account ID is ${user.id}.`);
+    const message = encodeURIComponent(`Hi Nextmove, I would like to top up my wallet balance. My account ID is ${currentUser?.id}.`);
     window.open(`https://wa.me/263771234567?text=${message}`, '_blank');
   };
 
   return (
     <div className="nm-view" style={{ display: 'block' }}>
       <div className="nm-page-header">
-        <div className="nm-page-header-text">
-          <h1>Financial Hub</h1>
-          <p>Manage your advertising budget, sponsored campaigns, and subscription funds.</p>
+        <div>
+          <h1>My Wallet</h1>
+          <p>Manage your funds for ads, sponsored posts, and membership renewals.</p>
         </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '40px' }}>
         {/* Balance Card */}
-        <div className="nm-card" style={{ padding: '32px', background: '#021211', color: 'white', position: 'relative', overflow: 'hidden' }}>
+        <div className="nm-card" style={{ padding: '32px', background: 'linear-gradient(135deg, #111827 0%, #1f2937 100%)', color: 'white', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: '-20px', right: '-20px', opacity: 0.1 }}>
+            <WalletIcon size={150} />
+          </div>
           <div style={{ position: 'relative', zIndex: 1 }}>
             <p style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#9ca3af', fontWeight: 500 }}>Available Balance</p>
             <h2 style={{ fontSize: '48px', fontWeight: 700, margin: '0 0 24px 0', color: '#1FE6D4' }}>
-              ${balance.toFixed(2)}
+              ${currentUser?.walletBalance?.toFixed(2) || '0.00'}
             </h2>
-            <button
+            <button 
               onClick={handleTopUpRequest}
               style={{ background: '#1FE6D4', color: '#111827', padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'opacity 0.2s' }}
               onMouseOver={(e) => e.currentTarget.style.opacity = '0.9'}
               onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
             >
+              <ArrowUpRight size={18} />
               Request Top Up
             </button>
           </div>

@@ -10,7 +10,7 @@
     @media (min-width: 768px) { :root { --side-margin: 60px; } }
     @media (min-width: 1200px) { :root { --side-margin: 120px; } }
 
-    body { margin: 0; background-color: #ffffff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    body { margin: 0; background-color: #FAFAFA; font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
     /* =========================================
        OFFICIAL NEXTMOVE HEADER (RESTORED)
@@ -97,7 +97,7 @@
     .nm-b-btn:hover { transform: scale(1.05); color: var(--brand); }
 
     .nm-avatar-wrapper { position: absolute; bottom: 0; left: 50%; transform: translate(-50%, 50%); }
-    .nm-profile-pic { width: 140px; height: 140px; border-radius: 50%; background-image: url('https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png'); background-size: cover; background-position: center; background-color: #fff; border: 5px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; }
+    .nm-profile-pic { width: 140px; height: 140px; border-radius: 50%; background-image: url('https://image2url.com/r2/bucket2/images/1775993105962-31e87a44-28d1-4cf3-a0e7-3d505b5a82bc.png'); background-size: cover; background-position: center; background-color: #fff; border: 5px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; }
     
     /* Instagram-like Story Ring */
     .nm-profile-pic.has-story {

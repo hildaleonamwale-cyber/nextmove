@@ -20,7 +20,7 @@ const mockData: Record<string, any> = {
         location: "Borrowdale Brooke, Harare",
         desc: "Experience the pinnacle of luxury living in this stunning contemporary home. Featuring floor-to-ceiling windows, a private infinity pool, and state-of-the-art smart home integration. The open-concept design seamlessly blends indoor and outdoor spaces, perfect for entertaining.",
         company: "Willow & Elm",
-        companyLogo: "https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png",
+        companyLogo: "https://image2url.com/r2/bucket2/images/1775993105962-31e87a44-28d1-4cf3-a0e7-3d505b5a82bc.png",
         quick: [
             { label: "Bedrooms", icon: "fa-bed", val: "5" },
             { label: "Bathrooms", icon: "fa-bath", val: "4" },

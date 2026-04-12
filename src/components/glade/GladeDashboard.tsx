@@ -129,7 +129,7 @@ export default function GladeDashboard() {
     <aside className={`nm-sidebar ${sidebarActive ? 'active' : ''}`} id="dashSidebar">
         <div className="nm-sidebar-header">
             <a href="#" className="nm-logo-wrap">
-                <img src="https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png" alt="nextmove Logo" />
+                <img src="https://image2url.com/r2/bucket2/images/1775993105962-31e87a44-28d1-4cf3-a0e7-3d505b5a82bc.png" alt="nextmove Logo" />
                 <div className="nm-site-title"><span className="title-black">next</span><span className="title-brand">move</span></div>
             </a>
             <button className="nm-close-sidebar" onClick={toggleSidebar}><i className="fa-solid fa-xmark"></i></button>

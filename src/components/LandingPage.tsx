@@ -110,7 +110,7 @@ export default function LandingPage() {
                 <header className="we-header">
                     <Link to="/" className="we-logo-group">
                         <div className="we-left-logo">
-                            <img src="https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png" alt="nextmove Logo" />
+                            <img src="https://image2url.com/r2/bucket2/images/1775993105962-31e87a44-28d1-4cf3-a0e7-3d505b5a82bc.png" alt="nextmove Logo" />
                         </div>
                         <div className="we-site-title">
                             <span className="title-black">next</span><span className="title-brand">move</span>
@@ -158,7 +158,7 @@ export default function LandingPage() {
                         </button>
 
                         <button className="we-hamburger" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                            <img src="https://image2url.com/r2/default/images/1775520819070-397d094c-92e4-4f64-af30-e2881143cc7e.png" alt="Menu" />
+                            <img src="https://image2url.com/r2/bucket1/images/1775993028818-ae7af098-78ac-4636-a411-d90c53188867.png" alt="Menu" />
                         </button>
                     </div>
                 </header>

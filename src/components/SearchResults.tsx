@@ -107,40 +107,25 @@ export default function SearchResults() {
     const [typeFilter, setTypeFilter] = useState('all');
     const [bedsFilter, setBedsFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [locationFilter, setLocationFilter] = useState('all');
-    const [searchInput, setSearchInput] = useState(searchQuery);
-
-    const uniqueLocations = Array.from(new Set(properties.map(p => p.location))).sort();
 
     const filteredProperties = properties.filter(prop => {
         const text = `${prop.title} ${prop.location} ${prop.tag} ${prop.icons.map(i => i.text).join(' ')}`.toLowerCase();
         let isMatch = true;
 
-        if (searchInput && !text.includes(searchInput.toLowerCase())) {
+        if (searchQuery && !text.includes(searchQuery.toLowerCase())) {
             isMatch = false;
         }
 
         // Apply UI filters
         if (typeFilter !== 'all' && prop.type !== typeFilter) isMatch = false;
-        if (locationFilter !== 'all' && prop.location !== locationFilter) isMatch = false;
-        
         if (statusFilter !== 'all') {
             if (statusFilter === 'sale' && !prop.tag.toLowerCase().includes('sale')) isMatch = false;
             if (statusFilter === 'rent' && !prop.tag.toLowerCase().includes('rent')) isMatch = false;
         }
-        
         if (bedsFilter !== 'all') {
             const bedIcon = prop.icons.find(i => i.icon === 'fa-bed');
-            if (!bedIcon) {
-                isMatch = false;
-            } else {
-                const bedCount = parseInt(bedIcon.text);
-                if (isNaN(bedCount) || bedCount < parseInt(bedsFilter)) {
-                    isMatch = false;
-                }
-            }
+            if (!bedIcon || !bedIcon.text.includes(bedsFilter)) isMatch = false;
         }
-        
         if (priceFilter !== 'all') {
             const [min, max] = priceFilter.split('-').map(Number);
             if (max) {
@@ -172,7 +157,7 @@ export default function SearchResults() {
                 <header className="we-header">
                     <a href="#home" className="we-logo-group">
                         <div className="we-left-logo">
-                            <img src="https://image2url.com/r2/default/images/1775520731590-8a90e10a-4fd0-496d-96c7-6198caa6955e.png" alt="nextmove Logo" />
+                            <img src="https://image2url.com/r2/bucket2/images/1775993105962-31e87a44-28d1-4cf3-a0e7-3d505b5a82bc.png" alt="nextmove Logo" />
                         </div>
                         <div className="we-site-title">
                             <span className="title-black">next</span><span className="title-brand">move</span>
@@ -181,12 +166,7 @@ export default function SearchResults() {
 
                     <div className="we-search-bar">
                         <i className="fa-solid fa-magnifying-glass"></i>
-                        <input 
-                            type="text" 
-                            placeholder="Search properties..." 
-                            value={searchInput}
-                            onChange={(e) => setSearchInput(e.target.value)}
-                        />
+                        <input type="text" placeholder="Search properties..." />
                     </div>
 
                     <div className="we-action-group">
@@ -230,7 +210,7 @@ export default function SearchResults() {
                         </button>
 
                         <button className="we-hamburger" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                            <img src="https://image2url.com/r2/default/images/1775520819070-397d094c-92e4-4f64-af30-e2881143cc7e.png" alt="Menu" />
+                            <img src="https://image2url.com/r2/bucket1/images/1775993028818-ae7af098-78ac-4636-a411-d90c53188867.png" alt="Menu" />
                         </button>
                     </div>
                 </header>
@@ -240,12 +220,6 @@ export default function SearchResults() {
                 <div className="sr-left">
                     <div className="sr-filter-bar">
                         <button className="sr-filter-btn"><i className="fa-solid fa-sliders"></i> Filters</button>
-                        <select className="sr-filter-btn" value={locationFilter} onChange={(e) => setLocationFilter(e.target.value)}>
-                            <option value="all">All Locations</option>
-                            {uniqueLocations.map(loc => (
-                                <option key={loc} value={loc}>{loc}</option>
-                            ))}
-                        </select>
                         <select className="sr-filter-btn" value={priceFilter} onChange={(e) => setPriceFilter(e.target.value)}>
                             <option value="all">Any Price</option>
                             <option value="0-50000">$0 - $50k</option>
@@ -271,7 +245,7 @@ export default function SearchResults() {
                     </div>
 
                     <div className="sr-header-text">
-                        <h1>{searchInput ? `Results for "${searchInput}"` : `${filteredProperties.length} Homes in Harare`}</h1>
+                        <h1>{searchQuery ? `Results for "${searchQuery}"` : '142 Homes in Harare'}</h1>
                         <button className="sr-sort"><span>Sort by:</span> Newest <i className="fa-solid fa-chevron-down"></i></button>
                     </div>
 

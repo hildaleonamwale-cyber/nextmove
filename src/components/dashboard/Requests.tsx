@@ -1,42 +1,26 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useAppContext } from '../../context/AppContext';
+import { supabase } from '../../lib/supabase';
 
 export default function Requests() {
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      clientName: 'John Doe',
-      clientPhone: '077 123 4567',
-      clientInitials: 'JD',
-      propertyName: 'The Glass Pavilion',
-      propertyLocation: 'Borrowdale Brooke',
-      date: 'Mar 25, 2026',
-      time: '10:00 AM',
-      status: 'Pending'
-    },
-    {
-      id: 2,
-      clientName: 'Sarah Moyo',
-      clientPhone: '071 987 6543',
-      clientInitials: 'SM',
-      propertyName: 'Garden City Lofts',
-      propertyLocation: 'Avondale',
-      date: 'Mar 28, 2026',
-      time: '02:30 PM',
-      status: 'Approved'
-    }
-  ]);
+  const { requests } = useAppContext();
 
-  const handleApprove = (id: number) => {
-    setRequests(requests.map(req => 
-      req.id === id ? { ...req, status: 'Approved' } : req
-    ));
-    alert('Appointment approved. A confirmation email with summary details has been sent to the client.');
+  const handleApprove = async (id: string) => {
+    try {
+      await supabase.from('viewing_requests').update({ status: 'approved' }).eq('id', id);
+      alert('Appointment approved. A confirmation email with summary details has been sent to the client.');
+      // Ideally we would refresh the requests here, but for now we rely on the next fetch or optimistic update
+    } catch (error) {
+      console.error("Error approving request", error);
+    }
   };
 
-  const handleDecline = (id: number) => {
-    setRequests(requests.map(req => 
-      req.id === id ? { ...req, status: 'Declined' } : req
-    ));
+  const handleDecline = async (id: string) => {
+    try {
+      await supabase.from('viewing_requests').update({ status: 'rejected' }).eq('id', id);
+    } catch (error) {
+      console.error("Error rejecting request", error);
+    }
   };
 
   return (
@@ -63,33 +47,33 @@ export default function Requests() {
               <tr key={req.id}>
                 <td data-label="Client">
                   <div className="nm-td-flex">
-                    <div className="nm-avatar initials" style={req.id === 2 ? { background: 'var(--input-bg)', color: 'var(--dark)' } : {}}>{req.clientInitials}</div>
+                    <div className="nm-avatar initials">{req.requester_name.substring(0, 2).toUpperCase()}</div>
                     <div className="nm-info-text">
-                      <strong>{req.clientName}</strong>
-                      <span>{req.clientPhone}</span>
+                      <strong>{req.requester_name}</strong>
+                      <span>{req.requester_email}</span>
                     </div>
                   </div>
                 </td>
                 <td data-label="Property">
                   <div className="nm-info-text">
-                    <strong>{req.propertyName}</strong>
-                    <span>{req.propertyLocation}</span>
+                    <strong>{req.properties?.title || 'Unknown Property'}</strong>
+                    <span>{req.properties?.category || 'Unknown Category'}</span>
                   </div>
                 </td>
                 <td data-label="Date">
                   <div className="nm-info-text">
-                    <strong>{req.date}</strong>
-                    <span>{req.time}</span>
+                    <strong>{new Date(req.requested_date).toLocaleDateString()}</strong>
+                    <span>{new Date(req.requested_date).toLocaleTimeString()}</span>
                   </div>
                 </td>
                 <td data-label="Status">
-                  <span className={`nm-badge ${req.status === 'Pending' ? 'pending' : req.status === 'Approved' ? 'active' : 'inactive'}`}>
+                  <span className={`nm-badge ${req.status === 'pending' ? 'pending' : req.status === 'approved' ? 'active' : 'inactive'}`}>
                     {req.status}
                   </span>
                 </td>
                 <td data-label="Actions">
                   <div className="nm-actions">
-                    {req.status === 'Pending' ? (
+                    {req.status === 'pending' ? (
                       <>
                         <button className="nm-action-btn success" title="Approve" onClick={() => handleApprove(req.id)}><i className="fa-solid fa-check"></i></button>
                         <button className="nm-action-btn danger" title="Decline" onClick={() => handleDecline(req.id)}><i className="fa-solid fa-xmark"></i></button>
@@ -101,6 +85,11 @@ export default function Requests() {
                 </td>
               </tr>
             ))}
+            {requests.length === 0 && (
+              <tr>
+                <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>No viewing requests found</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

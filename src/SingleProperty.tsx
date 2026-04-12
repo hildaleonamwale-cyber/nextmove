@@ -1,114 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppContext } from './context/AppContext';
+import { supabase } from './lib/supabase';
 
-const propTypes = ['residential', 'commercial', 'stand', 'room'];
-
-const imgs: Record<string, string[]> = {
-    residential: ['https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1200', 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=400', 'https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=400'],
-    commercial: ['https://images.pexels.com/photos/269077/pexels-photo-269077.jpeg?auto=compress&cs=tinysrgb&w=1200', 'https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg?auto=compress&cs=tinysrgb&w=400', 'https://images.pexels.com/photos/380769/pexels-photo-380769.jpeg?auto=compress&cs=tinysrgb&w=400'],
-    stand: ['https://i.pinimg.com/736x/98/04/69/980469f630d50176a5ac8c663437e632.jpg', 'https://i.pinimg.com/736x/53/0f/1a/530f1ade4b644c91dfed9d53a072b905.jpg', 'https://images.pexels.com/photos/461960/pexels-photo-461960.jpeg?auto=compress&cs=tinysrgb&w=400'],
-    room: ['https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg?auto=compress&cs=tinysrgb&w=1200', 'https://images.pexels.com/photos/1743227/pexels-photo-1743227.jpeg?auto=compress&cs=tinysrgb&w=400', 'https://images.pexels.com/photos/2082087/pexels-photo-2082087.jpeg?auto=compress&cs=tinysrgb&w=400']
-};
-
-const mockData: Record<string, any> = {
-    residential: {
-        title: "Modern Architectural Masterpiece",
-        price: "$1,250,000",
-        typeTag: "For Sale",
-        ref: "NM-RES-001",
-        location: "Borrowdale Brooke, Harare",
-        desc: "Experience the pinnacle of luxury living in this stunning contemporary home. Featuring floor-to-ceiling windows, a private infinity pool, and state-of-the-art smart home integration. The open-concept design seamlessly blends indoor and outdoor spaces, perfect for entertaining.",
-        company: "Willow & Elm",
-        companyLogo: "https://image2url.com/r2/bucket2/images/1775993105962-31e87a44-28d1-4cf3-a0e7-3d505b5a82bc.png",
-        quick: [
-            { label: "Bedrooms", icon: "fa-bed", val: "5" },
-            { label: "Bathrooms", icon: "fa-bath", val: "4" },
-            { label: "Floor Size", icon: "fa-vector-square", val: "450 m²" },
-            { label: "Stand Size", icon: "fa-ruler-combined", val: "2000 m²" }
-        ],
-        full: [
-            { label: "Lounges", icon: "fa-couch", val: "2" },
-            { label: "Dining Rooms", icon: "fa-utensils", val: "1" },
-            { label: "Kitchens", icon: "fa-kitchen-set", val: "1" },
-            { label: "Garages", icon: "fa-warehouse", val: "3" }
-        ],
-        amenities: ["Borehole", "Swimming Pool", "Landscaped Garden", "Fitted Kitchen", "Electric Fence", "CCTV", "Alarm System"]
-    },
-    commercial: {
-        title: "Premium CBD Office Floor",
-        price: "$4,500<span>/mo</span>",
-        typeTag: "For Rent",
-        ref: "NM-COM-089",
-        location: "Nexus Tower, CBD, Harare",
-        desc: "Entire 4th floor available in the highly sought-after Nexus Tower in the CBD. The space features a pristine modern reception, 8 private glass-partitioned offices, and a large open-plan central working area. High-speed fibre ready.",
-        company: "Pam Golding",
-        companyLogo: "https://i.pinimg.com/1200x/fb/32/27/fb3227a1d3765b94578c1514f9e26fb2.jpg",
-        quick: [
-            { label: "Floor Size", icon: "fa-vector-square", val: "850 m²" },
-            { label: "Total Rooms", icon: "fa-door-open", val: "12" },
-            { label: "Bathrooms", icon: "fa-restroom", val: "4" },
-            { label: "Layout", icon: "fa-layer-group", val: "Partitioned" }
-        ],
-        full: [
-            { label: "Private Offices", icon: "fa-door-closed", val: "8" },
-            { label: "Boardrooms", icon: "fa-chalkboard-user", val: "2" },
-            { label: "Reception Area", icon: "fa-bell-concierge", val: "Yes" },
-            { label: "Property Type", icon: "fa-building", val: "Office Space" }
-        ],
-        amenities: ["Kitchenette", "Basement Parking", "Air Conditioning", "Backup Power", "Internet Ready", "24/7 Security", "Elevator Access"]
-    },
-    stand: {
-        title: "Borrowdale Brooke Phase 2 Plot",
-        price: "$180,000",
-        typeTag: "For Sale",
-        ref: "NM-LND-202",
-        location: "Borrowdale Brooke, Harare North",
-        desc: "An incredible opportunity to build your dream home in the secure, gated community of Borrowdale Brooke Phase 2. This plot is perfectly flat, heavily wooded with mature indigenous trees, and fully serviced.",
-        company: null,
-        quick: [
-            { label: "Land Size", icon: "fa-ruler-combined", val: "2500" },
-            { label: "Unit of Measure", icon: "fa-ruler", val: "Square Meters (m²)" },
-            { label: "Terrain Type", icon: "fa-mountain", val: "Flat" },
-            { label: "Corner Stand", icon: "fa-road", val: "No" }
-        ],
-        full: [
-            { label: "Legal Status", icon: "fa-file-contract", val: "Title Deed" },
-            { label: "Zoning", icon: "fa-city", val: "Residential" },
-            { label: "Gate Access", icon: "fa-door-closed", val: "Secure Boom" },
-            { label: "Property Type", icon: "fa-earth-africa", val: "Residential Stand" }
-        ],
-        amenities: ["ZESA Power Available", "Council Water", "Main Sewer Connected", "Tarred Roads", "Gated Community", "Ready to Build"]
-    },
-    room: {
-        title: "Spacious Ensuite Room in Avondale",
-        price: "$250<span>/mo</span>",
-        typeTag: "For Rent",
-        ref: "NM-ROM-044",
-        location: "Avondale, Harare",
-        desc: "Large private bedroom available in a quiet shared house in Avondale. The room features its own ensuite bathroom, built-in cupboards, and a private entrance leading directly to the garden.",
-        company: null,
-        quick: [
-            { label: "Room Type", icon: "fa-bed", val: "Private Room" },
-            { label: "Bathroom", icon: "fa-bath", val: "Ensuite" },
-            { label: "Max Occupants", icon: "fa-users", val: "1" },
-            { label: "Gender Pref", icon: "fa-venus-mars", val: "Any" }
-        ],
-        full: [
-            { label: "Separate Entrance", icon: "fa-door-open", val: "Yes" },
-            { label: "Yard Access", icon: "fa-tree", val: "Yes" },
-            { label: "Security", icon: "fa-shield", val: "Walled & Gated" },
-            { label: "Lease Term", icon: "fa-calendar-days", val: "Min 6 Months" }
-        ],
-        amenities: ["Built-in Cupboards", "Furnished (Optional)", "Wi-Fi Included", "Shared Kitchen", "Secure Parking", "Borehole Water"]
-    }
-};
-
-export default function SingleProperty({ onBack, propertyType = 'residential' }: { onBack: () => void, propertyType?: string }) {
-    const { currentUser } = useAppContext();
+export default function SingleProperty({ onBack, propertyId }: { onBack: () => void, propertyId?: string }) {
+    const { currentUser, properties } = useAppContext();
     const isFreePlan = currentUser?.role === 'basic';
-    const initialIndex = propTypes.indexOf(propertyType) !== -1 ? propTypes.indexOf(propertyType) : 0;
-    const [propIndex, setPropIndex] = useState(initialIndex);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [currentLbIndex, setCurrentLbIndex] = useState(0);
     const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
@@ -122,18 +19,18 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
         phone: ''
     });
 
+    const property = properties.find(p => p.id === propertyId);
+
     useEffect(() => {
         window.scrollTo(0, 0);
         document.body.style.overflow = 'auto'; // Ensure overflow is auto when mounting
     }, []);
 
-    const currentType = propTypes[propIndex];
-    const data = mockData[currentType];
-    const lbImages = imgs[currentType];
+    if (!property) {
+        return <div>Property not found</div>;
+    }
 
-    const cycleProperty = () => {
-        setPropIndex((prev) => (prev + 1) % propTypes.length);
-    };
+    const lbImages = property.images && property.images.length > 0 ? property.images : ['https://via.placeholder.com/1200'];
 
     const openLightbox = (index: number) => {
         setCurrentLbIndex(index);
@@ -177,94 +74,101 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
         }, 300);
     };
 
+    const submitAppointment = async () => {
+        try {
+            const { error } = await supabase.from('viewing_requests').insert({
+                property_id: property.id,
+                requester_name: appointmentData.name,
+                requester_email: appointmentData.email,
+                requested_date: new Date(`${appointmentData.date} ${appointmentData.time}`).toISOString(),
+                status: 'pending'
+            });
+
+            if (error) throw error;
+            setBookingSuccess(true);
+        } catch (error) {
+            console.error("Error submitting appointment:", error);
+            alert("Failed to submit appointment. Please try again.");
+        }
+    };
+
     return (
         <>
             <div className="sp-wrapper">
                 <div className="sp-content">
+                    <button onClick={onBack} style={{ marginBottom: '20px', padding: '10px 20px', background: '#f0f0f0', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+                        <i className="fa-solid fa-arrow-left"></i> Back
+                    </button>
                     <div className="sp-gallery" id="dynGallery">
                         <div className="sp-main-img" style={{ backgroundImage: `url('${lbImages[currentLbIndex]}')` }} onClick={() => openLightbox(currentLbIndex)}>
                             <div className="sp-badges" id="dynTags">
-                                <div className="sp-badge featured"><i className="fa-solid fa-bolt"></i> Featured Listing</div>
-                                <div className="sp-badge type"><i className={`fa-solid ${data.typeTag === 'For Sale' ? 'fa-house-chimney' : 'fa-key'}`}></i> {data.typeTag}</div>
+                                {property.isSponsored && <div className="sp-badge featured"><i className="fa-solid fa-bolt"></i> Featured Listing</div>}
+                                <div className="sp-badge type"><i className={`fa-solid ${property.status === 'available' ? 'fa-house-chimney' : 'fa-key'}`}></i> {property.status}</div>
                             </div>
                             <button className="sp-img-arrow left" onClick={(e) => { e.stopPropagation(); lbPrev(e); }}><i className="fa-solid fa-chevron-left"></i></button>
                             <button className="sp-img-arrow right" onClick={(e) => { e.stopPropagation(); lbNext(e); }}><i className="fa-solid fa-chevron-right"></i></button>
                         </div>
                         <div className="sp-thumbnails">
-                            <div className={`sp-thumb ${currentLbIndex === 0 ? 'active' : ''}`} style={{ backgroundImage: `url('${lbImages[0]}')` }} onClick={() => setCurrentLbIndex(0)}></div>
-                            <div className={`sp-thumb ${currentLbIndex === 1 ? 'active' : ''}`} style={{ backgroundImage: `url('${lbImages[1]}')` }} onClick={() => setCurrentLbIndex(1)}></div>
-                            <div className={`sp-thumb ${currentLbIndex === 2 ? 'active' : ''}`} style={{ backgroundImage: `url('${lbImages[2]}')` }} onClick={() => setCurrentLbIndex(2)}></div>
-                            <div className="sp-thumb" style={{ background: 'var(--input-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand)', fontWeight: 700, fontSize: '12px', border: '1px solid var(--border-color)' }} onClick={() => openLightbox(0)}>
-                                +{Math.max(0, lbImages.length - 3)} Photos
-                            </div>
+                            {lbImages.slice(0, 3).map((img, idx) => (
+                                <div key={idx} className={`sp-thumb ${currentLbIndex === idx ? 'active' : ''}`} style={{ backgroundImage: `url('${img}')` }} onClick={() => setCurrentLbIndex(idx)}></div>
+                            ))}
+                            {lbImages.length > 3 && (
+                                <div className="sp-thumb" style={{ background: 'var(--input-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand)', fontWeight: 700, fontSize: '12px', border: '1px solid var(--border-color)' }} onClick={() => openLightbox(0)}>
+                                    +{lbImages.length - 3} Photos
+                                </div>
+                            )}
                         </div>
                     </div>
 
                     <div className="sp-price" id="dynPrice">
-                        {data.price.includes('<span>') ? (
-                            <>
-                                {data.price.split('<span>')[0]}
-                                <span>{data.price.split('<span>')[1].replace('</span>', '')}</span>
-                            </>
-                        ) : (
-                            data.price
-                        )}
+                        ${property.price?.toLocaleString()}
                     </div>
-                    <h1 className="sp-title" id="dynTitle">{data.title}</h1>
-                    <div className="sp-location"><i className="fa-solid fa-location-dot"></i> <span id="dynLocation">{data.location}</span></div>
-
-                    <h2 className="sp-section-title">Property Overview</h2>
-                    <div className="sp-grid" id="dynQuickDetails">
-                        {data.quick.map((item: any, i: number) => (
-                            <div className="sp-grid-box" key={i}>
-                                <div className="sp-grid-label">{item.label}</div>
-                                <div className="sp-grid-val"><i className={`fa-solid ${item.icon}`}></i> {item.val}</div>
-                            </div>
-                        ))}
-                    </div>
+                    <h1 className="sp-title" id="dynTitle">{property.title}</h1>
+                    <div className="sp-location"><i className="fa-solid fa-location-dot"></i> <span id="dynLocation">{property.category}</span></div>
 
                     <h2 className="sp-section-title">Property Description</h2>
                     <div className="sp-desc-box" id="dynDesc">
-                        {data.desc}
+                        {property.description}
                     </div>
 
                     <h2 className="sp-section-title">Property Details</h2>
                     <div className="sp-grid" id="dynFullDetails">
-                        {data.full.map((item: any, i: number) => (
-                            <div className="sp-grid-box" key={i}>
-                                <div className="sp-grid-label">{item.label}</div>
-                                <div className="sp-grid-val"><i className={`fa-solid ${item.icon}`}></i> {item.val}</div>
-                            </div>
-                        ))}
+                        <div className="sp-grid-box">
+                            <div className="sp-grid-label">Size</div>
+                            <div className="sp-grid-val"><i className="fa-solid fa-vector-square"></i> {property.size} {property.size_unit}</div>
+                        </div>
+                        <div className="sp-grid-box">
+                            <div className="sp-grid-label">Bedrooms</div>
+                            <div className="sp-grid-val"><i className="fa-solid fa-bed"></i> {property.bedrooms || 'N/A'}</div>
+                        </div>
+                        <div className="sp-grid-box">
+                            <div className="sp-grid-label">Bathrooms</div>
+                            <div className="sp-grid-val"><i className="fa-solid fa-bath"></i> {property.bathrooms || 'N/A'}</div>
+                        </div>
                     </div>
 
-                    <h2 className="sp-section-title">Amenities & Features</h2>
-                    <div className="sp-amenities" id="dynAmenities">
-                        {data.amenities.map((item: string, i: number) => (
-                            <div className="sp-amenity-pill" key={i}>{item}</div>
-                        ))}
-                    </div>
+                    {property.amenities && property.amenities.length > 0 && (
+                        <>
+                            <h2 className="sp-section-title">Amenities & Features</h2>
+                            <div className="sp-amenities" id="dynAmenities">
+                                {property.amenities.map((item: string, i: number) => (
+                                    <div className="sp-amenity-pill" key={i}>{item}</div>
+                                ))}
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <div className="sp-sidebar">
                     <div className="sp-agent-card">
                         
-                        {data.company && (
-                            <a href="/profile.html" style={{textDecoration: 'none'}}>
-                                <div className="sp-company-banner" id="dynCompanyBanner">
-                                    <img id="dynCompanyLogo" src={data.companyLogo} alt="Company Logo" />
-                                    <span>Listed by <strong id="dynCompanyName">{data.company}</strong></span>
-                                </div>
-                            </a>
-                        )}
-
                         <div className="sp-agent-card-body">
                             <div className="sp-agent-header">
                                 <div className="sp-agent-avatar" style={{ backgroundImage: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')" }}></div>
                                 <div className="sp-agent-info">
-                                    <h4>Sarah Jenkins</h4>
+                                    <h4>Agent Name</h4>
                                     <p>Property Specialist</p>
-                                    <div className="sp-pro-tag"><i className="fa-solid fa-circle-check"></i> <span id="agentRole">{data.company ? 'Staff Agent' : 'Private Agent'}</span></div>
+                                    <div className="sp-pro-tag"><i className="fa-solid fa-circle-check"></i> <span id="agentRole">Verified Agent</span></div>
                                 </div>
                             </div>
 
@@ -278,7 +182,7 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
 
                             <div className="sp-meta" style={{ marginTop: '25px', paddingTop: '20px', borderTop: '1px solid var(--input-bg)' }}>
                                 <div className="sp-meta-row"><span className="sp-meta-label">Response Time</span><span className="sp-meta-val">Usually within 1 hour</span></div>
-                                <div className="sp-meta-row"><span className="sp-meta-label">Listing Ref</span><span className="sp-meta-val" id="dynRef">{data.ref}</span></div>
+                                <div className="sp-meta-row"><span className="sp-meta-label">Listing Ref</span><span className="sp-meta-val" id="dynRef">{property.id.substring(0, 8)}</span></div>
                             </div>
                         </div>
                     </div>
@@ -292,10 +196,6 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
                 <button className="nm-lb-nav nm-lb-next" onClick={lbNext}><i className="fa-solid fa-chevron-right"></i></button>
                 <div className="nm-lb-counter" id="lbCounter">{currentLbIndex + 1} / {lbImages.length}</div>
             </div>
-
-            <button className="test-toggle" onClick={cycleProperty} id="testModeBtn">
-                Test View: {currentType.charAt(0).toUpperCase() + currentType.slice(1)}
-            </button>
 
             {isAppointmentModalOpen && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[99999] flex items-center justify-center p-4" onClick={closeAppointmentModal}>
@@ -487,9 +387,7 @@ export default function SingleProperty({ onBack, propertyType = 'residential' }:
                                     </button>
                                 ) : (
                                     <button 
-                                        onClick={() => {
-                                            setBookingSuccess(true);
-                                        }}
+                                        onClick={submitAppointment}
                                         className="px-8 py-3 rounded-xl font-semibold bg-gray-900 text-white hover:bg-black transition-colors shadow-lg shadow-gray-900/20 flex items-center gap-2 cursor-pointer"
                                     >
                                         Confirm Booking <i className="fa-solid fa-check text-sm"></i>

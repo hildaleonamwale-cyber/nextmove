@@ -9,6 +9,8 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
   const [category, setCategory] = useState('');
   const [subtype, setSubtype] = useState('');
   const [availability, setAvailability] = useState('now');
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
 
   const subtypesMap: Record<string, string[]> = {
     residential: ['Full house', 'Apartment', 'Cottage', 'Room', 'Cluster house / townhouse'],
@@ -111,11 +113,50 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
 
           <div className="we-form-group full">
             <label className="we-form-label">Photos</label>
-            <div className="we-image-upload">
+            <div 
+              className="we-image-upload" 
+              onClick={() => document.getElementById('imageUpload')?.click()}
+              style={{ cursor: 'pointer' }}
+            >
               <i className="fa-solid fa-cloud-arrow-up"></i>
-              <p>Drag & drop property images here</p>
+              <p>Click to upload or drag & drop property images here</p>
               <span>Supports JPG, PNG (Max 5MB each)</span>
+              <input 
+                type="file" 
+                id="imageUpload" 
+                multiple 
+                accept="image/*" 
+                style={{ display: 'none' }} 
+                onChange={(e) => {
+                  if (e.target.files) {
+                    const filesArray = Array.from(e.target.files);
+                    setSelectedImages(prev => [...prev, ...filesArray]);
+                    const newUrls = filesArray.map(file => URL.createObjectURL(file));
+                    setImagePreviewUrls(prev => [...prev, ...newUrls]);
+                  }
+                }}
+              />
             </div>
+            
+            {imagePreviewUrls.length > 0 && (
+              <div style={{ display: 'flex', gap: '10px', marginTop: '15px', flexWrap: 'wrap' }}>
+                {imagePreviewUrls.map((url, index) => (
+                  <div key={index} style={{ position: 'relative', width: '100px', height: '100px' }}>
+                    <img src={url} alt={`Preview ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImagePreviewUrls(prev => prev.filter((_, i) => i !== index));
+                        setSelectedImages(prev => prev.filter((_, i) => i !== index));
+                      }}
+                      style={{ position: 'absolute', top: '-5px', right: '-5px', background: '#ef4444', color: 'white', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', fontSize: '14px' }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {category === 'residential' && (

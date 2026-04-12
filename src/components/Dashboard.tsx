@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/dashboard.css';
 import { useAppContext } from '../context/AppContext';
+import { supabase } from '../lib/supabase';
 
 import Overview from './dashboard/Overview';
 import Listings from './dashboard/Listings';
@@ -14,20 +15,25 @@ import ContactCard from './dashboard/ContactCard';
 import AddListingModal from './dashboard/AddListingModal';
 import Wallet from './dashboard/Wallet';
 
-const roles = ['admin', 'premium', 'worker', 'basic'];
-const roleLabels = ['God Mode', 'Premium User', 'Staff Agent', 'Basic User'];
-
 export default function Dashboard() {
-  const { users, setCurrentUser } = useAppContext();
+  const navigate = useNavigate();
+  const { currentUser, supabaseUser, isLoading } = useAppContext();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [currentTab, setCurrentTab] = useState('overview');
   
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   
   const [isAddListingOpen, setIsAddListingOpen] = useState(false);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
-  const currentRole = roles[currentRoleIndex];
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!isLoading && !supabaseUser) {
+      navigate('/login');
+    }
+  }, [supabaseUser, isLoading, navigate]);
+
+  const currentRole = currentUser?.role || 'basic';
 
   // Smart routing when role changes
   useEffect(() => {
@@ -36,17 +42,7 @@ export default function Dashboard() {
     } else if (currentRole === 'premium' && currentTab === 'staff') {
       setCurrentTab('overview');
     }
-    
-    // Update current user in context based on role
-    const user = users.find(u => u.role === currentRole);
-    if (user) {
-      setCurrentUser(user);
-    }
-  }, [currentRole, currentTab, users, setCurrentUser]);
-
-  const cycleRole = () => {
-    setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
-  };
+  }, [currentRole, currentTab]);
 
   const switchTab = (tab: string) => {
     setCurrentTab(tab);
@@ -62,41 +58,14 @@ export default function Dashboard() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const getProfileData = () => {
-    switch (currentRole) {
-      case 'admin':
-        return {
-          name: "Sarah Jenkins", role: "Agency Admin",
-          sideName: "Willow & Elm", sideRole: "Agency Pro",
-          avatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')",
-          sideAvatar: "url('https://image2url.com/r2/bucket2/images/1775993105962-31e87a44-28d1-4cf3-a0e7-3d505b5a82bc.png')"
-        };
-      case 'premium':
-        return {
-          name: "Sarah Jenkins", role: "Premium Agent",
-          sideName: "Sarah Jenkins", sideRole: "Premium Plan",
-          avatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')",
-          sideAvatar: "url('https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150')"
-        };
-      case 'worker':
-        return {
-          name: "Mike Ross", role: "Staff Agent",
-          sideName: "Mike Ross", sideRole: "Elite Realty",
-          avatar: "url('https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150')",
-          sideAvatar: "url('https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150')"
-        };
-      case 'basic':
-      default:
-        return {
-          name: "Jane Doe", role: "Private Lister",
-          sideName: "Jane Doe", sideRole: "Basic Plan",
-          avatar: "url('https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150')",
-          sideAvatar: "url('https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150')"
-        };
-    }
+  const profileData = {
+    name: currentUser ? `${currentUser.first_name} ${currentUser.last_name}` : "Loading...",
+    role: currentRole === 'admin' ? 'Agency Admin' : currentRole === 'premium' ? 'Premium Agent' : currentRole === 'worker' ? 'Staff Agent' : 'Private Lister',
+    sideName: currentUser ? `${currentUser.first_name} ${currentUser.last_name}` : "Loading...",
+    sideRole: currentRole === 'admin' ? 'Agency Pro' : currentRole === 'premium' ? 'Premium Plan' : currentRole === 'worker' ? 'Elite Realty' : 'Basic Plan',
+    avatar: currentUser?.avatar_url ? `url('${currentUser.avatar_url}')` : "url('https://ui-avatars.com/api/?name=User&background=1FE6D4&color=021211')",
+    sideAvatar: currentUser?.avatar_url ? `url('${currentUser.avatar_url}')` : "url('https://ui-avatars.com/api/?name=User&background=1FE6D4&color=021211')"
   };
-
-  const profileData = getProfileData();
 
   const handleUpgradeClick = () => {
     setIsUpgradeModalOpen(true);
@@ -107,6 +76,17 @@ export default function Dashboard() {
     window.open(`https://wa.me/263771234567?text=${message}`, '_blank');
     setIsUpgradeModalOpen(false);
   };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+  };
+
+  if (isLoading) {
+    return <div className="flex h-screen items-center justify-center bg-gray-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1FE6D4]"></div></div>;
+  }
+
+  if (!supabaseUser) return null;
 
   return (
     <div className={`nm-dash-wrapper role-${currentRole}`}>
@@ -181,7 +161,7 @@ export default function Dashboard() {
             </div>
           </div>
           
-          <Link to="/" className="nm-logout"><i className="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</Link>
+          <button onClick={handleSignOut} className="nm-logout"><i className="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button>
         </div>
       </aside>
 
@@ -292,9 +272,6 @@ export default function Dashboard() {
           </div>
         </div>
       )}
-
-      <button id="testModeBtn" className="test-toggle" onClick={cycleRole}>Test Mode: {roleLabels[currentRoleIndex]}</button>
     </div>
   );
 }
-   

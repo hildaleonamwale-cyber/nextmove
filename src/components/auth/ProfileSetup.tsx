@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Upload, Image as ImageIcon, Building2, Phone, MapPin, 
-  ArrowRight
+  ArrowRight, Loader2
 } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 export default function ProfileSetup() {
   const location = useLocation();
@@ -14,10 +15,61 @@ export default function ProfileSetup() {
   const [whatsapp, setWhatsapp] = useState('');
   const [address, setAddress] = useState('');
   const [about, setAbout] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
 
-  const handleBrandSubmit = (e: React.FormEvent) => {
+  const handleBrandSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/dashboard');
+    setIsLoading(true);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error("No user logged in");
+      }
+
+      // Split displayName into first and last name for simplicity
+      const nameParts = displayName.split(' ');
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(' ');
+
+      const { error } = await supabase
+        .from('users')
+        .update({
+          first_name: firstName,
+          last_name: lastName,
+          phone: whatsapp,
+          address: address,
+          about: about,
+          // We'll store the preview URLs for now, but in a real app you'd upload to Supabase Storage
+          avatar_url: logoPreview,
+          cover_url: coverPreview
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      
+      navigate('/dashboard');
+    } catch (error: any) {
+      alert("Error saving profile: " + error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setLogoPreview(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
+  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setCoverPreview(URL.createObjectURL(e.target.files[0]));
+    }
   };
 
   const pageVariants = {
@@ -53,37 +105,53 @@ export default function ProfileSetup() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Profile / Company Logo</label>
-                    <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-[#1FE6D4] hover:bg-[#1FE6D4]/5 transition-colors cursor-pointer group">
-                      <div className="space-y-1 text-center">
-                        <div className="mx-auto h-12 w-12 text-gray-400 group-hover:text-[#1FE6D4] transition-colors flex items-center justify-center bg-gray-50 rounded-full mb-3">
-                          <Upload className="h-6 w-6" />
+                    <div 
+                      className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-[#1FE6D4] hover:bg-[#1FE6D4]/5 transition-colors cursor-pointer group relative overflow-hidden"
+                      onClick={() => document.getElementById('logoUpload')?.click()}
+                    >
+                      {logoPreview ? (
+                        <img src={logoPreview} alt="Logo Preview" className="absolute inset-0 w-full h-full object-cover" />
+                      ) : (
+                        <div className="space-y-1 text-center">
+                          <div className="mx-auto h-12 w-12 text-gray-400 group-hover:text-[#1FE6D4] transition-colors flex items-center justify-center bg-gray-50 rounded-full mb-3">
+                            <Upload className="h-6 w-6" />
+                          </div>
+                          <div className="flex text-sm text-gray-600 justify-center">
+                            <span className="relative cursor-pointer rounded-md font-medium text-[#1FE6D4] hover:text-[#15b8a9]">
+                              Upload a file
+                            </span>
+                            <p className="pl-1">or drag and drop</p>
+                          </div>
+                          <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
                         </div>
-                        <div className="flex text-sm text-gray-600 justify-center">
-                          <span className="relative cursor-pointer rounded-md font-medium text-[#1FE6D4] hover:text-[#15b8a9]">
-                            Upload a file
-                          </span>
-                          <p className="pl-1">or drag and drop</p>
-                        </div>
-                        <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
-                      </div>
+                      )}
+                      <input type="file" id="logoUpload" accept="image/*" style={{ display: 'none' }} onChange={handleLogoChange} />
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Cover Photo</label>
-                    <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-[#1FE6D4] hover:bg-[#1FE6D4]/5 transition-colors cursor-pointer group">
-                      <div className="space-y-1 text-center">
-                        <div className="mx-auto h-12 w-12 text-gray-400 group-hover:text-[#1FE6D4] transition-colors flex items-center justify-center bg-gray-50 rounded-full mb-3">
-                          <ImageIcon className="h-6 w-6" />
+                    <div 
+                      className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-[#1FE6D4] hover:bg-[#1FE6D4]/5 transition-colors cursor-pointer group relative overflow-hidden"
+                      onClick={() => document.getElementById('coverUpload')?.click()}
+                    >
+                      {coverPreview ? (
+                        <img src={coverPreview} alt="Cover Preview" className="absolute inset-0 w-full h-full object-cover" />
+                      ) : (
+                        <div className="space-y-1 text-center">
+                          <div className="mx-auto h-12 w-12 text-gray-400 group-hover:text-[#1FE6D4] transition-colors flex items-center justify-center bg-gray-50 rounded-full mb-3">
+                            <ImageIcon className="h-6 w-6" />
+                          </div>
+                          <div className="flex text-sm text-gray-600 justify-center">
+                            <span className="relative cursor-pointer rounded-md font-medium text-[#1FE6D4] hover:text-[#15b8a9]">
+                              Upload a file
+                            </span>
+                            <p className="pl-1">or drag and drop</p>
+                          </div>
+                          <p className="text-xs text-gray-500">1200x400px recommended</p>
                         </div>
-                        <div className="flex text-sm text-gray-600 justify-center">
-                          <span className="relative cursor-pointer rounded-md font-medium text-[#1FE6D4] hover:text-[#15b8a9]">
-                            Upload a file
-                          </span>
-                          <p className="pl-1">or drag and drop</p>
-                        </div>
-                        <p className="text-xs text-gray-500">1200x400px recommended</p>
-                      </div>
+                      )}
+                      <input type="file" id="coverUpload" accept="image/*" style={{ display: 'none' }} onChange={handleCoverChange} />
                     </div>
                   </div>
                 </div>
@@ -147,8 +215,10 @@ export default function ProfileSetup() {
                 </div>
 
                 <div className="pt-4 border-t border-gray-100 flex justify-end">
-                  <button type="submit" className="flex items-center justify-center py-3 px-8 border border-transparent rounded-xl shadow-sm text-sm font-medium text-[#1A1C1E] bg-[#1FE6D4] hover:bg-[#15b8a9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1FE6D4] transition-colors">
-                    Complete Setup <ArrowRight className="ml-2 h-5 w-5" />
+                  <button type="submit" disabled={isLoading} className="flex items-center justify-center py-3 px-8 border border-transparent rounded-xl shadow-sm text-sm font-medium text-[#1A1C1E] bg-[#1FE6D4] hover:bg-[#15b8a9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1FE6D4] transition-colors disabled:opacity-70">
+                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+                      <>Complete Setup <ArrowRight className="ml-2 h-5 w-5" /></>
+                    )}
                   </button>
                 </div>
               </form>

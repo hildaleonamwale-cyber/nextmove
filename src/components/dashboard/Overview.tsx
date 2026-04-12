@@ -1,54 +1,62 @@
 import React from 'react';
+import { useAppContext } from '../../context/AppContext';
 
 interface OverviewProps {
   currentRole: string;
 }
 
 export default function Overview({ currentRole }: OverviewProps) {
+  const { properties, requests, currentUser } = useAppContext();
+
+  const activeListings = properties.length;
+  const totalViews = properties.reduce((acc, p) => acc + (p.views || 0), 0);
+  const newRequests = requests.length;
+  const soldProperties = properties.filter(p => p.status === 'sold').length;
+
   const getRoleData = () => {
     switch (currentRole) {
       case 'admin':
         return {
-          welcomeText: "Welcome back, Sarah",
+          welcomeText: `Welcome back, ${currentUser?.first_name || 'Admin'}`,
           welcomeSub: "Here's what's happening with your entire company today.",
-          stat1Label: "Company Active Listings", stat1Val: "142",
-          stat2Label: "Total Company Views", stat2Val: "45.2k",
-          stat3Label: "Company New Requests", stat3Val: "84",
-          stat4Label: "Company Sold Properties", stat4Val: "34",
+          stat1Label: "Company Active Listings", stat1Val: activeListings.toString(),
+          stat2Label: "Total Company Views", stat2Val: totalViews.toString(),
+          stat3Label: "Company New Requests", stat3Val: newRequests.toString(),
+          stat4Label: "Company Sold Properties", stat4Val: soldProperties.toString(),
           tableTitle: "Recent Company Requests",
           rankText: "Your company is in the top 5% this month!"
         };
       case 'premium':
         return {
-          welcomeText: "Welcome back, Sarah",
+          welcomeText: `Welcome back, ${currentUser?.first_name || 'Agent'}`,
           welcomeSub: "Here's what's happening with your portfolio today.",
-          stat1Label: "Active Listings", stat1Val: "42",
-          stat2Label: "Total Views", stat2Val: "15.2k",
-          stat3Label: "New Requests", stat3Val: "24",
-          stat4Label: "Sold Properties", stat4Val: "14",
+          stat1Label: "Active Listings", stat1Val: activeListings.toString(),
+          stat2Label: "Total Views", stat2Val: totalViews.toString(),
+          stat3Label: "New Requests", stat3Val: newRequests.toString(),
+          stat4Label: "Sold Properties", stat4Val: soldProperties.toString(),
           tableTitle: "Recent Requests",
           rankText: "You are in the top 10% this month!"
         };
       case 'worker':
         return {
-          welcomeText: "Hello, Mike",
+          welcomeText: `Hello, ${currentUser?.first_name || 'Agent'}`,
           welcomeSub: "Here is the performance of your assigned portfolio.",
-          stat1Label: "My Active Listings", stat1Val: "12",
-          stat2Label: "Total Profile Views", stat2Val: "1.2k",
-          stat3Label: "My New Requests", stat3Val: "5",
-          stat4Label: "My Sold Properties", stat4Val: "3",
+          stat1Label: "My Active Listings", stat1Val: activeListings.toString(),
+          stat2Label: "Total Profile Views", stat2Val: totalViews.toString(),
+          stat3Label: "My New Requests", stat3Val: newRequests.toString(),
+          stat4Label: "My Sold Properties", stat4Val: soldProperties.toString(),
           tableTitle: "My Recent Requests",
           rankText: "You are a top performing agent!"
         };
       case 'basic':
       default:
         return {
-          welcomeText: "Welcome, Jane",
+          welcomeText: `Welcome, ${currentUser?.first_name || 'User'}`,
           welcomeSub: "Manage your personal property listings.",
-          stat1Label: "My Active Listings", stat1Val: "1",
-          stat2Label: "Total Property Views", stat2Val: "340",
-          stat3Label: "New Requests (Locked)", stat3Val: "2",
-          stat4Label: "Sold Properties", stat4Val: "0",
+          stat1Label: "My Active Listings", stat1Val: activeListings.toString(),
+          stat2Label: "Total Property Views", stat2Val: totalViews.toString(),
+          stat3Label: "New Requests (Locked)", stat3Val: newRequests.toString(),
+          stat4Label: "Sold Properties", stat4Val: soldProperties.toString(),
           tableTitle: "My Properties",
           rankText: "Upgrade to Premium to boost visibility!"
         };
@@ -113,54 +121,37 @@ export default function Overview({ currentRole }: OverviewProps) {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td data-label="Client">
-                    <div className="nm-td-flex">
-                      <div className="nm-avatar initials">JD</div>
-                      <div className="nm-info-text">
-                        <strong>John Doe</strong>
-                        <span>077 123 4567</span>
+                {requests.slice(0, 5).map((req: any) => (
+                  <tr key={req.id}>
+                    <td data-label="Client">
+                      <div className="nm-td-flex">
+                        <div className="nm-avatar initials">{req.requester_name.substring(0, 2).toUpperCase()}</div>
+                        <div className="nm-info-text">
+                          <strong>{req.requester_name}</strong>
+                          <span>{req.requester_email}</span>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td data-label="Property">
-                    <div className="nm-info-text">
-                      <strong>Modern Villa</strong>
-                      <span>Borrowdale</span>
-                    </div>
-                  </td>
-                  <td data-label="Date">
-                    <div className="nm-info-text">
-                      <strong>Today</strong>
-                      <span>10:00 AM</span>
-                    </div>
-                  </td>
-                  <td data-label="Status"><span className="nm-badge brand">Confirmed</span></td>
-                </tr>
-                <tr>
-                  <td data-label="Client">
-                    <div className="nm-td-flex">
-                      <div className="nm-avatar initials">AS</div>
+                    </td>
+                    <td data-label="Property">
                       <div className="nm-info-text">
-                        <strong>Alice Smith</strong>
-                        <span>071 987 6543</span>
+                        <strong>{req.properties?.title || 'Unknown Property'}</strong>
+                        <span>{req.properties?.category || 'Unknown Category'}</span>
                       </div>
-                    </div>
-                  </td>
-                  <td data-label="Property">
-                    <div className="nm-info-text">
-                      <strong>Garden Lofts</strong>
-                      <span>Avondale</span>
-                    </div>
-                  </td>
-                  <td data-label="Date">
-                    <div className="nm-info-text">
-                      <strong>Tomorrow</strong>
-                      <span>2:30 PM</span>
-                    </div>
-                  </td>
-                  <td data-label="Status"><span className="nm-badge pending">Pending</span></td>
-                </tr>
+                    </td>
+                    <td data-label="Date">
+                      <div className="nm-info-text">
+                        <strong>{new Date(req.requested_date).toLocaleDateString()}</strong>
+                        <span>{new Date(req.requested_date).toLocaleTimeString()}</span>
+                      </div>
+                    </td>
+                    <td data-label="Status"><span className={`nm-badge ${req.status === 'approved' ? 'brand' : 'pending'}`}>{req.status}</span></td>
+                  </tr>
+                ))}
+                {requests.length === 0 && (
+                  <tr>
+                    <td colSpan={4} style={{ textAlign: 'center', padding: '20px' }}>No recent requests</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

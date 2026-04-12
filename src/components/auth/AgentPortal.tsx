@@ -5,14 +5,11 @@ import {
   Eye, EyeOff, Mail, Lock, User, ArrowRight, ShieldCheck, 
   CheckCircle2, Loader2, Building2, Home
 } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 type Step = 
   | 'LOGIN' 
-  | 'SIGNUP_DETAILS' 
-  | 'VERIFY_EMAIL' 
-  | 'PRO_INVITE';
-
-type Role = 'OWNER' | 'AGENT' | null;
+  | 'SIGNUP_DETAILS';
 
 export default function AgentPortal() {
   const navigate = useNavigate();
@@ -24,46 +21,62 @@ export default function AgentPortal() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-  // Role State
-  const [role, setRole] = useState<Role>(null);
-  const [agentFee, setAgentFee] = useState('');
 
   // Handlers
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
       navigate('/dashboard');
-    }, 1000);
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSignupDetailsSubmit = (e: React.FormEvent) => {
+  const handleSignupDetailsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            first_name: name.split(' ')[0],
+            last_name: name.split(' ').slice(1).join(' ')
+          }
+        }
+      });
+      if (error) throw error;
+      navigate('/setup');
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
       setIsLoading(false);
-      setStep('VERIFY_EMAIL');
-    }, 1000);
+    }
   };
 
-  const handleSimulateVerification = () => {
+  const handleDemoLogin = async () => {
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: 'sarah@nextmove.com',
+        password: 'password123',
+      });
+      if (error) throw error;
+      navigate('/dashboard');
+    } catch (error: any) {
+      alert("Demo login failed. Make sure you ran the seed SQL script! Error: " + error.message);
+    } finally {
       setIsLoading(false);
-      navigate('/setup', { state: { role: 'AGENT' } });
-    }, 1000);
-  };
-
-  const handleRoleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (role === 'AGENT' && !agentFee) return;
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate('/setup', { state: { role, agentFee } });
-    }, 1000);
+    }
   };
 
   // Animation variants
@@ -87,7 +100,6 @@ export default function AgentPortal() {
               {step === 'LOGIN' && 'Sign In'}
               {step === 'SIGNUP_DETAILS' && 'Create Free Account'}
               {step === 'VERIFY_EMAIL' && 'Verify Your Email'}
-              {step === 'PRO_INVITE' && 'Accept Pro Invite'}
             </h2>
             
             {(step === 'LOGIN' || step === 'SIGNUP_DETAILS') && (
@@ -100,9 +112,6 @@ export default function AgentPortal() {
                   {step === 'LOGIN' ? 'create a new account' : 'sign in instead'}
                 </button>
               </p>
-            )}
-            {step === 'PRO_INVITE' && (
-              <p className="mt-2 text-sm text-gray-500">Welcome to Nextmove Pro. Set your password to get started.</p>
             )}
           </div>
 
@@ -123,7 +132,7 @@ export default function AgentPortal() {
                           <Mail className="h-5 w-5 text-gray-400" />
                         </div>
                         <input
-                          type="email" required
+                          type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
                           className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
                           placeholder="you@example.com"
                         />
@@ -137,7 +146,7 @@ export default function AgentPortal() {
                           <Lock className="h-5 w-5 text-gray-400" />
                         </div>
                         <input
-                          type={showPassword ? "text" : "password"} required
+                          type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)}
                           className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
                           placeholder="••••••••"
                         />
@@ -170,35 +179,18 @@ export default function AgentPortal() {
                         <div className="w-full border-t border-gray-200" />
                       </div>
                       <div className="relative flex justify-center text-sm">
-                        <span className="px-2 bg-white text-gray-500">Developer Access</span>
+                        <span className="px-2 bg-white text-gray-500">Demo Access</span>
                       </div>
                     </div>
 
                     <div className="mt-6 space-y-3">
                       <button
-                        onClick={() => navigate('/glade')}
-                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
-                      >
-                        <ShieldCheck className="h-5 w-5 text-gray-400 mr-2 group-hover:text-[#1FE6D4] transition-colors" />
-                        Super Admin Panel (The Glade)
-                        <ArrowRight className="h-4 w-4 ml-2 text-gray-400 group-hover:translate-x-1 transition-transform" />
-                      </button>
-                      
-                      <button
-                        onClick={() => navigate('/dashboard')}
-                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
+                        onClick={handleDemoLogin}
+                        disabled={isLoading}
+                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group disabled:opacity-70"
                       >
                         <User className="h-5 w-5 text-gray-400 mr-2 group-hover:text-[#1FE6D4] transition-colors" />
-                        Skip Login (Go to Dashboard)
-                        <ArrowRight className="h-4 w-4 ml-2 text-gray-400 group-hover:translate-x-1 transition-transform" />
-                      </button>
-
-                      <button
-                        onClick={() => setStep('PRO_INVITE')}
-                        className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
-                      >
-                        <Mail className="h-5 w-5 text-gray-400 mr-2 group-hover:text-[#1FE6D4] transition-colors" />
-                        Demo: Accept Pro Invite Link
+                        Continue as Demo User (Sarah Jenkins)
                         <ArrowRight className="h-4 w-4 ml-2 text-gray-400 group-hover:translate-x-1 transition-transform" />
                       </button>
                     </div>
@@ -262,104 +254,6 @@ export default function AgentPortal() {
 
                     <button type="submit" disabled={isLoading} className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-[#1A1C1E] hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70">
                       {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Sign Up'}
-                    </button>
-                  </form>
-                </motion.div>
-              )}
-
-              {/* VERIFY EMAIL STEP */}
-              {step === 'VERIFY_EMAIL' && (
-                <motion.div 
-                  key="verify-email"
-                  variants={pageVariants} initial="initial" animate="animate" exit="exit"
-                  className="text-center"
-                >
-                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-[#1FE6D4]/10 mb-6">
-                    <Mail className="h-8 w-8 text-[#15b8a9]" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Check your email</h3>
-                  <p className="text-sm text-gray-500 mb-6">
-                    We've sent a verification link to <br/><span className="font-medium text-gray-900">{email || 'your email'}</span>. You must click the link to continue.
-                  </p>
-                  
-                  <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-xl mb-6">
-                    <p className="text-xs text-yellow-800 font-medium">
-                      Developer Simulation: Click the button below to simulate clicking the email verification link.
-                    </p>
-                  </div>
-
-                  <button 
-                    onClick={handleSimulateVerification}
-                    disabled={isLoading}
-                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-[#1A1C1E] hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70"
-                  >
-                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Simulate Email Verification'}
-                  </button>
-                </motion.div>
-              )}
-
-              {/* PRO INVITE STEP */}
-              {step === 'PRO_INVITE' && (
-                <motion.div 
-                  key="pro-invite"
-                  variants={pageVariants} initial="initial" animate="animate" exit="exit"
-                >
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    setIsLoading(true);
-                    setTimeout(() => {
-                      setIsLoading(false);
-                      navigate('/setup', { state: { role: 'AGENT', tier: 'PRO' } });
-                    }, 1000);
-                  }} className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Full Name</label>
-                      <div className="mt-1 relative rounded-md shadow-sm">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <User className="h-5 w-5 text-gray-400" />
-                        </div>
-                        <input
-                          type="text" required value={name} onChange={(e) => setName(e.target.value)}
-                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
-                          placeholder="Sarah Jenkins"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Email address</label>
-                      <div className="mt-1 relative rounded-md shadow-sm">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <Mail className="h-5 w-5 text-gray-400" />
-                        </div>
-                        <input
-                          type="email" disabled value="admin@willowelm.co.zw"
-                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-100 text-gray-500 border transition-colors cursor-not-allowed"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Create Password</label>
-                      <div className="mt-1 relative rounded-md shadow-sm">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <Lock className="h-5 w-5 text-gray-400" />
-                        </div>
-                        <input
-                          type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)}
-                          className="focus:ring-[#1FE6D4] focus:border-[#1FE6D4] block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-xl py-3 bg-gray-50/50 border transition-colors"
-                          placeholder="••••••••"
-                        />
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                          <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-500">
-                            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <button type="submit" disabled={isLoading} className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-[#1A1C1E] hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70">
-                      {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Complete Setup'}
                     </button>
                   </form>
                 </motion.div>

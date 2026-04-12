@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SingleProperty from '../SingleProperty';
+import { useAppContext } from '../context/AppContext';
 
 const safetyTipsList = [
     "Never transfer funds before viewing a property and verifying documents.",
@@ -17,12 +18,13 @@ const subtypesMap: Record<string, string[]> = {
 
 export default function LandingPage() {
     const navigate = useNavigate();
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+    const { properties, currentUser } = useAppContext();
+    const isUserLoggedIn = !!currentUser;
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isListingPageOpen, setIsListingPageOpen] = useState(false);
     const [isPropertyPageOpen, setIsPropertyPageOpen] = useState(false);
-    const [selectedPropertyType, setSelectedPropertyType] = useState('residential');
+    const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
     const [isSafetyPopoverOpen, setIsSafetyPopoverOpen] = useState(false);
     const [currentTipIndex, setCurrentTipIndex] = useState(0);
 
@@ -164,8 +166,8 @@ export default function LandingPage() {
                 </header>
             </div>
 
-            {isPropertyPageOpen ? (
-                <SingleProperty onBack={() => setIsPropertyPageOpen(false)} propertyType={selectedPropertyType} />
+            {isPropertyPageOpen && selectedPropertyId ? (
+                <SingleProperty onBack={() => setIsPropertyPageOpen(false)} propertyId={selectedPropertyId} />
             ) : (
                 <>
                     <section className="we-hero-clean">
@@ -362,104 +364,22 @@ export default function LandingPage() {
                     </div>
                     <div className="we-full-bleed-container">
                         <div className="we-listings">
-                            
-                            <div className="we-card featured" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
-                                    <span className="we-tag">FOR SALE</span>
-                                    <span className="we-featured-tag"><i className="fa-solid fa-bolt"></i> Featured</span>
-                                    <div className="we-lister-badge"><i className="fa-solid fa-building-circle-check"></i> Elite Realty</div>
-                                </div>
-                                <div className="we-body">
-                                    <div className="we-price">$850,000</div>
-                                    <div className="we-title">The Glass Pavilion</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Borrowdale Brooke</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item"><i className="fa-solid fa-bed"></i> 3 Bed</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-bath"></i> 2 Bath</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 220 m²</div>
+                            {properties.slice(0, 6).map(property => (
+                                <div key={property.id} className={`we-card ${property.isSponsored ? 'featured' : ''}`} onClick={() => { setSelectedPropertyId(property.id); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
+                                    <div className="we-img" style={{backgroundImage: `url('${property.images?.[0] || 'https://via.placeholder.com/800'}')`}}>
+                                        <span className="we-tag">{property.status === 'available' ? 'FOR SALE / RENT' : property.status.toUpperCase()}</span>
+                                        {property.isSponsored && <span className="we-featured-tag"><i className="fa-solid fa-bolt"></i> Featured</span>}
+                                    </div>
+                                    <div className="we-body">
+                                        <div className="we-price">${property.price?.toLocaleString()}</div>
+                                        <div className="we-title">{property.title}</div>
+                                        <div className="we-location"><i className="fa-solid fa-location-dot"></i> {property.category}</div>
+                                        <div className="we-icons-row">
+                                            <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> {property.size} {property.size_unit}</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="we-card" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/439391/pexels-photo-439391.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
-                                    <span className="we-tag">FOR RENT</span>
-                                    <div className="we-lister-badge"><i className="fa-solid fa-building-circle-check"></i> Rawson</div>
-                                </div>
-                                <div className="we-body">
-                                    <div className="we-price">$1,500/mo</div>
-                                    <div className="we-title">Garden City Lofts</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Avondale</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item"><i className="fa-solid fa-bed"></i> 2 Bed</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-bath"></i> 1 Bath</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 110 m²</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="we-card" onClick={() => { setSelectedPropertyType('commercial'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
-                                    <span className="we-tag">FOR LEASE</span>
-                                    <div className="we-lister-badge"><i className="fa-solid fa-building-circle-check"></i> Pam Golding</div>
-                                </div>
-                                <div className="we-body">
-                                    <div className="we-price">$2,500/mo</div>
-                                    <div className="we-title">The Nexus Tower</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> CBD, Harare</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item"><i className="fa-solid fa-layer-group"></i> Open Plan</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-snowflake"></i> Air Con</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 850 m²</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="we-card" onClick={() => { setSelectedPropertyType('room'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
-                                    <span className="we-tag">FOR RENT</span>
-                                </div>
-                                <div className="we-body">
-                                    <div className="we-price">$150/mo</div>
-                                    <div className="we-title">Spacious Room Avondale</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Avondale</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item"><i className="fa-solid fa-bed"></i> Private Room</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-bath"></i> Shared Bath</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-door-open"></i> Own Entrance</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="we-card" onClick={() => { setSelectedPropertyType('commercial'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/298842/pexels-photo-298842.jpeg?auto=compress&cs=tinysrgb&w=800')"}}>
-                                    <span className="we-tag">FOR RENT</span>
-                                </div>
-                                <div className="we-body">
-                                    <div className="we-price">$1,800/mo</div>
-                                    <div className="we-title">Highlands Retail Space</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Highlands</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item"><i className="fa-solid fa-store"></i> Street Facing</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-users"></i> High Traffic</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 120 m²</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="we-card" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=800')"}}><span className="we-tag">FOR SALE</span></div>
-                                <div className="we-body">
-                                    <div className="we-price">$450,000</div>
-                                    <div className="we-title">Willow Terrace</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Greendale</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item"><i className="fa-solid fa-bed"></i> 4 Bed</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-bath"></i> 3 Bath</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-vector-square"></i> 320 m²</div>
-                                    </div>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
 
@@ -472,67 +392,22 @@ export default function LandingPage() {
                     </div>
                     <div className="we-full-bleed-container">
                         <div className="we-listings" id="standGrid">
-                            
-                            <div className="we-card featured" onClick={() => { setSelectedPropertyType('stand'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/736x/53/0f/1a/530f1ade4b644c91dfed9d53a072b905.jpg')"}}>
-                                    <span className="we-tag">TITLE DEEDS</span>
-                                    <span className="we-featured-tag"><i className="fa-solid fa-bolt"></i> Featured</span>
-                                    <div className="we-lister-badge"><i className="fa-solid fa-building-circle-check"></i> Pam Golding</div>
-                                </div>
-                                <div className="we-body">
-                                    <div className="we-price">$45,000</div>
-                                    <div className="we-title">Borrowdale East Phase 2</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Harare North</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item"><i className="fa-solid fa-ruler-combined"></i> 2000 m²</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-file-contract"></i> Title Deed</div>
-                                        <div className="we-icon-item"><span className="we-service-label">Service:</span> 80%</div>
+                            {properties.filter(p => p.category === 'stand').slice(0, 4).map(property => (
+                                <div key={property.id} className={`we-card ${property.isSponsored ? 'featured' : ''}`} onClick={() => { setSelectedPropertyId(property.id); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
+                                    <div className="we-img" style={{backgroundImage: `url('${property.images?.[0] || 'https://via.placeholder.com/800'}')`}}>
+                                        <span className="we-tag">{property.status === 'available' ? 'FOR SALE' : property.status.toUpperCase()}</span>
+                                        {property.isSponsored && <span className="we-featured-tag"><i className="fa-solid fa-bolt"></i> Featured</span>}
+                                    </div>
+                                    <div className="we-body">
+                                        <div className="we-price">${property.price?.toLocaleString()}</div>
+                                        <div className="we-title">{property.title}</div>
+                                        <div className="we-location"><i className="fa-solid fa-location-dot"></i> {property.category}</div>
+                                        <div className="we-icons-row">
+                                            <div className="we-icon-item"><i className="fa-solid fa-ruler-combined"></i> {property.size} {property.size_unit}</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="we-card" onClick={() => { setSelectedPropertyType('stand'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/736x/98/04/69/980469f630d50176a5ac8c663437e632.jpg')"}}><span className="we-tag">50% DEPOSIT</span></div>
-                                <div className="we-body">
-                                    <div className="we-price">$28,000</div>
-                                    <div className="we-title">Glen Lorne Extension</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Harare North</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item"><i className="fa-solid fa-ruler-combined"></i> 1200 m²</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-file-signature"></i> Cession</div>
-                                        <div className="we-icon-item"><span className="we-service-label">Service:</span> 60%</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="we-card" onClick={() => { setSelectedPropertyType('stand'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/736x/ac/24/2b/ac242b20bb7872b1b839290d319adc79.jpg')"}}><span className="we-tag">NEW RELEASE</span></div>
-                                <div className="we-body">
-                                    <div className="we-price">$120,000</div>
-                                    <div className="we-title">Highlands Luxury Estate</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Harare East</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item"><i className="fa-solid fa-ruler-combined"></i> 4000 m²</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-file-contract"></i> Title Deed</div>
-                                        <div className="we-icon-item"><span className="we-service-label">Service:</span> 100%</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="we-card" onClick={() => { setSelectedPropertyType('stand'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/736x/84/38/17/8438172e4fa57040c32c5a62f290dd8a.jpg')"}}><span className="we-tag">SOLD FAST</span></div>
-                                <div className="we-body">
-                                    <div className="we-price">$18,000</div>
-                                    <div className="we-title">Mabelreign Garden Plot</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Mabelreign</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item"><i className="fa-solid fa-ruler-combined"></i> 800 m²</div>
-                                        <div className="we-icon-item"><i className="fa-solid fa-file-signature"></i> Cession</div>
-                                        <div className="we-icon-item"><span className="we-service-label">Service:</span> 40%</div>
-                                    </div>
-                                </div>
-                            </div>
-
+                            ))}
                         </div>
                     </div>
 
@@ -545,55 +420,23 @@ export default function LandingPage() {
                     </div>
                     <div className="we-full-bleed-container">
                         <div className="we-listings">
-                            
-                            <div className="we-card sold" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/1200x/58/75/a4/5875a4552941b69103b105da039155fe.jpg')"}}>
-                                    <div className="we-sold-overlay">
-                                        <div className="we-sold-badge">SOLD</div>
+                            {properties.filter(p => p.status === 'sold').slice(0, 3).map(property => (
+                                <div key={property.id} className="we-card sold" onClick={() => { setSelectedPropertyId(property.id); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
+                                    <div className="we-img" style={{backgroundImage: `url('${property.images?.[0] || 'https://via.placeholder.com/800'}')`}}>
+                                        <div className="we-sold-overlay">
+                                            <div className="we-sold-badge">SOLD</div>
+                                        </div>
+                                    </div>
+                                    <div className="we-body">
+                                        <div className="we-price" style={{textDecoration: 'line-through', opacity: 0.6}}>${property.price?.toLocaleString()}</div>
+                                        <div className="we-title">{property.title}</div>
+                                        <div className="we-location"><i className="fa-solid fa-location-dot"></i> {property.category}</div>
+                                        <div className="we-icons-row">
+                                            <div className="we-icon-item" style={{color: 'var(--gray-text)'}}>Closed recently</div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="we-body">
-                                    <div className="we-price" style={{textDecoration: 'line-through', opacity: 0.6}}>$950,000</div>
-                                    <div className="we-title">The Azure Villa</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Borrowdale Brooke</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item" style={{color: 'var(--gray-text)'}}>Closed 2 days ago</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="we-card sold" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/1200x/e7/89/16/e78916a958980deeec5ca032bdff3247.jpg')"}}>
-                                    <div className="we-sold-overlay">
-                                        <div className="we-sold-badge">SOLD</div>
-                                    </div>
-                                </div>
-                                <div className="we-body">
-                                    <div className="we-price" style={{textDecoration: 'line-through', opacity: 0.6}}>$320,000</div>
-                                    <div className="we-title">Modern Terrace</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Avondale</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item" style={{color: 'var(--gray-text)'}}>Closed 1 week ago</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="we-card sold" onClick={() => { setSelectedPropertyType('residential'); setIsPropertyPageOpen(true); }} style={{cursor: 'pointer'}}>
-                                <div className="we-img" style={{backgroundImage: "url('https://i.pinimg.com/1200x/fb/32/27/fb3227a1d3765b94578c1514f9e26fb2.jpg')"}}>
-                                    <div className="we-sold-overlay">
-                                        <div className="we-sold-badge">SOLD</div>
-                                    </div>
-                                </div>
-                                <div className="we-body">
-                                    <div className="we-price" style={{textDecoration: 'line-through', opacity: 0.6}}>$1.1M</div>
-                                    <div className="we-title">Highlands Manor</div>
-                                    <div className="we-location"><i className="fa-solid fa-location-dot"></i> Highlands</div>
-                                    <div className="we-icons-row">
-                                        <div className="we-icon-item" style={{color: 'var(--gray-text)'}}>Closed Oct 2025</div>
-                                    </div>
-                                </div>
-                            </div>
-
+                            ))}
                         </div>
                     </div>
 

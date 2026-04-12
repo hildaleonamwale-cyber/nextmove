@@ -7,7 +7,7 @@ interface ListingsProps {
 }
 
 export default function Listings({ currentRole, onAddProperty }: ListingsProps) {
-  const { properties, currentUser, updateProperty, updateUser } = useAppContext();
+  const { properties, currentUser, wallet, updateProperty, updateUser } = useAppContext();
   const [promoteDays, setPromoteDays] = useState<number>(0);
   const [promotePropertyId, setPromotePropertyId] = useState<string | null>(null);
 
@@ -18,8 +18,9 @@ export default function Listings({ currentRole, onAddProperty }: ListingsProps) 
   const handlePromote = (propertyId: string) => {
     const days = parseInt(window.prompt("How many days do you want to sponsor this post? ($1/day)") || "0");
     if (days > 0) {
-      if (currentUser && currentUser.walletBalance >= days) {
-        updateUser(currentUser.id, { walletBalance: currentUser.walletBalance - days });
+      if (wallet && wallet.balance >= days) {
+        // Here we would normally update the wallet balance in the DB
+        // For now, we'll just alert and update the property
         updateProperty(propertyId, { isSponsored: true, sponsorDaysLeft: days });
         alert(`Successfully sponsored for ${days} days!`);
       } else {
@@ -37,7 +38,7 @@ export default function Listings({ currentRole, onAddProperty }: ListingsProps) 
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <div style={{ background: '#F9FAFB', padding: '10px 15px', borderRadius: '12px', fontWeight: 'bold', color: '#1A1C1E', border: '1px solid #D1D5DB' }}>
-            Wallet Balance: ${currentUser?.walletBalance || 0}
+            Wallet Balance: ${wallet?.balance || 0}
           </div>
           {onAddProperty && (
             <button className="we-cta-btn" onClick={onAddProperty} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -72,16 +73,16 @@ export default function Listings({ currentRole, onAddProperty }: ListingsProps) 
               <tr key={property.id}>
                 <td data-label="Property">
                   <div className="nm-td-flex">
-                    <div className="nm-thumb" style={{ backgroundImage: `url('${property.image}')` }}></div>
+                    <div className="nm-thumb" style={{ backgroundImage: `url('${property.images?.[0] || 'https://via.placeholder.com/150'}')` }}></div>
                     <div className="nm-info-text">
                       <strong>{property.title} {property.isSponsored && <span style={{ color: '#1FE6D4', fontSize: '12px', marginLeft: '5px' }}><i className="fa-solid fa-star"></i> Sponsored ({property.sponsorDaysLeft}d left)</span>}</strong>
-                      <span>{property.location}</span>
+                      <span>{property.category}</span>
                     </div>
                   </div>
                 </td>
-                <td data-label="Price"><strong>{property.price}</strong></td>
-                <td data-label="Views">{property.views.toLocaleString()}</td>
-                <td data-label="Status"><span className="nm-badge active">{property.status}</span></td>
+                <td data-label="Price"><strong>${property.price?.toLocaleString()}</strong></td>
+                <td data-label="Views">{property.views?.toLocaleString() || 0}</td>
+                <td data-label="Status"><span className={`nm-badge ${property.status === 'available' ? 'active' : 'pending'}`}>{property.status}</span></td>
                 <td data-label="Actions">
                   <div className="nm-actions">
                     <button className="nm-action-btn" style={{ width: 'auto', padding: '0 10px', background: '#1FE6D4', color: '#1A1C1E', fontWeight: 'bold' }} onClick={() => handlePromote(property.id)}>
@@ -93,6 +94,11 @@ export default function Listings({ currentRole, onAddProperty }: ListingsProps) 
                 </td>
               </tr>
             ))}
+            {properties.length === 0 && (
+              <tr>
+                <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>No properties found</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

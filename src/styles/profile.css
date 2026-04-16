@@ -15,7 +15,7 @@
     /* =========================================
        OFFICIAL NEXTMOVE HEADER (RESTORED)
        ========================================= */
-    .we-header-wrapper { position: sticky; top: 0; z-index: 10001; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.04); background: #ffffff; border-bottom: none; }
+    .we-header-wrapper { position: sticky; top: 0; z-index: 10001; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.03); background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(31, 230, 212, 0.15); }
     .we-header { display: flex; justify-content: space-between; align-items: center; padding: 15px var(--side-margin); max-width: 1400px; margin: 0 auto; transition: all 0.3s ease; }
     .we-logo-group { display: flex; align-items: center; gap: 12px; text-decoration: none; }
     .we-left-logo img { height: 45px; width: auto; display: block; }
@@ -92,34 +92,12 @@
     .nm-banner-img { width: 100%; height: 280px; background-image: url('https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1200'); background-size: cover; background-position: center; border-radius: 32px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     @media (max-width: 768px) { .nm-banner-img { height: 180px; border-radius: 20px; } }
 
-    .nm-banner-actions { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .nm-banner-actions { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; }
     .nm-b-btn { width: 40px; height: 40px; background: #fff; color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.2s; }
     .nm-b-btn:hover { transform: scale(1.05); color: var(--brand); }
 
     .nm-avatar-wrapper { position: absolute; bottom: 0; left: 50%; transform: translate(-50%, 50%); }
-    .nm-profile-pic { width: 140px; height: 140px; border-radius: 50%; background-image: url('https://image2url.com/r2/bucket2/images/1775993105962-31e87a44-28d1-4cf3-a0e7-3d505b5a82bc.png'); background-size: cover; background-position: center; background-color: #fff; border: 5px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; }
-    
-    /* Instagram-like Story Ring */
-    .nm-profile-pic.has-story {
-        padding: 4px;
-        background-clip: content-box;
-        border: 2px solid #fff;
-        background-color: #fff;
-        position: relative;
-    }
-    .nm-profile-pic.has-story::before {
-        content: '';
-        position: absolute;
-        inset: -6px;
-        border-radius: 50%;
-        padding: 3px;
-        background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        z-index: -1;
-    }
-    
+    .nm-profile-pic { width: 140px; height: 140px; border-radius: 50%; background-image: url('https://willowandelm.co.zw/wp-content/uploads/2026/03/nextmove.-5.png.png'); background-size: cover; background-position: center; background-color: #fff; border: 5px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; }
     @media (max-width: 768px) { .nm-profile-pic { width: 110px; height: 110px; } }
     .nm-verified-badge { position: absolute; bottom: 5px; right: 5px; background: var(--brand); color: #1A1C1E; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
@@ -143,10 +121,10 @@
     .nm-tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* NEW: FILTER SLIDER */
-    .nm-filter-slider-container { width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; margin-bottom: 40px; }
+    /* NEW: FILTER SLIDER (Full Bleed logic adapted for filters) */
+    .nm-filter-slider-container { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; margin-bottom: 40px; }
     .nm-filter-slider-container::-webkit-scrollbar { display: none; }
-    .nm-filter-pills { display: inline-flex; gap: 10px; }
+    .nm-filter-pills { display: inline-flex; gap: 10px; padding: 0 var(--side-margin); }
     
     .nm-pill { padding: 10px 22px; border-radius: 50px; border: 1px solid var(--border-color); background: #fff; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: var(--dark); cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
     .nm-pill i { font-size: 14px; opacity: 0.7; }
@@ -155,19 +133,10 @@
     .nm-pill.active i { opacity: 1; }
 
     /* PROPERTY CARDS & GRID */
-    .nm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; padding-bottom: 60px; }
-    @media (max-width: 1400px) {
-        .nm-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (max-width: 1024px) {
-        .nm-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 600px) {
-        .nm-grid { grid-template-columns: 1fr; }
-    }
-    .nm-grid .we-card { width: 100%; max-width: 100%; flex: auto; margin: 0; position: relative; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #F3F4F6; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s ease; }
-    .nm-grid .we-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
-    .nm-grid .we-card.featured { border: 1px solid var(--brand); box-shadow: 0 0 12px rgba(31, 230, 212, 0.35), 0 4px 12px rgba(0,0,0,0.05); }
+    .nm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding-bottom: 60px; }
+    .we-card { width: 100%; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #F3F4F6; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s ease; }
+    .we-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+    .we-card.featured { border: 1px solid var(--brand); box-shadow: 0 0 12px rgba(31, 230, 212, 0.35), 0 4px 12px rgba(0,0,0,0.05); }
     .we-img { height: 210px; background-size: cover; background-position: center; position: relative; }
     .we-tag { position: absolute; top: 12px; left: 12px; background: var(--brand); color: #1A1C1E; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
     .we-featured-tag { position: absolute; top: 42px; left: 12px; background: rgba(26, 28, 30, 0.85); color: var(--brand); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px); border: 1px solid rgba(31, 230, 212, 0.2); }
